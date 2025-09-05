@@ -1,0 +1,1357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Platform Administrator Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* General Styles */
+        :root {
+        --primary-color: #2e7d32;
+        --primary-dark: #1b5e20; 
+        --secondary-color: #757575; 
+        --success-color: #4caf50;
+        --danger-color: #f44336;
+        --warning-color: #ff9800;
+        --info-color: #2196f3;
+        --light-color: #f5f5f5;
+        --dark-color: #212121; 
+        --body-bg: #e8f5e9; 
+        --sidebar-bg: #ffffff;
+        --card-bg: #ffffff;
+        --border-color: #e0e0e0;
+        --text-color: #424242; 
+        --text-muted: #757575;
+        --shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        --border-radius: 8px;
+        --transition: all 0.3s ease;
+        }
+
+        * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        }
+
+        body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: var(--body-bg);
+        color: var(--text-color);
+        line-height: 1.6;
+        }
+
+        a {
+        text-decoration: none;
+        color: inherit;
+        }
+
+        ul {
+        list-style: none;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+        font-weight: 600;
+        margin-bottom: 1rem;
+        }
+
+        button, .btn {
+        cursor: pointer;
+        border: none;
+        border-radius: var(--border-radius);
+        transition: var(--transition);
+        }
+
+        .btn-primary {
+        background-color: var(--primary-color);
+        color: white;
+        padding: 0.75rem 1.5rem;
+        }
+
+        .btn-secondary {
+        background-color: var(--secondary-color);
+        color: white;
+        padding: 0.75rem 1.5rem;
+        }
+
+        .btn-primary:hover {
+        background-color: var(--primary-dark);
+        }
+
+        input, select, textarea {
+        border: 1px solid var(--border-color);
+        border-radius: var(--border-radius);
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+        transition: var(--transition);
+        }
+
+        input:focus, select:focus, textarea:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 2px rgba(46, 125, 50, 0.2);
+        }
+
+        /* Dashboard Layout */
+        .dashboard-container {
+        display: flex;
+        min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+        width: 250px;
+        background-color: var(--dark-color);
+        border-right: 1px solid var(--border-color);
+        display: flex;
+        flex-direction: column;
+        position: fixed;
+        height: 100vh;
+        transition: var(--transition);
+        box-shadow: var(--shadow);
+        z-index: 100;
+        }
+
+        .logo {
+        padding: 1.5rem;
+        border-bottom: 1px solid #424242;
+        }
+
+        .logo h2 {
+        color: white;
+        margin: 0;
+        font-size: 1.5rem;
+        }
+
+        .nav-menu {
+        padding: 1rem 0;
+        flex-grow: 1;
+        }
+
+        .nav-menu ul li {
+        position: relative;
+        }
+
+        .nav-menu ul li a {
+        display: flex;
+        align-items: center;
+        padding: 0.8rem 1.5rem;
+        color: #bdbdbd;
+        font-weight: 500;
+        transition: var(--transition);
+        }
+
+        .nav-menu ul li a i {
+        margin-right: 12px;
+        font-size: 1.2rem;
+        color: #9e9e9e;
+        transition: var(--transition);
+        }
+
+        .nav-menu ul li.active a,
+        .nav-menu ul li a:hover {
+        color: white;
+        background-color: rgba(76, 175, 80, 0.15);
+        }
+
+        .nav-menu ul li.active a i,
+        .nav-menu ul li a:hover i {
+        color: var(--primary-color);
+        }
+
+        .nav-menu ul li.active::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 100%;
+        width: 4px;
+        background-color: var(--primary-color);
+        }
+
+        .user-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        }
+        /* Main Content Area */
+        .main-content {
+        flex: 1;
+        margin-left: 250px;
+        padding: 0;
+        transition: var(--transition);
+        }
+
+        /* Content Section Styles */
+        .content-section {
+        padding: 2rem;
+        display: none;
+        }
+
+        .content-section.active {
+        display: block;
+        }
+
+        /* Dashboard Stats Cards */
+        .stats-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+        }
+
+        .stat-card {
+        background-color: var(--card-bg);
+        border-radius: var(--border-radius);
+        padding: 1.5rem;
+        box-shadow: var(--shadow);
+        display: flex;
+        align-items: center;
+        }
+
+        .stat-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 1rem;
+        color: white;
+        font-size: 1.5rem;
+        }
+
+        .stat-icon.users {
+        background-color: #ffffff;
+        }
+
+        .stat-icon.messages {
+        background-color: #ffffff;
+        }
+
+        .stat-icon.payments {
+        background-color: #ffffff;
+        }
+
+        .stat-icon.commission {
+        background-color: #ffffff;
+        }
+
+        .stat-info {
+        flex: 1;
+        }
+
+        .stat-info h3 {
+        font-size: 0.9rem;
+        color: var(--text-muted);
+        margin-bottom: 0.5rem;
+        }
+
+        .stat-number {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 0.25rem;
+        }
+
+        .stat-change {
+        font-size: 0.8rem;
+        display: flex;
+        align-items: center;
+        }
+
+        .stat-change.positive {
+        color: var(--success-color);
+        }
+
+        .stat-change.negative {
+        color: var(--danger-color);
+        }
+
+        /* Dashboard Widgets */
+        .dashboard-widgets {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+        gap: 1.5rem;
+        }
+
+        .widget {
+        background-color: var(--card-bg);
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+        }
+
+        .widget-header {
+        padding: 1rem 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid var(--border-color);
+        background-color: #f5f5f5;
+        }
+
+        .widget-header h3 {
+        margin: 0;
+        font-size: 1.1rem;
+        color: var(--dark-color);
+        }
+
+        .view-all {
+        color: var(--primary-color);
+        font-size: 0.9rem;
+        font-weight: 500;
+        }
+
+        .widget-content {
+        padding: 1rem;
+        }
+
+
+        /* Payment Activity Widget */
+        .payment-list {
+        display: flex;
+        flex-direction: column;
+        }
+
+        .payment-item {
+        padding: 1rem;
+        border-bottom: 1px solid var(--border-color);
+        }
+
+        .payment-item:last-child {
+        border-bottom: none;
+        }
+
+        .payment-info {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.75rem;
+        }
+
+        .payment-user {
+        display: flex;
+        align-items: center;
+        }
+
+        .payment-user img {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        margin-right: 0.75rem;
+        }
+
+        .payment-user-info h4 {
+        margin: 0;
+        font-size: 0.9rem;
+        }
+
+        .payment-user-info p {
+        margin: 0;
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        }
+
+        .payment-details {
+        text-align: right;
+        }
+
+        .payment-amount {
+        font-weight: 600;
+        display: block;
+        margin-bottom: 0.25rem;
+        }
+
+        .payment-status {
+        font-size: 0.75rem;
+        padding: 0.2rem 0.5rem;
+        border-radius: 10px;
+        color: white;
+        }
+
+        .payment-status.completed {
+        background-color: var(--success-color);
+        }
+
+        .payment-status.pending {
+        background-color: var(--warning-color);
+        }
+
+        .payment-breakdown {
+        background-color: var(--light-color);
+        border-radius: var(--border-radius);
+        padding: 0.75rem;
+        }
+
+        .breakdown-item {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.8rem;
+        margin-bottom: 0.25rem;
+        }
+
+        .breakdown-item span:first-child {
+        color: var(--text-muted);
+        }
+
+        /* Payments Section Styles */
+        .payment-summary {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+        }
+
+        .summary-card {
+        background-color: var(--card-bg);
+        border-radius: var(--border-radius);
+        padding: 1.5rem;
+        box-shadow: var(--shadow);
+        text-align: center;
+        border-top: 4px solid var(--primary-color);
+        }
+
+        .summary-card h3 {
+        font-size: 0.9rem;
+        color: var(--text-muted);
+        margin-bottom: 0.5rem;
+        }
+
+        .summary-amount {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--dark-color);
+        }
+
+        .payment-table-container {
+        background-color: var(--card-bg);
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+        }
+
+        .payment-table {
+        width: 100%;
+        border-collapse: collapse;
+        }
+
+        .payment-table th,
+        .payment-table td {
+        padding: 1rem;
+        text-align: left;
+        border-bottom: 1px solid var(--border-color);
+        }
+
+        .payment-table th {
+        font-size: 0.9rem;
+        color: var(--text-muted);
+        font-weight: 600;
+        background-color: #f5f5f5;
+        }
+
+        .payment-table td {
+        font-size: 0.9rem;
+        }
+
+        .action-buttons {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        }
+
+        .btn-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #f5f5f5;
+        color: var(--text-color);
+        }
+
+        .btn-icon:hover {
+        background-color: var(--primary-color);
+        color: white;
+        }
+
+        /* User Management Styles */
+        .users-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        }
+
+        .user-search {
+        display: flex;
+        align-items: center;
+        background-color: var(--light-color);
+        border-radius: var(--border-radius);
+        padding: 0.5rem;
+        width: 300px;
+        }
+        .user-search input {
+        border: none;
+        background-color: transparent;
+        flex: 1;
+        padding: 0.5rem;
+        }
+
+        .btn-search {
+        background-color: var(--primary-color);
+        color: white;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        }
+
+        .user-filters select {
+        padding: 0.6rem 1rem;
+        border-radius: var(--border-radius);
+        border: 1px solid var(--border-color);
+        background-color: white;
+        min-width: 180px;
+        }
+
+        .user-tabs {
+        display: flex;
+        border-bottom: 1px solid var(--border-color);
+        margin-bottom: 1.5rem;
+        }
+
+        .tab-btn {
+        padding: 0.75rem 1.5rem;
+        background-color: transparent;
+        border-bottom: 2px solid transparent;
+        font-weight: 500;
+        }
+
+        .tab-btn.active {
+        border-bottom-color: var(--primary-color);
+        color: var(--primary-color);
+        }
+
+        .tab-content {
+        display: none;
+        }
+
+        .tab-content.active {
+        display: block;
+        }
+
+        .users-table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: var(--card-bg);
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        box-shadow: var(--shadow);
+        }
+
+        .users-table th,
+        .users-table td {
+        padding: 1rem;
+        text-align: left;
+        border-bottom: 1px solid var(--border-color);
+        }
+
+        .users-table th {
+        font-size: 0.9rem;
+        color: var(--text-muted);
+        font-weight: 600;
+        background-color: #f5f5f5;
+        }
+
+        .users-table td {
+        font-size: 0.9rem;
+        }
+
+        .user-info-cell {
+        display: flex;
+        align-items: center;
+        }
+
+        .user-info-cell img {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        margin-right: 0.75rem;
+        }
+
+        /* Settings Section Styles */
+        .settings-container {
+        display: flex;
+        background-color: var(--card-bg);
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+        }
+
+        .settings-sidebar {
+        width: 250px;
+        border-right: 1px solid var(--border-color);
+        padding: 1.5rem 0;
+        }
+
+        .settings-nav {
+        display: flex;
+        flex-direction: column;
+        }
+
+        .settings-nav-item {
+        padding: 1rem 1.5rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: var(--transition);
+        }
+
+        .settings-nav-item.active {
+        background-color: rgba(46, 125, 50, 0.1);
+        color: var(--primary-color);
+        border-left: 3px solid var(--primary-color);
+        }
+
+        .settings-nav-item:hover:not(.active) {
+        background-color: rgba(0, 0, 0, 0.03);
+        }
+
+        .settings-content {
+        flex: 1;
+        padding: 1.5rem;
+        }
+
+        .settings-panel {
+        display: none;
+        }
+
+        .settings-panel.active {
+        display: block;
+        }
+
+        .settings-form {
+        max-width: 600px;
+        }
+
+        .form-group {
+        margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select {
+        width: 100%;
+        }
+
+        .help-text {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        margin-top: 0.5rem;
+        }
+
+        .toggle-switch {
+        display: flex;
+        align-items: center;
+        margin-top: 0.5rem;
+        }
+
+        .toggle-switch input[type="checkbox"] {
+        position: absolute;
+        opacity: 0;
+        }
+
+        .toggle-switch label {
+        position: relative;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        }
+
+        .toggle-switch label::before {
+        content: '';
+        width: 40px;
+        height: 20px;
+        background-color: #ccc;
+        border-radius: 20px;
+        margin-right: 0.75rem;
+        transition: background-color 0.3s;
+        }
+
+        .toggle-switch label::after {
+        content: '';
+        position: absolute;
+        left: 2px;
+        width: 16px;
+        height: 16px;
+        background-color: white;
+        border-radius: 50%;
+        transition: transform 0.3s;
+        }
+
+        .toggle-switch input:checked + label::before {
+        background-color: var(--primary-color);
+        }
+
+        .toggle-switch input:checked + label::after {
+        transform: translateX(20px);
+        }
+
+        .input-group {
+        display: flex;
+        align-items: center;
+        }
+
+        .input-group input {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+        }
+
+        .input-group-text {
+        padding: 0.5rem 1rem;
+        background-color: #f5f5f5;
+        border: 1px solid var(--border-color);
+        border-left: none;
+        border-radius: 0 var(--border-radius) var(--border-radius) 0;
+        }
+
+        .checkbox-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        }
+
+        .checkbox-item {
+        display: flex;
+        align-items: center;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+        margin-right: 0.5rem;
+        width: auto;
+        }
+
+        .checkbox-item label {
+        margin-bottom: 0;
+        }
+
+        .form-actions {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2rem;
+        }
+
+        /* Icon Styles */
+        .icon-dashboard::before {
+        content: "\f0e4";
+        font-family: "Font Awesome 6 Free";
+        font-weight: 900;
+        }
+
+        .icon-payments::before {
+        content: "\f155";
+        font-family: "Font Awesome 6 Free";
+        font-weight: 900;
+        }
+
+        .icon-projects::before {
+        content: "\f0ae";
+        font-family: "Font Awesome 6 Free";
+        font-weight: 900;
+        }
+
+        .icon-users::before {
+        content: "\f0c0";
+        font-family: "Font Awesome 6 Free";
+        font-weight: 900;
+        }
+
+        .icon-settings::before {
+        content: "\f013";
+        font-family: "Font Awesome 6 Free";
+        font-weight: 900;
+        }
+
+        .icon-eye::before {
+        content: "\f06e";
+        font-family: "Font Awesome 6 Free";
+        font-weight: 900;
+        }
+
+        .icon-download::before {
+        content: "\f019";
+        font-family: "Font Awesome 6 Free";
+        font-weight: 900;
+        }
+
+        .icon-check::before {
+        content: "\f00c";
+        font-family: "Font Awesome 6 Free";
+        font-weight: 900;
+        }
+
+        .icon-refresh::before {
+        content: "\f2f1";
+        font-family: "Font Awesome 6 Free";
+        font-weight: 900;
+        }
+
+        .icon-search::before {
+        content: "\f002";
+        font-family: "Font Awesome 6 Free";
+        font-weight: 900;
+        }
+
+        .icon-edit::before {
+        content: "\f304";
+        font-family: "Font Awesome 6 Free";
+        font-weight: 900;
+        }
+
+        .icon-more-vertical::before {
+        content: "\f142";
+        font-family: "Font Awesome 6 Free";
+        font-weight: 900;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="logo">
+                <h2><%= platformName %> Admin</h2>
+            </div>
+            <nav class="nav-menu">
+                <ul>
+                    <li class="<%= activeSection === 'dashboard' ? 'active' : '' %>"><a href="/admin/dashboard" data-section="dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                    <li class="<%= activeSection === 'payments' ? 'active' : '' %>"><a href="/admin/payments" data-section="payments"><i class="fas fa-money-bill-wave"></i> Payments</a></li>
+                    <li class="<%= activeSection === 'projects' ? 'active' : '' %>"><a href="/admin/projects" data-section="projects"><i class="fas fa-project-diagram"></i> Projects</a></li>
+                    <li class="<%= activeSection === 'users' ? 'active' : '' %>"><a href="/admin/users" data-section="users"><i class="fas fa-users"></i> Users</a></li>
+                    <li class="<%= activeSection === 'settings' ? 'active' : '' %>"><a href="/admin/settings" data-section="settings"><i class="fas fa-cog"></i> Settings</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Dashboard Section -->
+            <% if (activeSection === 'dashboard') { %>
+            <section id="dashboard" class="content-section active">
+                <h1>Dashboard Overview</h1>
+                <div class="stats-cards">
+                    <% stats.forEach(stat => { %>
+                    <div class="stat-card">
+                        <div class="stat-icon <%= stat.icon %>"><i class="fas fa-<%= stat.icon %>"></i></div>
+                        <div class="stat-info">
+                            <h3><%= stat.title %></h3>
+                            <p class="stat-number"><%= stat.value %></p>
+                            <span class="stat-change <%= stat.change >= 0 ? 'positive' : 'negative' %>">
+                                <%= stat.change >= 0 ? '+' : '' %><%= stat.change %>%
+                            </span>
+                        </div>
+                    </div>
+                    <% }); %>
+                </div>
+
+                <div class="dashboard-widgets">
+                    <div class="widget recent-messages">
+                        <div class="widget-header">
+                            <h3>Recent Messages</h3>
+                            <a href="#messages" class="view-all">View All</a>
+                        </div>
+                        <div class="widget-content">
+                            <ul class="messages-list">
+                                <% messages.forEach(message => { %>
+                                <li class="message-item <%= message.read ? '' : 'unread' %>">
+                                    <div class="message-sender">
+                                        <img src="<%= message.avatar || '/images/avatar-placeholder.jpg' %>" alt="User">
+                                        <div class="sender-info">
+                                            <h4><%= message.senderName %></h4>
+                                            <span class="sender-type <%= message.senderType %>">
+                                                <%= message.senderType.charAt(0).toUpperCase() + message.senderType.slice(1) %>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="message-preview"><%= message.preview %></div>
+                                    <div class="message-time"><%= message.time %></div>
+                                </li>
+                                <% }); %>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="widget payment-activity">
+                        <div class="widget-header">
+                            <h3>Recent Payment Activity</h3>
+                            <a href="#payments" class="view-all">View All</a>
+                        </div>
+                        <div class="widget-content">
+                            <ul class="payment-list">
+                                <% payments.slice(0, 3).forEach(payment => { %>
+                                <li class="payment-item">
+                                    <div class="payment-info">
+                                        <div class="payment-user">
+                                            <img src="<%= payment.avatar || '/images/avatar-placeholder.jpg' %>" alt="User">
+                                            <div class="payment-user-info">
+                                                <h4>Project: <%= payment.projectName %></h4>
+                                                <p>Customer: <%= payment.customerName %></p>
+                                            </div>
+                                        </div>
+                                        <div class="payment-details">
+                                            <span class="payment-amount">₹<%= payment.amount.toLocaleString() %></span>
+                                            <span class="payment-status <%= payment.status %>">
+                                                <%= payment.status.charAt(0).toUpperCase() + payment.status.slice(1) %>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </li>
+                                <% }); %>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <% } %>
+
+            <!-- Payments Section -->
+            <% if (activeSection === 'payments') { %>
+            <section id="payments" class="content-section active">
+                <h1>Payment Management</h1>
+                <div class="payment-summary">
+                    <% paymentSummary.forEach(summary => { %>
+                    <div class="summary-card">
+                        <h3><%= summary.title %></h3>
+                        <p class="summary-amount">₹<%= summary.amount.toLocaleString() %></p>
+                    </div>
+                    <% }); %>
+                </div>
+
+                <div class="payment-table-container">
+                    <table class="payment-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Project</th>
+                                <th>Customer</th>
+                                <th>Company/Worker</th>
+                                <th>Amount</th>
+                                <th>Commission</th>
+                                <th>Received</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% payments.forEach(payment => { %>
+                            <tr>
+                                <td><%= payment.paymentId %></td>
+                                <td><%= payment.projectName %></td>
+                                <td><%= payment.customerName %></td>
+                                <td><%= payment.recipientName %></td>
+                                <td>₹<%= payment.amount.toLocaleString() %></td>
+                                <td>₹<%= payment.commission.toLocaleString() %></td>
+                                <td>₹<%= payment.received.toLocaleString() %></td>
+                                <td><%= new Date(payment.date).toLocaleDateString() %></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn-icon" title="View Details"><i class="fas fa-eye"></i></button>
+                                        <button class="btn-icon" title="Download Invoice"><i class="fas fa-download"></i></button>
+                                        <% if(payment.status === 'pending') { %>
+                                        <button class="btn-icon" title="Approve Payment"><i class="fas fa-check"></i></button>
+                                        <% } %>
+                                    </div>
+                                </td>
+                            </tr>
+                            <% }); %>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+            <% } %>
+
+            <!-- Projects Section -->
+            <% if (activeSection === 'projects') { %>
+            <section id="projects" class="content-section active">
+                <h1>Project Management</h1>
+                
+                <div class="user-tabs">
+                    <button class="tab-btn <%= activeProjectTab === 'active' ? 'active' : '' %>" data-tab="active">Active Projects</button>
+                    <button class="tab-btn <%= activeProjectTab === 'completed' ? 'active' : '' %>" data-tab="completed">Completed Projects</button>
+                    <button class="tab-btn <%= activeProjectTab === 'pending' ? 'active' : '' %>" data-tab="pending">Pending Projects</button>
+                </div>
+
+                <div class="tab-content <%= activeProjectTab === 'active' ? 'active' : '' %>" id="active-projects">
+                    <table class="users-table">
+                        <thead>
+                            <tr>
+                                <th>Project Name</th>
+                                <th>Customer</th>
+                                <th>Company/Worker</th>
+                                <th>Customer Email</th>
+                                <th>Company Email</th>
+                                <th>Received Money</th>
+                                <th>Pending Money</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% projects.filter(p => p.status === 'active').forEach(project => { %>
+                            <tr>
+                                <td><%= project.name %></td>
+                                <td><%= project.customerName %></td>
+                                <td><%= project.providerName %></td>
+                                <td><%= project.customerEmail %></td>
+                                <td><%= project.companyEmail %></td>
+                                <td>₹<%= project.receivedMoney.toLocaleString() %></td>
+                                <td>₹<%= project.pendingMoney.toLocaleString() %></td>
+                                <td><i class="fas fa-comment"></i> Chat</td>
+                            </tr>
+                            <% }); %>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="tab-content <%= activeProjectTab === 'completed' ? 'active' : '' %>" id="completed-projects">
+                    <table class="users-table">
+                        <thead>
+                            <tr>
+                                <th>Project Name</th>
+                                <th>Customer</th>
+                                <th>Company/Worker</th>
+                                <th>Customer Email</th>
+                                <th>Company Email</th>
+                                <th>Received Money</th>
+                                <th>Pending Money</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% projects.filter(p => p.status === 'completed').forEach(project => { %>
+                            <tr>
+                                <td><%= project.name %></td>
+                                <td><%= project.customerName %></td>
+                                <td><%= project.providerName %></td>
+                                <td><%= project.customerEmail %></td>
+                                <td><%= project.companyEmail %></td>
+                                <td>₹<%= project.receivedMoney.toLocaleString() %></td>
+                                <td>₹<%= project.pendingMoney.toLocaleString() %></td>
+                                <td><i class="fas fa-comment"></i> Chat</td>
+                            </tr>
+                            <% }); %>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="tab-content <%= activeProjectTab === 'pending' ? 'active' : '' %>" id="pending-projects">
+                    <table class="users-table">
+                        <thead>
+                            <tr>
+                                <th>Project Name</th>
+                                <th>Customer</th>
+                                <th>Company/Worker</th>
+                                <th>Customer Email</th>
+                                <th>Company Email</th>
+                                <th>Received Money</th>
+                                <th>Pending Money</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% projects.filter(p => p.status === 'pending').forEach(project => { %>
+                            <tr>
+                                <td><%= project.name %></td>
+                                <td><%= project.customerName %></td>
+                                <td><%= project.providerName %></td>
+                                <td><%= project.customerEmail %></td>
+                                <td><%= project.companyEmail %></td>
+                                <td>₹<%= project.receivedMoney.toLocaleString() %></td>
+                                <td>₹<%= project.pendingMoney.toLocaleString() %></td>
+                                <td><i class="fas fa-comment"></i> Chat</td>
+                            </tr>
+                            <% }); %>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+            <% } %>
+
+            <!-- Users Section -->
+            <% if (activeSection === 'users') { %>
+            <section id="users" class="content-section active">
+                <h1>User Management</h1>
+                <div class="users-actions">
+                    <div class="user-search">
+                        <input type="text" placeholder="Search users...">
+                        <button class="btn-search"><i class="fas fa-search"></i></button>
+                    </div>
+                    <div class="user-filters">
+                        <select id="user-type-filter">
+                            <option value="all">All User Types</option>
+                            <option value="company">Companies</option>
+                            <option value="customer">Customers</option>
+                            <option value="worker">Workers</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="user-tabs">
+                    <button class="tab-btn <%= activeUserTab === 'companies' ? 'active' : '' %>" data-tab="companies">Companies</button>
+                    <button class="tab-btn <%= activeUserTab === 'customers' ? 'active' : '' %>" data-tab="customers">Customers</button>
+                    <button class="tab-btn <%= activeUserTab === 'workers' ? 'active' : '' %>" data-tab="workers">Workers</button>
+                </div>
+
+                <div class="tab-content <%= activeUserTab === 'companies' ? 'active' : '' %>" id="companies-tab">
+                    <table class="users-table">
+                        <thead>
+                            <tr>
+                                <th>Company Name</th>
+                                <th>Contact Person</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Projects</th>
+                                <th>Total Revenue</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% users.filter(u => u.type === 'company').forEach(company => { %>
+                            <tr>
+                                <td>
+                                    <div class="user-info-cell">
+                                        <img src="<%= company.avatar || '/images/avatar-placeholder.jpg' %>" alt="Company">
+                                        <span><%= company.name %></span>
+                                    </div>
+                                </td>
+                                <td><%= company.contactPerson %></td>
+                                <td><%= company.email %></td>
+                                <td><%= company.phone %></td>
+                                <td><%= company.projects %></td>
+                                <td>₹<%= company.revenue.toLocaleString() %></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn-icon" title="View Details"><i class="fas fa-eye"></i></button>
+                                        <button class="btn-icon" title="Edit"><i class="fas fa-edit"></i></button>
+                                        <button class="btn-icon" title="More Options"><i class="fas fa-ellipsis-v"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <% }); %>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="tab-content <%= activeUserTab === 'customers' ? 'active' : '' %>" id="customers-tab">
+                    <table class="users-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Company</th>
+                                <th>Projects</th>
+                                <th>Total Spent</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% users.filter(u => u.type === 'customer').forEach(customer => { %>
+                            <tr>
+                                <td>
+                                    <div class="user-info-cell">
+                                        <img src="<%= customer.avatar || '/images/avatar-placeholder.jpg' %>" alt="Customer">
+                                        <span><%= customer.name %></span>
+                                    </div>
+                                </td>
+                                <td><%= customer.email %></td>
+                                <td><%= customer.phone %></td>
+                                <td><%= customer.company %></td>
+                                <td><%= customer.projects %></td>
+                                <td>₹<%= customer.totalSpent.toLocaleString() %></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn-icon" title="View Details"><i class="fas fa-eye"></i></button>
+                                        <button class="btn-icon" title="Edit"><i class="fas fa-edit"></i></button>
+                                        <button class="btn-icon" title="More Options"><i class="fas fa-ellipsis-v"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <% }); %>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="tab-content <%= activeUserTab === 'workers' ? 'active' : '' %>" id="workers-tab">
+                    <table class="users-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Specialization</th>
+                                <th>Projects</th>
+                                <th>Total Earned</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% users.filter(u => u.type === 'worker').forEach(worker => { %>
+                            <tr>
+                                <td>
+                                    <div class="user-info-cell">
+                                        <img src="<%= worker.avatar || '/images/avatar-placeholder.jpg' %>" alt="Worker">
+                                        <span><%= worker.name %></span>
+                                    </div>
+                                </td>
+                                <td><%= worker.email %></td>
+                                <td><%= worker.phone %></td>
+                                <td><%= worker.specialization %></td>
+                                <td><%= worker.projects %></td>
+                                <td>₹<%= worker.totalEarned.toLocaleString() %></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="btn-icon" title="View Details"><i class="fas fa-eye"></i></button>
+                                        <button class="btn-icon" title="Edit"><i class="fas fa-edit"></i></button>
+                                        <button class="btn-icon" title="More Options"><i class="fas fa-ellipsis-v"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <% }); %>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+            <% } %>
+
+            <!-- Settings Section -->
+            <% if (activeSection === 'settings') { %>
+            <section id="settings" class="content-section active">
+                <h1>Platform Settings</h1>
+                <div class="settings-container">
+                    <div class="settings-sidebar">
+                        <ul class="settings-nav">
+                            <li class="settings-nav-item <%= activeSettingsTab === 'general' ? 'active' : '' %>" data-settings="general">General Settings</li>
+                            <li class="settings-nav-item <%= activeSettingsTab === 'payment' ? 'active' : '' %>" data-settings="payment">Payment Settings</li>
+                            <li class="settings-nav-item <%= activeSettingsTab === 'security' ? 'active' : '' %>" data-settings="security">Security Settings</li>
+                            <li class="settings-nav-item <%= activeSettingsTab === 'api' ? 'active' : '' %>" data-settings="api">API & Integration</li>
+                        </ul>
+                    </div>
+                    <div class="settings-content">
+                        <div class="settings-panel <%= activeSettingsTab === 'general' ? 'active' : '' %>" id="general-settings">
+                            <h2>General Settings</h2>
+                            <form action="/settings/general" method="POST" class="settings-form">
+                                <div class="form-group">
+                                    <label for="platform-name">Platform Name</label>
+                                    <input type="text" id="platform-name" name="platformName" value="<%= settings.general.platformName %>">
+                                </div>
+                                <div class="form-group">
+                                    <label for="platform-email">Platform Email</label>
+                                    <input type="email" id="platform-email" name="platformEmail" value="<%= settings.general.platformEmail %>">
+                                </div>
+                                <div class="form-group">
+                                    <label for="platform-contact">Support Contact Number</label>
+                                    <input type="tel" id="platform-contact" name="supportContact" value="<%= settings.general.supportContact %>">
+                                </div>
+                                <div class="form-group">
+                                    <label for="timezone">Default Timezone</label>
+                                    <select id="timezone" name="timezone">
+                                        <% settings.general.timezones.forEach(tz => { %>
+                                        <option value="<%= tz.value %>" <%= tz.value === settings.general.timezone ? 'selected' : '' %>>
+                                            <%= tz.label %>
+                                        </option>
+                                        <% }); %>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>System Maintenance</label>
+                                    <div class="toggle-switch">
+                                        <input type="checkbox" id="maintenance-mode" name="maintenanceMode" <%= settings.general.maintenanceMode ? 'checked' : '' %>>
+                                        <label for="maintenance-mode">Maintenance Mode</label>
+                                    </div>
+                                    <p class="help-text">Enabling maintenance mode will make the platform inaccessible to all users except administrators.</p>
+                                </div>
+                                <div class="form-actions">
+                                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                                    <button type="reset" class="btn btn-secondary">Reset</button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div class="settings-panel <%= activeSettingsTab === 'payment' ? 'active' : '' %>" id="payment-settings">
+                            <h2>Payment Settings</h2>
+                            <form action="/settings/payment" method="POST" class="settings-form">
+                                <div class="form-group">
+                                    <label>Platform Commission</label>
+                                    <div class="input-group">
+                                        <input type="number" id="commission-rate" name="commissionRate" value="<%= settings.payment.commissionRate %>">
+                                        <span class="input-group-text">%</span>
+                                    </div>
+                                    <p class="help-text">The percentage fee the platform charges on each transaction.</p>
+                                </div>
+                                <div class="form-group">
+                                    <label for="payment-processor">Payment Processor</label>
+                                    <select id="payment-processor" name="paymentProcessor">
+                                        <% settings.payment.processors.forEach(processor => { %>
+                                        <option value="<%= processor.value %>" <%= processor.value === settings.payment.processor ? 'selected' : '' %>>
+                                            <%= processor.label %>
+                                        </option>
+                                        <% }); %>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="payment-api-key">API Key</label>
+                                    <input type="password" id="payment-api-key" name="apiKey" value="<%= settings.payment.apiKey %>">
+                                </div>
+                                <div class="form-group">
+                                    <label>Payment Methods</label>
+                                    <div class="checkbox-group">
+                                        <% settings.payment.methods.forEach(method => { %>
+                                        <div class="checkbox-item">
+                                            <input type="checkbox" id="payment-<%= method.value %>" name="paymentMethods" value="<%= method.value %>" 
+                                                <%= settings.payment.paymentMethods.includes(method.value) ? 'checked' : '' %>>
+                                            <label for="payment-<%= method.value %>"><%= method.label %></label>
+                                        </div>
+                                        <% }); %>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Automatic Payouts</label>
+                                    <div class="toggle-switch">
+                                        <input type="checkbox" id="auto-payout" name="autoPayout" <%= settings.payment.autoPayout ? 'checked' : '' %>>
+                                        <label for="auto-payout">Enable Automatic Payouts</label>
+                                    </div>
+                                    <p class="help-text">Automatically process payouts to service providers when projects are completed.</p>
+                                </div>
+                                <div class="form-group">
+                                    <label for="payout-schedule">Payout Schedule</label>
+                                    <select id="payout-schedule" name="payoutSchedule">
+                                        <% settings.payment.schedules.forEach(schedule => { %>
+                                        <option value="<%= schedule.value %>" <%= schedule.value === settings.payment.payoutSchedule ? 'selected' : '' %>>
+                                            <%= schedule.label %>
+                                        </option>
+                                        <% }); %>
+                                    </select>
+                                </div>
+                                <div class="form-actions">
+                                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                                    <button type="reset" class="btn btn-secondary">Reset</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <% } %>
+        </main>
+    </div>
+
+    <script src="/js/dashboard.js"></script>
+</body>
+</html>

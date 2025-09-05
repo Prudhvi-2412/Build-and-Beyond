@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bid Management System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Poppins", sans-serif;
+    }
+    
+    body {
+      background-color: #f8f9fa;
+    }  
+    .container {
+      display: flex;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+      gap: 20px;
+    }
+    
+    .section {
+      flex: 1;
+      background-color: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+      padding: 20px;
+      height: fit-content;
+    }
+    
+    .header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .title {
+      color: #1a365d;
+      font-size: 24px;
+      font-weight: bold;
+    }
+    
+    .section-title {
+      color: #1a365d;
+      font-size: 20px;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #e1e8f0;
+    }
+    
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #e1e8f0;
+    }
+    
+    .bid-item {
+      padding: 15px;
+      margin-bottom: 15px;
+      border-radius: 8px;
+      background-color: #ffffff;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+    
+    .bid-item:hover {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      transform: translateY(-2px);
+    }
+    
+    .bid-item.active {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    
+    .bid-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+    
+    .bid-title {
+      font-weight: 600;
+      color: #2d3748;
+    }
+    
+    .bid-price {
+      font-weight: 600;
+      color: #f3b711;
+    }
+    
+    .bid-details {
+      font-size: 14px;
+      color: #4a5568;
+      margin-bottom: 5px;
+    }
+    
+    .bid-date {
+      font-size: 12px;
+      color: #718096;
+    }
+    
+    .company-bid {
+      padding: 15px;
+      margin-bottom: 15px;
+      border-radius: 8px;
+      background-color: #ffffff;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+    
+    .company-bid:hover {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    
+    .bid-company {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    
+    .company-logo {
+      width: 40px;
+      height: 40px;
+      background-color: #2f855a;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      margin-right: 10px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12);
+    }
+    
+    .rating {
+      display: flex;
+      color: #ecc94b;
+      font-size: 14px;
+      margin-top: 3px;
+    }
+    
+    .bid-actions {
+      display: flex;
+      margin-top: 15px;
+      gap: 10px;
+    }
+    
+    .btn {
+      padding: 8px 15px;
+      border-radius: 5px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .btn:hover {
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+      transform: translateY(-1px);
+    }
+    
+    .btn-accept {
+      background-color: #38a169;
+      color: white;
+    }
+    
+    .btn-accept:hover {
+      background-color: #2f855a;
+    }
+    
+    .btn-deny {
+      background-color: #e53e3e;
+      color: white;
+    }
+    
+    .btn-deny:hover {
+      background-color: #c53030;
+    }
+    
+    .btn-create {
+      background-color: #e9c46a;
+      color: white;
+    }
+    
+    .btn-create:hover {
+      background-color: #eb9c26;
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: #718096;
+      background-color: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+    
+    .no-bids {
+      text-align: center;
+      padding: 40px 20px;
+      color: #718096;
+      background-color: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+    
+    .no-bids-text {
+      font-size: 16px;
+      color: #4a5568;
+    }
+    
+    .hidden {
+      display: none;
+    }
+
+    .message-banner {
+      background-color: #ebf8ff;
+      border-left: 4px solid #3182ce;
+      padding: 10px 15px;
+      margin-bottom: 15px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+    }
+
+    .message-icon {
+      color: #3182ce;
+      font-size: 18px;
+      margin-right: 10px;
+    }
+
+    .message-content {
+      color: #2c5282;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <%- include('navbar_customer') %>
+  <div class="container">
+    <div class="section">
+      <div class="message-banner">
+        <div class="message-icon">ℹ️</div>
+        <div class="message-content">Bid management is only available for large-scale projects with a minimum value of ₹10,00,000.</div>
+      </div>
+      
+      <div class="section-header">
+        <h2 class="section-title">Your Bid Requests</h2>
+        <a href="/bidform.html"><button class="btn btn-create">Create New Bid</button></a>
+      </div>
+      
+      <div class="bid-list">
+        <% if (customerBids && customerBids.length > 0) { %>
+          <% customerBids.forEach(bid => { %>
+            <div class="bid-item" onclick="selectBid('<%= bid._id %>')">
+              <div class="bid-header">
+                <div class="bid-title"><%= bid.buildingType === 'residential' ? 'Residential Project' : bid.buildingType === 'commercial' ? 'Commercial Project' : bid.buildingType === 'industrial' ? 'Industrial Project' : bid.buildingType === 'mixedUse' ? 'Mixed-Use Project' : 'Other Project' %></div>
+                <div class="bid-price">₹<%= bid.estimatedBudget ? bid.estimatedBudget.toLocaleString('en-IN') : 'Budget not specified' %></div>
+              </div>
+              <div class="bid-details"><%= bid.projectAddress %></div>
+              <div class="bid-date">Posted: <%= new Date(bid.createdAt).toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' }) %></div>
+            </div>
+          <% }); %>
+        <% } else { %>
+          <div class="no-bids">
+            <p class="no-bids-text">You haven't created any bid requests yet.</p>
+          </div>
+        <% } %>
+      </div>
+    </div>
+    
+    <div class="section">
+      <h2 class="section-title">Company Bids</h2>
+      
+      <div id="empty-state" class="empty-state">
+        <p>Select a bid request to view company offers</p>
+      </div>
+      
+      <% if (customerBids && customerBids.length > 0) { %>
+        <% customerBids.forEach(bid => { %>
+          <div id="bids-<%= bid._id %>" class="bids-container hidden">
+            <% if (bid.companyBids && bid.companyBids.length > 0) { %>
+              <% bid.companyBids.forEach(companyBid => { %>
+                <div class="company-bid">
+                  <div class="bid-company">
+                    <div class="company-logo"><%= companyBid.companyName.substring(0, 2).toUpperCase() %></div>
+                    <div>
+                      <div class="company-name"><%= companyBid.companyName %></div>
+                      <div class="rating">★★★★☆ (4.8/5)</div>
+                    </div>
+                  </div>
+                  <div class="bid-header">
+                    <div class="bid-title"><%= bid.buildingType === 'residential' ? 'Residential Project Proposal' : bid.buildingType === 'commercial' ? 'Commercial Project Proposal' : bid.buildingType === 'industrial' ? 'Industrial Project Proposal' : bid.buildingType === 'mixedUse' ? 'Mixed-Use Project Proposal' : 'Project Proposal' %></div>
+                    <div class="bid-price">₹<%= companyBid.bidPrice.toLocaleString('en-IN') %></div>
+                  </div>
+                  <div class="bid-details"><%= bid.projectAddress %></div>
+                  <div class="bid-date">Bid received: <%= new Date(companyBid.bidDate).toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' }) %></div>
+                  <% if (!bid.winningBidId) { %>
+                    <div class="bid-actions">
+                      <button class="btn btn-accept" onclick="acceptBid('<%= bid._id %>', '<%= companyBid._id %>')">Accept Bid</button>
+                      <button class="btn btn-deny" onclick="declineBid('<%= bid._id %>', '<%= companyBid._id %>')">Decline</button>
+                    </div>
+                  <% } else if (bid.winningBidId.toString() === companyBid._id.toString()) { %>
+                    <div class="bid-actions">
+                      <button class="btn" style="background-color: #38a169; color: white;" disabled>Accepted</button>
+                    </div>
+                  <% } %>
+                </div>
+              <% }); %>
+            <% } else { %>
+              <div class="no-bids">
+                <p class="no-bids-text">No company bids received yet for this project.</p>
+              </div>
+            <% } %>
+          </div>
+        <% }); %>
+      <% } %>
+    </div>
+  </div>
+  <%- include('customer_footer') %>
+  <script>
+    function selectBid(bidId) {
+      // Remove active class from all bid items
+      const bidItems = document.querySelectorAll('.bid-item');
+      bidItems.forEach(item => {
+        item.classList.remove('active');
+      });
+      
+      // Add active class to clicked item
+      event.currentTarget.classList.add('active');
+      
+      // Hide all bid containers
+      const bidContainers = document.querySelectorAll('.bids-container');
+      bidContainers.forEach(container => {
+        container.classList.add('hidden');
+      });
+      
+      // Hide empty state
+      document.getElementById('empty-state').classList.add('hidden');
+      
+      // Show selected bid container
+      document.getElementById(`bids-${bidId}`).classList.remove('hidden');
+    }
+
+    function acceptBid(bidId, companyBidId) {
+      if (confirm('Are you sure you want to accept this bid? This action cannot be undone.')) {
+        fetch('/accept-bid', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ bidId, companyBidId }),
+          credentials: 'same-origin'
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            alert('Bid accepted successfully!');
+            window.location.reload();
+          } else {
+            alert('Error: ' + data.error);
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('An error occurred. Please try again.');
+        });
+      }
+    }
+
+    function declineBid(bidId, companyBidId) {
+      if (confirm('Are you sure you want to decline this bid? This action cannot be undone.')) {
+        fetch('/decline-bid', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ bidId, companyBidId }),
+          credentials: 'same-origin'
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            alert('Bid declined successfully!');
+            window.location.reload();
+          } else {
+            alert('Error: ' + data.error);
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('An error occurred. Please try again.');
+        });
+      }
+    }
+  </script>
+</body>
+</html>
