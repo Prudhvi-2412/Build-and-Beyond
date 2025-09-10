@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { getJobs, getJoinCompany, getSettings, getEditProfile, getDashboard, getWorkerById, deleteWorkerRequest,createWorkerRequest  } = require('../controllers/workerController');
+const { getJobs, getJoinCompany, getSettings, getEditProfile, getDashboard, getWorkerById, deleteWorkerRequest,createWorkerRequest,updateWorkerProfile  } = require('../controllers/workerController');
 const isAuthenticated = require('../middlewares/auth');
 const { upload } = require('../middlewares/upload');
 
@@ -12,5 +12,6 @@ router.get('/workerdashboard', isAuthenticated, getDashboard);
 router.get('/api/workers/:id', isAuthenticated, getWorkerById);
 router.delete('/api/worker-requests/:id', isAuthenticated, deleteWorkerRequest);
 router.post('/worker_request/:companyId',isAuthenticated,upload.single("resume"),createWorkerRequest);
+router.post('/worker/profile/update', isAuthenticated, upload.any(), updateWorkerProfile);
 
 module.exports = router;

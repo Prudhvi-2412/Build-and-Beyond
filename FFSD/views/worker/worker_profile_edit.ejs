@@ -421,20 +421,28 @@ document.getElementById('architectForm').addEventListener('submit', async functi
     formData.delete('specialties'); // Remove existing entries
     specialties.forEach(specialty => formData.append('specialties', specialty));
 
-    // Send data to server
-    const response = await fetch('/worker_profile_edit_submit', {
+    // Send data to a new, dedicated update endpoint
+    const response = await fetch('/worker/profile/update', { // It's good practice to have a clear API endpoint
       method: 'POST',
       body: formData
     });
-
-    const result = await response.json();
-
-    if (!response.ok) {
-      throw new Error(result.message || 'Failed to update profile');
+    
+    // Check if the response is JSON before trying to parse it
+    const contentType = response.headers.get("content-type");
+    if (contentType && contentType.indexOf("application/json") !== -1) {
+        const result = await response.json();
+        if (!response.ok) {
+            throw new Error(result.message || 'Failed to update profile');
+        }
+        alert(result.message);
+        window.location.href = result.redirect || '/workerdashboard';
+    } else {
+        // If the response is not JSON, it's likely an auth redirect to an HTML page
+        console.error("Received non-JSON response, likely an auth redirect.");
+        alert("Your session may have expired. Please log in again.");
+        window.location.href = '/signin_up'; // Redirect to login
     }
 
-    alert(result.message);
-    window.location.href = result.redirect || '/workerdashboard';
   } catch (error) {
     console.error('Error updating profile:', error);
     alert('Failed to update profile: ' + error.message);

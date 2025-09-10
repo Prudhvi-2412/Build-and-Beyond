@@ -1,27 +1,37 @@
+// middlewares/upload.js
+
 const multer = require('multer');
-const path = require('path');
-const fs = require('fs');
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
+const cloudinary = require('cloudinary').v2;
+const { CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET } = require('../config/constants');
 
-const uploadDir = path.join(__dirname, '../../Uploads');
-if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
+// Configure Cloudinary
+cloudinary.config({
+  cloud_name: CLOUDINARY_CLOUD_NAME,
+  api_key: CLOUDINARY_API_KEY,
+  api_secret: CLOUDIN_API_SECRET
+});
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, uploadDir),
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-    cb(null, uniqueSuffix + path.extname(file.originalname));
+// Configure Cloudinary storage for Multer
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: 'BuildAndBeyond', // Optional: folder name in Cloudinary
+    allowed_formats: ['jpg', 'jpeg', 'png', 'pdf']
   },
 });
 
 const upload = multer({
-  storage,
-  limits: { fileSize: 5 * 1024 * 1024 },
+  storage: storage,
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB file size limit
   fileFilter: (req, file, cb) => {
     const filetypes = /pdf|jpg|jpeg|png/;
-    const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
     const mimetype = filetypes.test(file.mimetype);
-    if (extname && mimetype) cb(null, true);
-    else cb(new Error('Only PDF, JPG, JPEG, and PNG files are allowed'));
+    if (mimetype) {
+      cb(null, true);
+    } else {
+      cb(new Error('Only PDF, JPG, JPEG, and PNG files are allowed'));
+    }
   },
 });
 
