@@ -194,4 +194,60 @@ const createWorkerRequest = async (req, res) => {
   }
 };
 
-module.exports = { getJobs, getJoinCompany, getSettings, getEditProfile, getDashboard, getWorkerById, deleteWorkerRequest,createWorkerRequest };
+const updateWorkerProfile = async (req, res) => {
+  try {
+    const workerId = req.user.user_id;
+    const { name, title, experience, about, specialties } = req.body;
+
+    const worker = await Worker.findById(workerId);
+    if (!worker) {
+      return res.status(404).json({ message: "Worker not found." });
+    }
+
+    // Update basic fields
+    worker.name = name || worker.name;
+    worker.professionalTitle = title || worker.professionalTitle;
+    worker.experience = experience || worker.experience;
+    worker.about = about || worker.about;
+    worker.specialties = Array.isArray(specialties) ? specialties : (specialties ? [specialties] : []);
+
+    // Handle profile image upload
+    const profileImageFile = req.files.find(file => file.fieldname === 'profileImage');
+    if (profileImageFile) {
+      worker.profileImage = profileImageFile.path;
+    }
+
+    // Handle dynamic project updates
+    const projects = [];
+    let i = 1;
+    while (req.body[`projectName-${i}`]) {
+        const projectImageFile = req.files.find(file => file.fieldname === `projectImage-${i}`);
+        projects.push({
+            name: req.body[`projectName-${i}`],
+            year: req.body[`projectYear-${i}`],
+            location: req.body[`projectLocation-${i}`],
+            description: req.body[`projectDescription-${i}`],
+            image: projectImageFile ? projectImageFile.path : worker.projects[i-1]?.image , // Retain existing image if no new upload
+        });
+        i++;
+    }
+    // Only update projects if new project data was submitted
+    if(projects.length > 0){
+        worker.projects = projects;
+    }
+
+
+    await worker.save();
+
+    res.status(200).json({
+      message: 'Profile updated successfully!',
+      redirect: '/workersettings' // Redirect back to the settings page
+    });
+
+  } catch (error) {
+    console.error('Error updating worker profile:', error);
+    res.status(500).json({ message: 'Server error while updating profile.' });
+  }
+};
+
+module.exports = { getJobs, getJoinCompany, getSettings, getEditProfile, getDashboard, getWorkerById, deleteWorkerRequest,createWorkerRequest , updateWorkerProfile};
