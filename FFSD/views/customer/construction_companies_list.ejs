@@ -3,208 +3,259 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Construction Companies</title>
+    <title>Build & Beyond - Top Construction Companies</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
+            font-family: "Inter", sans-serif;
+            scrollbar-width: none; 
         }
 
         body {
-            background-color: #f5f5f5;
-            color: #333;
+            background-color: #f8fafc;
+            color: #1e293b;
             line-height: 1.6;
+            scroll-behavior: smooth;
         }
 
         /* Page Title */
         .page-title {
             text-align: center;
-            padding-bottom: 2rem;
-            font-size: 2.2rem;
-            color: #1a3c64;
-            font-weight: 600;
+            padding: 60px 20px 40px;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #1e293b;
             position: relative;
-            margin-bottom: 1.5rem;
+            animation: fadeInUp 1.2s ease;
         }
 
-        .page-title::after {
-            content: '';
-            position: absolute;
-            bottom: 1.5rem;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80px;
+        .page-title .underline {
+            width: 120px;
             height: 4px;
-            background: #1a3c64;
-            border-radius: 2px;
+            background: linear-gradient(to right, #facc15, #1e293b);
+            margin: 15px auto 0;
+            animation: expandWidth 1s ease-in-out;
         }
 
-        /* Card Container */
-        .company-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 25px;
+        /* Sort Dropdown */
+        .sort-container {
+            max-width: 1280px;
+            margin: 0 auto 20px;
             padding: 0 20px;
-            max-width: 1200px;
+            text-align: right;
+        }
+
+        .sort-select {
+            padding: 10px 15px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #1e293b;
+            background: #fff;
+            border-radius: 8px;
+            outline: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .sort-select:hover {
+            /* background: #facc15; */
+            color: #1e293b;
+        }
+
+        .sort-select:focus {
+            box-shadow: 0 0 8px rgba(250, 204, 21, 0.3);
+        }
+
+        /* Company Container */
+        .company-container {
+            max-width: 1280px;
             margin: 0 auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 30px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+            padding: 40px 20px;
         }
 
         /* Company Card */
         .company-card {
             background: #fff;
             border-radius: 12px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-            overflow: hidden;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            padding: 25px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.4s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            animation: slideInUp 0.6s ease forwards;
+            animation-delay: calc(0.1s * var(--order));
+            opacity: 0;
             position: relative;
-            border-top: 5px solid #1a3c64;
+            overflow: hidden;
         }
 
         .company-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+            transform: translateY(-10px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
         }
 
-        .company-card:nth-child(2) {
-            border-top-color: #ff6b35;
+        .company-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 6px;
+            height: 0;
+            background: #facc15;
+            transition: height 0.4s ease;
         }
 
-        .company-card:nth-child(3) {
-            border-top-color: #48c774;
-        }
-
-        .company-card:nth-child(4) {
-            border-top-color: #1a3c64;
-        }
-
-        .company-card:nth-child(5) {
-            border-top-color: #ffc107;
+        .company-card:hover::before {
+            height: 100%;
         }
 
         .company-name {
-            font-size: 22px;
-            font-weight: 700;
-            color: #1a3c64;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e293b;
             margin-bottom: 15px;
-            text-align: center;
         }
 
         .company-stats {
             display: flex;
-            justify-content: space-between;
-            margin: 20px 0;
-            background: #f9f9f9;
+            justify-content: space-around;
+            margin: 15px 0;
+            background: #f8fafc;
             border-radius: 8px;
-            padding: 12px;
+            padding: 10px;
         }
 
         .stat {
-            text-align: center;
             flex: 1;
-        }
-
-        .stat:not(:last-child) {
-            border-right: 1px solid rgba(26,60,100,0.2);
+            text-align: center;
         }
 
         .stat-number {
-            font-size: 20px;
+            font-size: 1.2rem;
             font-weight: 700;
-            color: #1a3c64;
+            color: #1e293b;
             display: block;
         }
 
         .stat-label {
-            font-size: 12px;
-            color: #7f8c8d;
+            font-size: 0.8rem;
+            color: #64748b;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
 
         .company-details {
-            font-size: 15px;
-            color: #555;
-            line-height: 1.5;
-            margin-bottom: 20px;
+            font-size: 0.9rem;
+            color: #64748b;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            height: 70px;
+            overflow: hidden;
             text-align: justify;
         }
 
         .location {
             display: flex;
             align-items: center;
-            font-size: 14px;
-            color: #7f8c8d;
-            margin-bottom: 20px;
+            justify-content: center;
+            font-size: 0.9rem;
+            color: #64748b;
+            margin-bottom: 15px;
         }
 
         .location i {
-            color: #1a3c64;
+            color: #facc15;
             margin-right: 8px;
+            font-size: 1rem;
         }
 
         .buttons {
             display: flex;
             gap: 10px;
+            justify-content: center;
         }
 
         .view-details-btn, .book-now-btn {
             flex: 1;
-            padding: 12px 0;
-            border-radius: 8px;
+            max-width: 140px;
+            padding: 10px 0;
+            font-size: 0.9rem;
             font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
+            border-radius: 50px;
+            text-decoration: none;
             transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
             text-align: center;
             border: none;
-            text-decoration: none;
+            cursor: pointer;
         }
 
         .view-details-btn {
-            background: #1a3c64;
-            color: white;
+            background: #facc15;
+            color: #1e293b;
         }
 
         .view-details-btn:hover {
-            background: #123052;
+            background: #eab308;
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
         .book-now-btn {
-            background: #ff6b35;
-            color: white;
+            background: #facc15;
+            color: #1e293b;
         }
 
         .book-now-btn:hover {
-            background: #e55a2b;
+            background: #eab308;
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .view-details-btn::after, .book-now-btn::after {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 100%;
+            top: 0;
+            left: -100%;
+            background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .view-details-btn:hover::after, .book-now-btn:hover::after {
+            left: 100%;
         }
 
         /* Details Overlay */
         .details-overlay {
+            display: none;
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
+            background: rgba(0, 0, 0, 0.9);
             z-index: 1000;
+            align-items: center;
+            justify-content: center;
         }
 
         .details-overlay.active {
-            opacity: 1;
-            visibility: visible;
+            display: flex;
         }
 
         .details-content {
@@ -212,12 +263,14 @@
             border-radius: 12px;
             width: 90%;
             max-width: 700px;
-            max-height: 85vh;
+            max-height: 90vh;
             overflow-y: auto;
             padding: 30px;
             position: relative;
             transform: scale(0.9);
             transition: all 0.3s ease;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            scrollbar-width: thin;
         }
 
         .details-overlay.active .details-content {
@@ -226,35 +279,33 @@
 
         .close-details {
             position: absolute;
-            top: 15px;
-            right: 15px;
+            top: 20px;
+            right: 20px;
             background: none;
             border: none;
-            font-size: 22px;
+            font-size: 2rem;
             cursor: pointer;
-            color: #7f8c8d;
-            transition: color 0.3s ease;
+            color: #64748b;
+            transition: color 0.3s;
         }
 
         .close-details:hover {
-            color: #e55a2b;
+            color: #facc15;
         }
 
         .detail-company-name {
-            font-size: 26px;
+            font-size: 1.8rem;
             font-weight: 700;
-            color: #1a3c64;
-            margin-bottom: 5px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid rgba(26,60,100,0.2);
+            color: #1e293b;
+            margin-bottom: 10px;
             text-align: center;
         }
 
         .detail-company-subtitle {
-            font-size: 16px;
-            color: #7f8c8d;
+            font-size: 1rem;
+            color: #64748b;
             text-align: center;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
 
         .detail-section {
@@ -262,9 +313,9 @@
         }
 
         .detail-section-title {
-            font-size: 18px;
+            font-size: 1.25rem;
             font-weight: 600;
-            color: #1a3c64;
+            color: #1e293b;
             margin-bottom: 15px;
             position: relative;
             padding-bottom: 8px;
@@ -275,53 +326,57 @@
             position: absolute;
             bottom: 0;
             left: 0;
-            width: 40px;
-            height: 3px;
-            background: #1a3c64;
+            width: 60px;
+            height: 4px;
+            background: #facc15;
+            border-radius: 2px;
         }
 
         .detail-stats {
-            display: flex;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
             gap: 15px;
-            flex-wrap: wrap;
             margin-bottom: 20px;
         }
 
         .detail-stat {
-            flex: 1;
-            min-width: 120px;
-            background: #f9f9f9;
+            background: #f8fafc;
             padding: 15px;
             border-radius: 8px;
             text-align: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
         }
 
         .detail-stat-number {
-            font-size: 24px;
+            font-size: 1.5rem;
             font-weight: 700;
-            color: #1a3c64;
+            color: #1e293b;
         }
 
         .detail-stat-label {
-            font-size: 14px;
-            color: #7f8c8d;
+            font-size: 0.9rem;
+            color: #64748b;
             margin-top: 5px;
         }
 
         .detail-description {
-            color: #555;
+            font-size: 0.9rem;
+            color: #64748b;
             line-height: 1.6;
-            margin-bottom: 20px;
         }
 
         .detail-team-member {
             display: flex;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             padding: 15px;
-            background: #f9f9f9;
+            background: #f8fafc;
             border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .detail-team-member:hover {
+            background: #e2e8f0;
         }
 
         .member-image {
@@ -337,14 +392,15 @@
         }
 
         .member-name {
+            font-size: 1rem;
             font-weight: 600;
-            color: #1a3c64;
+            color: #1e293b;
             margin-bottom: 3px;
         }
 
         .member-position {
-            font-size: 14px;
-            color: #7f8c8d;
+            font-size: 0.85rem;
+            color: #64748b;
         }
 
         .detail-projects {
@@ -354,10 +410,15 @@
         .project-item {
             display: flex;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             padding: 15px;
-            background: #f9f9f9;
+            background: #f8fafc;
             border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .project-item:hover {
+            background: #e2e8f0;
         }
 
         .project-image {
@@ -373,50 +434,135 @@
         }
 
         .project-name {
+            font-size: 1rem;
             font-weight: 600;
-            color: #1a3c64;
+            color: #1e293b;
             margin-bottom: 5px;
         }
 
         .project-description {
-            font-size: 14px;
-            color: #555;
+            font-size: 0.85rem;
+            color: #64748b;
         }
 
         .detail-book-now {
-            background: #ff6b35;
-            color: white;
-            border: none;
-            padding: 15px;
-            border-radius: 8px;
+            background: #facc15;
+            color: #1e293b;
+            padding: 12px;
+            font-size: 1rem;
             font-weight: 600;
-            font-size: 16px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: block;
-            width: 100%;
-            margin-top: 30px;
-            text-align: center;
+            border-radius: 50px;
             text-decoration: none;
+            display: block;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
 
         .detail-book-now:hover {
-            background: #e55a2b;
+            background: #eab308;
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .detail-book-now::after {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 100%;
+            top: 0;
+            left: -100%;
+            background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .detail-book-now:hover::after {
+            left: 100%;
+        }
+
+        /* Back to Top Button */
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background-color: #facc15;
+            color: #1e293b;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            opacity: 0;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .back-to-top.visible {
+            opacity: 1;
+        }
+
+        .back-to-top:hover {
+            background-color: #eab308;
+            transform: translateY(-5px);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes expandWidth {
+            from {
+                width: 0;
+            }
+            to {
+                width: 120px;
+            }
         }
 
         /* Responsive Design */
+        @media (max-width: 1024px) {
+            .company-container {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            }
+        }
+
         @media (max-width: 768px) {
+            .page-title {
+                font-size: 2rem;
+            }
+
             .company-container {
                 grid-template-columns: 1fr;
-                padding: 0 15px;
+            }
+
+            .sort-container {
+                text-align: center;
             }
 
             .detail-stats {
-                flex-direction: column;
-            }
-
-            .detail-stat {
-                margin-bottom: 10px;
+                grid-template-columns: 1fr;
             }
 
             .project-item {
@@ -434,15 +580,23 @@
 <body>
     <%- include('navbar_customer') %>
     <!-- Page Title -->
-    <h1 class="page-title">Top Construction Companies</h1>
+    <h1 class="page-title">Top Construction Companies<div class="underline"></div></h1>
+
+    <!-- Sort Dropdown -->
+    <div class="sort-container">
+        <select class="sort-select" onchange="sortCompanies(this.value)">
+            <option value="name" class="sort-list">Sort by Name (A-Z)</option>
+            <option value="projects" class="sort-list">Sort by Projects Completed</option>
+            <option value="years" class="sort-list">Sort by Years in Business</option>
+        </select>
+    </div>
 
     <!-- Company Cards -->
     <div class="company-container">
         <% if (companies && companies.length > 0) { %>
             <% companies.forEach((company, index) => { %>
-                <div class="company-card" data-id="<%= company._id %>">
+                <div class="company-card" data-id="<%= company._id %>" data-name="<%= company.companyName.toLowerCase() %>" data-projects="<%= company.projectsCompleted || 0 %>" data-years="<%= company.yearsInBusiness || 0 %>" style="--order:<%= index + 1 %>">
                     <div class="company-name"><%= company.companyName %></div>
-                    
                     <div class="company-stats">
                         <div class="stat">
                             <span class="stat-number"><%= company.projectsCompleted || '0+' %></span>
@@ -453,23 +607,20 @@
                             <span class="stat-label">Years</span>
                         </div>
                     </div>
-                    
                     <div class="company-details">
                         <%= company.description || 'Leading construction company with expertise in residential and commercial buildings, infrastructure development, and engineering services.' %>
                     </div>
-                    
                     <div class="location">
                         <i class="fas fa-map-marker-alt"></i> <%= company.location && company.location.city ? company.location.city : 'Location not specified' %>, India
                     </div>
-                    
                     <div class="buttons">
                         <button class="view-details-btn" onclick="showDetails('<%= company._id %>')" data-id="<%= company._id %>">View Details</button>
                         <a href="/constructionform?companyId=<%= company._id %>" class="book-now-btn">Book Now</a>
                     </div>
                 </div>
-            <% }); %>
+            <% }) %>
         <% } else { %>
-            <div class="no-companies">
+            <div class="no-companies" style="text-align: center; font-size: 1.1rem; color: #64748b; padding: 40px;">
                 <p>No construction companies found.</p>
             </div>
         <% } %>
@@ -481,10 +632,8 @@
             <div class="details-overlay" id="<%= company._id %>-details">
                 <div class="details-content">
                     <button class="close-details" onclick="closeDetails('<%= company._id %>')"><i class="fas fa-times"></i></button>
-                    
                     <h2 class="detail-company-name"><%= company.companyName %></h2>
                     <p class="detail-company-subtitle"><%= company.contactPerson ? company.contactPerson + ' - ' : '' %>Leading Engineering & Construction</p>
-                    
                     <div class="detail-section">
                         <h3 class="detail-section-title">Company Overview</h3>
                         <div class="detail-stats">
@@ -501,12 +650,10 @@
                                 <div class="detail-stat-label">Employees</div>
                             </div>
                         </div>
-                        
                         <p class="detail-description">
                             <%= company.description || 'Company description not available.' %>
                         </p>
                     </div>
-                    
                     <% if (company.teamMembers && company.teamMembers.length > 0) { %>
                         <div class="detail-section">
                             <h3 class="detail-section-title">Key Team Members</h3>
@@ -518,10 +665,9 @@
                                         <p class="member-position"><%= member.position %></p>
                                     </div>
                                 </div>
-                            <% }); %>
+                            <% }) %>
                         </div>
                     <% } %>
-                    
                     <% if (company.completedProjects && company.completedProjects.length > 0) { %>
                         <div class="detail-section">
                             <h3 class="detail-section-title">Completed Projects</h3>
@@ -534,11 +680,10 @@
                                             <p class="project-description"><%= project.description %></p>
                                         </div>
                                     </div>
-                                <% }); %>
+                                <% }) %>
                             </div>
                         </div>
                     <% } %>
-                    
                     <% if (company.didYouKnow) { %>
                         <div class="detail-section">
                             <h3 class="detail-section-title">Did You Know?</h3>
@@ -547,14 +692,20 @@
                             </p>
                         </div>
                     <% } %>
-                    
                     <a href="/constructionform?companyId=<%= company._id %>" class="detail-book-now">Book Now</a>
                 </div>
             </div>
-        <% }); %>
+        <% }) %>
     <% } %>
+
+    <!-- Footer -->
     <%- include('customer_footer') %>
+
+    <!-- Back to Top Button -->
+    <a href="#" class="back-to-top"><i class="fas fa-arrow-up"></i></a>
+
     <script>
+        // Show company details modal
         function showDetails(companyId) {
             const overlay = document.getElementById(companyId + '-details');
             if (!overlay) {
@@ -564,7 +715,8 @@
             overlay.classList.add('active');
             document.body.style.overflow = 'hidden';
         }
-        
+
+        // Close company details modal
         function closeDetails(companyId) {
             const overlay = document.getElementById(companyId + '-details');
             if (!overlay) {
@@ -574,11 +726,47 @@
             overlay.classList.remove('active');
             document.body.style.overflow = 'auto';
         }
-        
-        // Close the modal when clicking outside the content area
-        document.addEventListener('DOMContentLoaded', function() {
-            const overlays = document.querySelectorAll('.details-overlay');
+
+        // Sort companies
+        function sortCompanies(criterion) {
+            const container = document.querySelector('.company-container');
+            const cards = Array.from(container.querySelectorAll('.company-card'));
             
+            cards.sort((a, b) => {
+                if (criterion === 'name') {
+                    return a.dataset.name.localeCompare(b.dataset.name);
+                } else if (criterion === 'projects') {
+                    return (parseInt(b.dataset.projects) || 0) - (parseInt(a.dataset.projects) || 0);
+                } else if (criterion === 'years') {
+                    return (parseInt(b.dataset.years) || 0) - (parseInt(a.dataset.years) || 0);
+                }
+                return 0;
+            });
+
+            // Reorder cards in DOM
+            container.innerHTML = '';
+            cards.forEach((card, index) => {
+                card.style.setProperty('--order', index + 1);
+                container.appendChild(card);
+            });
+        }
+
+        // Handle scroll for back-to-top button
+        function handleScroll() {
+            const backToTop = document.querySelector('.back-to-top');
+            if (window.scrollY > 400) {
+                backToTop.classList.add('visible');
+            } else {
+                backToTop.classList.remove('visible');
+            }
+        }
+
+        // Initialize scroll and modal events
+        document.addEventListener('DOMContentLoaded', function() {
+            handleScroll();
+            window.addEventListener('scroll', handleScroll);
+
+            const overlays = document.querySelectorAll('.details-overlay');
             overlays.forEach(overlay => {
                 overlay.addEventListener('click', function(e) {
                     if (e.target === overlay) {
@@ -587,8 +775,8 @@
                     }
                 });
             });
-            
-            // Close when ESC key is pressed
+
+            // Close modal on ESC key
             document.addEventListener('keydown', function(e) {
                 if (e.key === 'Escape') {
                     const activeOverlay = document.querySelector('.details-overlay.active');
@@ -598,6 +786,9 @@
                     }
                 }
             });
+
+            // Trigger initial sort by name
+            sortCompanies('name');
         });
     </script>
 </body>
