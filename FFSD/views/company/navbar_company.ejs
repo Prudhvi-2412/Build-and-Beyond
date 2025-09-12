@@ -1,39 +1,74 @@
 <style>
+    /* Ensure you have the Deep Dive color variables defined, for context:
+    :root {
+        --primary-accent: #2DD4BF;
+        --content-dark: #1F2937;
+        --border-dark: #374151;
+        --text-primary: #F9FAFB;
+        --text-secondary: #9CA3AF;
+    }
+    */
+
     .navbar {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 1rem 2rem;
-        background-color: white;
-        height: 60px;
-        color: #343a40;
+        padding: 0 2.5rem; /* Matched padding with the main container */
+        background-color: var(--content-dark); /* THEME CHANGE: Dark background */
+        height: 70px; /* Slightly taller for a more modern feel */
+        color: var(--text-primary); /* THEME CHANGE: Light text */
         position: sticky;
         top: 0; 
         width: 100%;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        /* ATTRACTIVE CHANGE: Replaced shadow with a subtle border for dark mode */
+        box-shadow: none; 
+        border-bottom: 1px solid var(--border-dark);
         z-index: 1000; 
     }
 
     .brand {
         font-size: 1.5rem;
-        font-weight: bold;
-        color: #343a40;
+        font-weight: 700; /* Bolder for more presence */
+        color: var(--text-primary); /* THEME CHANGE */
     }
     
     .nav-links {
         display: flex;
-        gap: 2rem;
+        gap: 2.5rem; /* Increased gap for better spacing */
     }
     
     .nav-links a {
-        color: #495057;
+        color: var(--text-secondary); /* THEME CHANGE: Secondary color for inactive links */
         text-decoration: none;
         font-size: 1rem;
+        font-weight: 500;
         transition: color 0.3s ease;
+        position: relative; /* Needed for the hover effect */
+        padding: 0.5rem 0; /* Adds vertical space for the underline */
+    }
+
+    /* ATTRACTIVE CHANGE: Underline animation on hover */
+    .nav-links a::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background-color: var(--primary-accent);
+        transform: scaleX(0);
+        transform-origin: center;
+        transition: transform 0.3s ease-out;
     }
     
-    .nav-links a:hover {
-        color: #212529;
+    .nav-links a:hover,
+    .nav-links a.active { /* You can add an 'active' class to the current page link */
+        color: var(--primary-accent); /* THEME CHANGE: Accent color on hover/active */
+    }
+
+    .nav-links a:hover::after,
+    .nav-links a.active::after {
+        transform: scaleX(1);
     }
     
     .nav_settings-container {
@@ -53,14 +88,16 @@
     }
     
     .nav_settings-btn:hover {
-        background-color: rgba(0, 0, 0, 0.05);
+        /* THEME CHANGE: Hover effect for dark mode */
+        background-color: rgba(255, 255, 255, 0.1); 
     }
     
     .nav_settings-icon {
         width: 32px;
         height: 32px;
         border-radius: 50%;
-        background-color: #e9ecef;
+        /* THEME CHANGE: Darker background for the icon container */
+        background-color: var(--border-dark); 
         display: flex;
         align-items: center;
         justify-content: center;
@@ -69,10 +106,10 @@
     .nav_settings-svg {
         width: 18px;
         height: 18px;
-        fill: #495057;
+        /* THEME CHANGE: Light fill color for the SVG */
+        fill: var(--text-secondary); 
     }
 </style>
-
 <nav class="navbar">
     <div class="brand">Build & Beyond</div>
     

@@ -1,5 +1,64 @@
+const mongoose = require('mongoose');
 const { Company, Bid, ConstructionProjectSchema, Worker, WorkerToCompany, CompanytoWorker } = require('../models');
 const { getTargetDate } = require('../utils/helpers');
+
+function calculateProgress(startDate, timelineString) {
+  try {
+    const totalMonths = parseInt(timelineString, 10);
+    if (isNaN(totalMonths) || totalMonths <= 0) {
+      return 0;
+    }
+
+    const start = new Date(startDate);
+    const now = new Date();
+    const end = new Date(start);
+    end.setMonth(end.getMonth() + totalMonths);
+
+    if (now >= end) return 100;
+    if (now <= start) return 0;
+
+    const totalDuration = end.getTime() - start.getTime();
+    const elapsedDuration = now.getTime() - start.getTime();
+    const progressPercentage = (elapsedDuration / totalDuration) * 100;
+    
+    return Math.floor(progressPercentage);
+
+  } catch (error) {
+    console.error("Error in calculateProgress:", error);
+    return 0;
+  }
+}
+
+// Add this function right below your calculateProgress function
+function calculateDaysRemaining(startDate, timelineString) {
+  try {
+    const totalMonths = parseInt(timelineString, 10);
+    if (isNaN(totalMonths) || totalMonths <= 0) {
+      return 0;
+    }
+
+    const start = new Date(startDate);
+    const now = new Date();
+    
+    const end = new Date(start);
+    end.setMonth(end.getMonth() + totalMonths);
+
+    // If the project is already finished, return 0 days remaining
+    if (now >= end) {
+      return 0;
+    }
+
+    // Calculate the difference in milliseconds and convert to days
+    const diffTime = end.getTime() - now.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+    
+    return diffDays;
+
+  } catch (error) {
+    console.error("Error in calculateDaysRemaining:", error);
+    return 0;
+  }
+}
 
 const getDashboard = async (req, res) => {
   try {
@@ -9,7 +68,7 @@ const getDashboard = async (req, res) => {
     const completedProjects = projects.filter(p => p.status === 'rejected').length;
     const revenue = projects.filter(p => p.status === 'rejected' && new Date(p.updatedAt).getMonth() === new Date().getMonth() && new Date(p.updatedAt).getFullYear() === new Date().getFullYear()).reduce((sum, p) => sum + (p.estimatedBudget || 0), 0);
 
-    res.render('company/company_dashboard', { bids, projects, activeProjects, completedProjects, revenue });
+    res.render('company/company_dashboard', { bids, projects, activeProjects, completedProjects, revenue, calculateProgress, calculateDaysRemaining});
   } catch (error) {
     console.error('Error rendering dashboard:', error);
     res.status(500).send('Server Error');
@@ -47,6 +106,99 @@ const getProjectRequests = async (req, res) => {
   } catch (error) {
     console.error('Error fetching projects:', error);
     res.status(500).json({ error: 'Failed to fetch projects' });
+  }
+}; 
+
+// Add this new function to your controllers file
+const updateProjectStatusController = async (req, res) => {
+  try {
+    const { projectId } = req.params; // Get projectId from the URL (e.g., "123")
+    const { status } = req.body; // Get status from the request body (e.g., "accepted")
+    const { user_id } = req.user; // Get the companyId from the logged-in user
+
+    // Find the project by its ID and the companyId to ensure a user can only update their own projects
+    const updatedProject = await ConstructionProjectSchema.findOneAndUpdate(
+      { _id: projectId, companyId: user_id },
+      { status: status }, // The fields to update
+      { new: true } // This option returns the updated document
+    );
+
+    if (!updatedProject) {
+      // If no project was found with that ID for that user, return a 404
+      return res.status(404).json({ error: 'Project not found or you do not have permission to update it.' });
+    }
+
+    // If the update was successful, send a success response
+    res.status(200).json({ message: 'Project status updated successfully', project: updatedProject });
+
+  } catch (error) {
+    console.error('Error updating project status:', error);
+    res.status(500).json({ error: 'Failed to update project status' });
+  }
+};
+
+// In controllers/companyController.js
+
+const handleBidActionController = async (req, res) => {
+  try {
+    const { bidId } = req.params;
+    const { status } = req.body;
+    const { user_id } = req.user;
+
+    const bid = await Bid.findById(bidId);
+
+    if (!bid) {
+      return res.status(404).json({ message: 'Bid not found.' });
+    }
+
+    if (status === 'accepted') {
+      // Create a new ConstructionProject, copying all relevant details
+      const newProject = new ConstructionProjectSchema({
+        // --- THIS IS THE CORRECTED PART ---
+        projectName: bid.projectName,
+        customerName: bid.customerName,
+        customerId: bid.customerId,
+        customerEmail: bid.customerEmail,     // <-- ADDED THIS
+        customerPhone: bid.customerPhone,     // <-- ADDED THIS
+        projectAddress: bid.projectAddress,
+        projectLocation: bid.projectLocation,
+        estimatedBudget: bid.estimatedBudget,
+        projectTimeline: bid.projectTimeline,
+        totalArea: bid.totalArea,
+        buildingType: bid.buildingType,
+        totalFloors: bid.totalFloors,
+        floors: bid.floors,
+        specialRequirements: bid.specialRequirements,
+        accessibilityNeeds: bid.accessibilityNeeds,
+        energyEfficiency: bid.energyEfficiency,
+        siteFiles: bid.siteFiles,
+        // --- End of corrected part ---
+
+        companyId: user_id,
+        status: 'accepted'
+      });
+
+      // Now, when you save, the validation will pass
+      await newProject.save();
+
+      bid.status = 'awarded';
+      await bid.save();
+      
+      return res.status(201).json({ message: 'Bid accepted and project created!', project: newProject });
+    }
+    
+    if (status === 'rejected') {
+      bid.status = 'closed';
+      await bid.save();
+      return res.status(200).json({ message: 'Bid has been rejected.' });
+    }
+
+    res.status(400).json({ message: 'Invalid status provided.' });
+
+  } catch (error) {
+    // This is where the validation error was being caught
+    console.error('Error handling bid action:', error);
+    res.status(500).json({ error: 'Server error while handling bid action.' });
   }
 };
 
@@ -133,4 +285,4 @@ const getBids = async (req, res) => {
 
 // Add other company controllers like revenue, etc., if needed
 
-module.exports = { getDashboard, getOngoingProjects, getProjectRequests, getHiring, getSettings, getBids , getCompanyRevenue };
+module.exports = { getDashboard, getOngoingProjects, getProjectRequests, updateProjectStatusController, handleBidActionController, getHiring, getSettings, getBids , getCompanyRevenue };

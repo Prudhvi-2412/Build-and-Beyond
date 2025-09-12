@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Build & Beyond - Construction Management System</title>
+    <title>Build & Beyond - Dashboard</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -11,246 +11,304 @@
       rel="stylesheet"
     />
     <style>
-        :root {
-            --primary-green: #4D7A70;
-            --secondary-green: #6A9E8E;
-            --light-green: #A3C5BB;
-            --dark-grey: #363636;
-            --medium-grey: #5A5A5A;
-            --light-grey: #E0E0E0;
-            --white: #FFFFFF;
-            --black: #000000;
-        }
-        .progress-bar {
-            width: calc(var(--progress) * 1%);
-        }
-        a:-webkit-any-link {
-            cursor: pointer;
-            text-decoration: none;
-        }
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-        }
+    :root {
+        /* --- "Deep Dive" Dark Theme Palette --- */
+        --primary-accent: #2DD4BF; /* Vibrant Teal */
+        --primary-accent-darker: #14B8A6;
+        --background-dark: #111827; /* Deep Charcoal Blue */
+        --content-dark: #1F2937; /* Lighter shade for cards */
+        --border-dark: #374151;
+        --text-primary: #F9FAFB; /* Off-white for readability */
+        --text-secondary: #9CA3AF; /* Light grey for secondary info */
+        --text-dark: #111827;
+        
+        /* Status Colors for Dark Mode */
+        --status-warning-bg: rgba(251, 191, 36, 0.1);
+        --status-warning-text: #FBBF24;
+        --status-danger-bg: rgba(239, 68, 68, 0.1);
+        --status-danger-text: #EF4444;
+        --status-success-bg: rgba(16, 185, 129, 0.1);
+        --status-success-text: #10B981;
+    }
 
-        body {
-            background-color: var(--white);
-            color: var(--black);
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
+    /* Progress bar animation (unchanged) */
+    @keyframes progress-animation {
+        0% { width: 0; }
+        100% { width: calc(var(--progress) * 1%); }
+    }
 
-        .main-container {
-            flex: 1;
-            padding: 2rem;
-            background-color: var(--light-grey);
-        }
+    a:-webkit-any-link {
+        cursor: pointer;
+        text-decoration: none;
+    }
 
-        .page-title {
-            margin-bottom: 1.5rem;
-            color: var(--primary-green);
-            font-size: 1.8rem;
-        }
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Poppins', sans-serif;
+    }
 
-        .stats-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
+    body {
+        background-color: var(--background-dark);
+        color: var(--text-primary);
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
 
-        .stat-card {
-            background-color: var(--white);
-            border-radius: 8px;
-            padding: 1.5rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
+    .main-container {
+        flex: 1;
+        padding: 2.5rem;
+        background-color: var(--background-dark);
+    }
 
-        .stat-card h3 {
-            font-size: 1rem;
-            color: var(--medium-grey);
-            margin-bottom: 0.5rem;
-        }
+    .page-title {
+        margin-bottom: 2rem;
+        color: var(--text-primary);
+        font-size: 2.2rem;
+        font-weight: 700;
+    }
 
-        .stat-card .stat-value {
-            font-size: 1.8rem;
-            font-weight: bold;
-            color: var(--primary-green);
-        }
+    .stats-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2.5rem;
+    }
 
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-            margin-top: 2rem;
-        }
+    .stat-card {
+        background-color: var(--content-dark);
+        border-radius: 12px;
+        padding: 1.5rem;
+        border: 1px solid var(--border-dark);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
 
-        .section-title {
-            color: var(--medium-grey);
-            font-size: 1.2rem;
-        }
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 0 25px rgba(45, 212, 191, 0.2);
+    }
 
-        .view-all {
-            color: var(--primary-green);
-            cursor: pointer;
-            font-weight: 500;
-        }
+    .stat-card h3 {
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+    }
 
-        .cards-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-        }
+    .stat-card .stat-value {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--primary-accent);
+    }
 
-        .bid-card {
-            background-color: var(--white);
-            border-radius: 8px;
-            padding: 1.5rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            border-top: 4px solid var(--secondary-green);
-        }
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        margin-top: 2.5rem;
+    }
 
-        .bid-card h3 {
-            margin-bottom: 0.8rem;
-            color: var(--dark-grey);
-        }
+    .section-title {
+        color: var(--text-primary);
+        font-size: 1.4rem;
+        font-weight: 600;
+    }
 
-        .bid-info {
-            margin-bottom: 1rem;
-        }
+    .view-all a {
+        color: var(--primary-accent);
+        cursor: pointer;
+        font-weight: 600;
+        transition: color 0.2s ease;
+    }
+    .view-all a:hover {
+        color: var(--text-primary);
+    }
 
-        .bid-info p {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 0.5rem;
-            font-size: 0.9rem;
-        }
+    .cards-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 1.5rem;
+    }
 
-        .bid-info span:first-child {
-            color: var(--medium-grey);
-        }
+    .bid-card {
+        background-color: var(--content-dark);
+        border-radius: 12px;
+        padding: 1.5rem;
+        border: 1px solid var(--border-dark);
+        border-top: 4px solid var(--primary-accent);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
 
-        .bid-info span:last-child {
-            font-weight: 500;
-        }
+    .bid-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 0 25px rgba(45, 212, 191, 0.15);
+    }
 
-        .bid-actions {
-            display: flex;
-            gap: 1rem;
-        }
+    .bid-card h3 {
+        margin-bottom: 1rem;
+        color: var(--text-primary);
+        font-size: 1.2rem;
+    }
 
-        .btn {
-            padding: 0.5rem 1rem;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: background-color 0.3s;
-        }
+    .bid-info {
+        margin-bottom: 1.5rem;
+    }
 
-        .btn-primary {
-            background-color: var(--primary-green);
-            color: var(--white);
-        }
+    .bid-info p {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.75rem;
+        font-size: 0.9rem;
+    }
 
-        .btn-primary:hover {
-            background-color: var(--secondary-green);
-        }
+    .bid-info span:first-child {
+        color: var(--text-secondary);
+    }
 
-        .btn-secondary {
-            background-color: var(--light-grey);
-            color: var(--medium-grey);
-        }
+    .bid-info span:last-child {
+        font-weight: 600;
+        color: var(--text-primary);
+    }
 
-        .btn-secondary:hover {
-            background-color: #D0D0D0;
-        }
+    .bid-actions {
+        display: flex;
+        gap: 0.75rem;
+        margin-top: auto;
+    }
 
-        .timeline-container {
-            background-color: var(--white);
-            border-radius: 8px;
-            padding: 1.5rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            margin-top: 2rem;
-        }
+    .btn {
+        padding: 0.6rem 1.2rem;
+        border: 1px solid transparent;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: all 0.2s ease-in-out;
+    }
 
-        .timeline-project {
-            display: flex;
-            margin-bottom: 1.5rem;
-            padding-bottom: 1.5rem;
-            border-bottom: 1px solid var(--light-grey);
-        }
+    .btn-primary {
+        background-color: var(--primary-accent);
+        color: var(--text-dark);
+    }
 
-        .timeline-project:last-child {
-            margin-bottom: 0;
-            padding-bottom: 0;
-            border-bottom: none;
-        }
+    .btn-primary:hover {
+        background-color: var(--primary-accent-darker);
+        box-shadow: 0 0 15px rgba(45, 212, 191, 0.4);
+        transform: translateY(-2px);
+    }
 
-        .project-info {
-            flex: 1;
-        }
+    .btn-secondary {
+        background-color: transparent;
+        color: var(--text-secondary);
+        border: 1px solid var(--border-dark);
+    }
 
-        .project-info h3 {
-            margin-bottom: 0.5rem;
-            color: var(--dark-grey);
-        }
+    .btn-secondary:hover {
+        background-color: var(--border-dark);
+        color: var(--text-primary);
+    }
 
-        .project-details {
-            display: flex;
-            margin-bottom: 1rem;
-            gap: 2rem;
-        }
+    .timeline-container {
+        background-color: var(--content-dark);
+        border-radius: 12px;
+        padding: 2rem;
+        margin-top: 2.5rem;
+        border: 1px solid var(--border-dark);
+    }
 
-        .project-details p {
-            font-size: 0.9rem;
-            color: var(--medium-grey);
-        }
+    .timeline-project {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid var(--border-dark);
+    }
 
-        .project-details span {
-            font-weight: 500;
-            color: var(--dark-grey);
-        }
+    .timeline-project:last-child {
+        border-bottom: none;
+    }
 
-        .progress-container {
-            background-color: var(--light-grey);
-            height: 8px;
-            border-radius: 4px;
-            margin-bottom: 0.5rem;
-        }
+    .project-info {
+        flex: 1;
+        min-width: 300px;
+    }
 
-        .progress-bar {
-            height: 100%;
-            border-radius: 4px;
-            background-color: var(--secondary-green);
-        }
+    .project-info h3 {
+        margin-bottom: 0.5rem;
+        color: var(--text-primary);
+        font-size: 1.1rem;
+    }
 
-        .progress-info {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.8rem;
-            color: var(--medium-grey);
-        }
+    .project-details {
+        display: flex;
+        margin-bottom: 1rem;
+        gap: 2rem;
+        flex-wrap: wrap;
+    }
 
-        .project-status {
-            align-self: flex-start;
-            background-color: #E5F4EF;
-            color: var(--primary-green);
-            padding: 0.3rem 0.8rem;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            font-weight: 500;
-        }
+    .project-details p {
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+    }
 
-        .status-delayed {
-            background-color: #FFF3E0;
-            color: #FF9800;
-        }
-    </style>
+    .project-details span {
+        font-weight: 600;
+        color: var(--text-primary);
+    }
+
+    .progress-container {
+        background-color: var(--background-dark);
+        height: 10px;
+        border-radius: 5px;
+        margin-bottom: 0.5rem;
+        overflow: hidden;
+    }
+
+    .progress-bar {
+        height: 100%;
+        border-radius: 5px;
+        background: linear-gradient(90deg, var(--primary-accent-darker), var(--primary-accent));
+        animation: progress-animation 1s ease-out forwards;
+    }
+
+    .progress-info {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.8rem;
+        color: var(--text-secondary);
+        font-weight: 500;
+    }
+
+    .project-status {
+        align-self: flex-start;
+        padding: 0.4rem 0.8rem;
+        border-radius: 6px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        margin-left: auto;
+        background-color: var(--status-success-bg);
+        color: var(--status-success-text);
+    }
+
+    .status-delayed {
+        background-color: var(--status-warning-bg);
+        color: var(--status-warning-text);
+    }
+
+    .status-at-risk {
+        background-color: var(--status-danger-bg);
+        color: var(--status-danger-text);
+    }
+</style>
 </head>
 <body>
     <%- include('navbar_company') %>
@@ -279,8 +337,8 @@
 
         <div class="cards-container">
             <% bids.forEach(bid => { %>
-                <div class="bid-card">
-                    <h3><%= bid.projectName %></h3>
+                <div class="bid-card" data-bid-details='<%- JSON.stringify(bid) %>'>
+                    <h3><%= bid.projectName || 'N/A' %></h3>
                     <div class="bid-info">
                         <p>
                             <span>Client:</span>
@@ -304,16 +362,15 @@
                         </p>
                     </div>
                     <div class="bid-actions">
-                        <button class="btn btn-primary">Review Details</button>
-                        <button class="btn btn-secondary">Decline</button>
+                        <button class="btn btn-primary" onclick="showBidReviewModal(this)">Review Details</button>
+                        <button class="btn btn-secondary" onclick="updateProjectStatus('<%= bid._id %>', 'rejected')">Decline</button>
                     </div>
                 </div>
             <% }) %>
         </div>
-
         <div class="section-header">
             <h2 class="section-title">New Projects</h2>
-            <div class="view-all"><a href="/project_requests">View All</div></a>
+            <div class="view-all"><a href="/project_requests">View All</a></div>
         </div>
 
         <div class="cards-container">
@@ -321,26 +378,11 @@
                 <div class="bid-card">
                     <h3><%= project.projectName %></h3>
                     <div class="bid-info">
-                        <p>
-                            <span>Client:</span>
-                            <span><%= project.customerName %></span>
-                        </p>
-                        <p>
-                            <span>Location:</span>
-                            <span><%= project.projectAddress %></span>
-                        </p>
-                        <p>
-                            <span>Budget:</span>
-                            <span>₹<%= project.estimatedBudget ? project.estimatedBudget.toLocaleString('en-IN') : 'TBD' %></span>
-                        </p>
-                        <p>
-                            <span>Timeline:</span>
-                            <span><%= project.projectTimeline ? project.projectTimeline + ' months' : 'TBD' %></span>
-                        </p>
-                        <p>
-                            <span>Due Date:</span>
-                            <span><%= new Date(project.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) %></span>
-                        </p>
+                        <p><span>Client:</span><span><%= project.customerName %></span></p>
+                        <p><span>Location:</span><span><%= project.projectAddress %></span></p>
+                        <p><span>Budget:</span><span>₹<%= project.estimatedBudget ? project.estimatedBudget.toLocaleString('en-IN') : 'TBD' %></span></p>
+                        <p><span>Timeline:</span><span><%= project.projectTimeline ? project.projectTimeline + ' months' : 'TBD' %></span></p>
+                        <p><span>Due Date:</span><span><%= new Date(project.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) %></span></p>
                     </div>
                     <div class="bid-actions">
                         <button class="btn btn-primary">Review Details</button>
@@ -382,14 +424,207 @@
     </div>
 
     <script>
-        // Note: This script is minimal as per request to avoid script-based dynamism
-        document.addEventListener('DOMContentLoaded', function() {
-            const userProfile = document.querySelector('.user-profile');
-            // Add any client-side interactivity if needed
-        });
         document.querySelectorAll('.progress-bar').forEach(bar => {
             bar.style.setProperty('--progress', bar.dataset.progress);
         });
     </script>
-</body>
+
+
+    <div id="bidReviewModal" class="bid-review-modal-backdrop hidden">
+        <div class="bid-review-modal-content">
+            <div class="bid-review-modal-header">
+                <h2 id="bidReviewProjectAddress" class="modal-title">Project Details</h2>
+                <button id="bidReviewModalCloseBtn" class="modal-close-btn">&times;</button>
+            </div>
+            <div class="bid-review-modal-body">
+                <div class="detail-section">
+                    <h3>Customer Information</h3>
+                    <div class="detail-grid">
+                        <p><strong>Client Name:</strong> <span id="bidReviewCustomerName"></span></p>
+                        <p><strong>Email:</strong> <span id="bidReviewCustomerEmail"></span></p>
+                        <p><strong>Phone:</strong> <span id="bidReviewCustomerPhone"></span></p>
+                    </div>
+                </div>
+
+                <div class="detail-section">
+                    <h3>Project Specifications</h3>
+                    <div class="detail-grid">
+                        <p><strong>Location Code:</strong> <span id="bidReviewProjectLocation"></span></p>
+                        <p><strong>Total Area (sq. ft):</strong> <span id="bidReviewTotalArea"></span></p>
+                        <p><strong>Building Type:</strong> <span id="bidReviewBuildingType"></span></p>
+                        <p><strong>Total Floors:</strong> <span id="bidReviewTotalFloors"></span></p>
+                        <p><strong>Est. Budget:</strong> <span id="bidReviewEstimatedBudget"></span></p>
+                        <p><strong>Est. Timeline:</strong> <span id="bidReviewProjectTimeline"></span></p>
+                    </div>
+                </div>
+                
+                <div class="detail-section">
+                    <h3>Additional Requirements</h3>
+                    <div class="detail-grid full">
+                        <p><strong>Special Requirements:</strong> <span id="bidReviewSpecialRequirements"></span></p>
+                        <p><strong>Accessibility Needs:</strong> <span id="bidReviewAccessibilityNeeds"></span></p>
+                        <p><strong>Energy Efficiency:</strong> <span id="bidReviewEnergyEfficiency"></span></p>
+                    </div>
+                </div>
+
+                <div class="detail-section">
+                    <h3>Attached Site Files</h3>
+                    <div id="bidReviewSiteFiles" class="site-files-list"></div>
+                </div>
+            </div>
+            <div class="bid-review-modal-footer">
+                <button id="modalRejectBtn" class="btn btn-secondary">Reject Bid</button>
+                <button id="modalAcceptBtn" class="btn btn-primary">Accept Bid</button>
+            </div>
+        </div>
+    </div>
+
+
+    <style>
+        .hidden { display: none !important; }
+
+        .bid-review-modal-backdrop {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(17, 24, 39, 0.8);
+            display: flex; justify-content: center; align-items: center;
+            z-index: 1000; opacity: 0; transition: opacity 0.3s ease;
+        }
+        .bid-review-modal-backdrop.visible { opacity: 1; }
+
+        .bid-review-modal-content {
+            background-color: var(--content-dark); border: 1px solid var(--border-dark);
+            border-radius: 12px; width: 90%; max-width: 800px; max-height: 90vh;
+            display: flex; flex-direction: column;
+            transform: scale(0.95); transition: transform 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        .bid-review-modal-backdrop.visible .bid-review-modal-content { transform: scale(1); }
+
+        .bid-review-modal-header {
+            background-color: var(--background-dark); padding: 1rem 1.5rem;
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid var(--border-dark);
+        }
+        .modal-title { font-size: 1.2rem; color: var(--text-primary); }
+        .modal-close-btn {
+            background: none; border: none; color: var(--text-secondary);
+            font-size: 2rem; line-height: 1; cursor: pointer; transition: color 0.2s;
+        }
+        .modal-close-btn:hover { color: var(--text-primary); }
+
+        .bid-review-modal-body { padding: 1.5rem; overflow-y: auto; }
+        .detail-section { margin-bottom: 2rem; }
+        .detail-section:last-child { margin-bottom: 0; }
+        .detail-section h3 {
+            color: var(--primary-accent); font-size: 1rem; font-weight: 600;
+            padding-bottom: 0.5rem; margin-bottom: 1rem; border-bottom: 1px solid var(--border-dark);
+        }
+        .detail-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; }
+        .detail-grid.full { grid-template-columns: 1fr; }
+        .detail-grid p { color: var(--text-primary); }
+        .detail-grid strong { color: var(--text-secondary); font-weight: 500; margin-right: 0.5rem; }
+
+        .site-files-list a { display: block; color: var(--primary-accent); text-decoration: none; margin-bottom: 0.5rem; }
+        .site-files-list a:hover { text-decoration: underline; }
+
+        .bid-review-modal-footer {
+            padding: 1rem 1.5rem; display: flex; justify-content: flex-end; gap: 1rem;
+            border-top: 1px solid var(--border-dark); background-color: var(--background-dark);
+        }
+    </style>
+
+
+    <script>
+        const bidReviewModal = document.getElementById('bidReviewModal');
+        const bidReviewModalCloseBtn = document.getElementById('bidReviewModalCloseBtn');
+        const modalAcceptBtn = document.getElementById('modalAcceptBtn');
+        const modalRejectBtn = document.getElementById('modalRejectBtn');
+
+        function showBidReviewModal(buttonElement) {
+            const card = buttonElement.closest('.bid-card');
+            const bidData = JSON.parse(card.dataset.bidDetails);
+
+            // Populate Modal Text
+            document.getElementById('bidReviewProjectAddress').textContent = bidData.projectAddress || 'Project Details';
+            document.getElementById('bidReviewCustomerName').textContent = bidData.customerName || 'N/A';
+            document.getElementById('bidReviewCustomerEmail').textContent = bidData.customerEmail || 'N/A';
+            document.getElementById('bidReviewCustomerPhone').textContent = bidData.customerPhone || 'N/A';
+            document.getElementById('bidReviewProjectLocation').textContent = bidData.projectLocation || 'N/A';
+            document.getElementById('bidReviewTotalArea').textContent = bidData.totalArea || 'N/A';
+            document.getElementById('bidReviewBuildingType').textContent = bidData.buildingType || 'N/A';
+            document.getElementById('bidReviewTotalFloors').textContent = bidData.totalFloors || 'N/A';
+            document.getElementById('bidReviewEstimatedBudget').textContent = bidData.estimatedBudget ? `₹${bidData.estimatedBudget.toLocaleString('en-IN')}` : 'N/A';
+            document.getElementById('bidReviewProjectTimeline').textContent = bidData.projectTimeline ? `${bidData.projectTimeline} months` : 'N/A';
+            document.getElementById('bidReviewSpecialRequirements').textContent = bidData.specialRequirements || 'None';
+            document.getElementById('bidReviewAccessibilityNeeds').textContent = bidData.accessibilityNeeds || 'None';
+            document.getElementById('bidReviewEnergyEfficiency').textContent = bidData.energyEfficiency || 'Standard';
+
+            // Populate Site Files
+            const filesContainer = document.getElementById('bidReviewSiteFiles');
+            filesContainer.innerHTML = ''; // Clear previous files
+            if (bidData.siteFiles && bidData.siteFiles.length > 0) {
+                bidData.siteFiles.forEach(fileUrl => {
+                    const link = document.createElement('a');
+                    link.href = fileUrl;
+                    link.textContent = fileUrl.split('/').pop();
+                    link.target = '_blank';
+                    filesContainer.appendChild(link);
+                });
+            } else {
+                filesContainer.textContent = 'No files attached.';
+            }
+
+            // Set up modal buttons to have the correct ID
+            modalAcceptBtn.onclick = () => updateProjectStatus(bidData._id, 'accepted');
+            modalRejectBtn.onclick = () => updateProjectStatus(bidData._id, 'rejected');
+
+            // Show the modal
+            bidReviewModal.classList.remove('hidden');
+            setTimeout(() => bidReviewModal.classList.add('visible'), 10);
+        }
+
+        function hideBidReviewModal() {
+            bidReviewModal.classList.remove('visible');
+            setTimeout(() => bidReviewModal.classList.add('hidden'), 300);
+        }
+
+        // Event Listeners to close the modal
+        bidReviewModalCloseBtn.addEventListener('click', hideBidReviewModal);
+        bidReviewModal.addEventListener('click', (event) => {
+            if (event.target === bidReviewModal) {
+                hideBidReviewModal();
+            }
+        });
+
+        // The updateProjectStatus function we debugged earlier
+        async function updateProjectStatus(bidId, status) {
+        // THIS IS THE ONLY LINE TO CHANGE
+        const apiRoute = `/api/bids/${bidId}/status`; // Change "projects" to "bids"
+
+        console.log(`Attempting to update bid ${bidId} to status: ${status} via ${apiRoute}`);
+        if (!bidId) {
+            alert('Error: Bid ID is missing.');
+            return;
+        }
+        try {
+            const response = await fetch(apiRoute, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status })
+            });
+            if (response.ok) {
+                alert(`Bid status updated to ${status} successfully!`);
+                location.reload();
+            } else {
+                const errorData = await response.json();
+                throw new Error(errorData.message || `Request failed with status ${response.status}`);
+            }
+        } catch (error) {
+            console.error('Error updating bid status:', error);
+            alert(`Failed to update bid status. See console for details.`);
+        }
+    }
+    </script>
+    
+    </body>
 </html>

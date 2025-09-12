@@ -334,13 +334,18 @@
                 try {
                     const formData = new FormData(form);
                     // Log form data for debugging
-                    for (let [key, value] of formData.entries()) {
-                        console.log(`${key}:`, value);
-                    }
+                    // for (let [key, value] of formData.entries()) {
+                    //    console.log(`${key}:`, value);
+                    //} 
+                    console.log(formData)
                     
                     const response = await fetch('/bidForm_Submit', {
                         method: 'POST',
-                        body: formData
+                        body: JSON.stringify(FormData),
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+
                     });
                     
                     if (response.redirected) {
