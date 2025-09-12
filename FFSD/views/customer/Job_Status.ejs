@@ -6,138 +6,213 @@
     <title>Design Application Tracker</title>
       <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         *{
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: "Poppins", sans-serif;
+            font-family: "Inter", sans-serif;
+            scrollbar-width: none; 
         }
+
+        body {
+            background-color: #f8fafc;
+            color: #1e293b;
+            line-height: 1.6;
+            scroll-behavior: smooth;
+        }
+
         .container {
-            max-width: 800px;
+            max-width: 1280px;
             margin: 0 auto;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            background-color: white;
+            padding: 40px 20px;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
         }
+
         h2 {
-            color: #333;
+            color: #1e293b;
             padding-left: 10px;
             margin-top: 30px;
+            font-weight: 700;
         }
+
         .architect-heading {
             border-left: 4px solid #00c4b4;
         }
+
         .interior-heading {
             border-left: 4px solid #ff6200;
         }
+
         .company-heading {
             border-left: 4px solid #8e44ad;
         }
-        .application {
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 15px;
-            position: relative;
-            transition: border-color 0.3s ease, background-color 0.3s ease;
-            cursor: pointer;
-        }
-        .architect-app {
-            border-left: 4px solid #00c4b4;
-        }
-        .architect-app:hover {
-            border-color: #00c4b4;
-        }
-        .interior-app {
-            border-left: 4px solid #ff6200;
-        }
-        .interior-app:hover {
-            border-color: #ff6200;
-        }
-        .company-app {
-            border-left: 4px solid #8e44ad;
-        }
-        .company-app:hover {
-            border-color: #8e44ad;
-        }
-        .application.selected {
-            background-color: #e6f0fa;
-            border-color: #005b96;
-        }
-        .application p {
-            margin: 5px 0;
-            color: #555;
-        }
-        .status {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            padding: 5px 10px;
-            border-radius: 15px;
-            font-size: 12px;
-            font-weight: bold;
-        }
-        .architect-status {
-            background-color: #e0f7fa;
-            color: #00838f;
-            border: 1px solid #00838f;
-        }
-        .interior-status {
-            background-color: #fff3e0;
-            color: #ff6200;
-            border: 1px solid #ff6200;
-        }
-        .company-status {
-            background-color: #f5eef8;
-            color: #8e44ad;
-            border: 1px solid #8e44ad;
-        }
-        .section-title {
-            color: #005b96;
-            font-weight: bold;
-            margin-top: 20px;
-        }
+
         .tab-container {
             display: flex;
             margin-bottom: 20px;
-            border-bottom: 1px solid #ddd;
+            border-bottom: 2px solid #e2e8f0;
         }
+
         .tab {
             padding: 10px 20px;
             cursor: pointer;
             border-bottom: 3px solid transparent;
             transition: all 0.3s ease;
+            font-weight: 500;
+            color: #64748b;
         }
+
         .tab:hover {
-            background-color: #f5f5f5;
+            color: #1e293b;
         }
+
         .tab.active {
-            border-bottom: 3px solid #005b96;
-            font-weight: bold;
+            border-bottom: 3px solid #facc15;
+            font-weight: 600;
+            color: #1e293b;
         }
+
+        .application {
+            background: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .application:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .application::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 6px;
+            height: 0;
+            transition: height 0.4s ease;
+        }
+
+        .application:hover::before {
+            height: 100%;
+        }
+
+        .architect-app::before {
+            background: #00c4b4;
+        }
+
+        .interior-app::before {
+            background: #ff6200;
+        }
+
+        .company-app::before {
+            background: #8e44ad;
+        }
+
+        .status {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 5px 12px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .architect-status {
+            background-color: #e0f7fa;
+            color: #00838f;
+            border: 1px solid #00838f;
+        }
+
+        .interior-status {
+            background-color: #fff3e0;
+            color: #ff6200;
+            border: 1px solid #ff6200;
+        }
+
+        .company-status {
+            background-color: #f5eef8;
+            color: #8e44ad;
+            border: 1px solid #8e44ad;
+        }
+
+        .project-name {
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            position: relative;
+            padding-bottom: 8px;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 3px;
+            background: #facc15;
+            border-radius: 2px;
+        }
+
+        p {
+            margin: 5px 0;
+            color: #64748b;
+        }
+
+        .no-applications {
+            text-align: center;
+            padding: 20px;
+            color: #777;
+        }
+
+        .date-info {
+            font-size: 12px;
+            color: #777;
+            margin-top: 5px;
+        }
+        
         .content-section {
             display: none;
         }
         .content-section.active {
             display: block;
         }
-        .no-applications {
-            text-align: center;
-            padding: 20px;
-            color: #777;
+        
+        .company-app-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
         }
-        .project-name {
-            font-weight: bold;
-            color: #005b96;
-            margin-right: 10px;
+
+        .application.company-app {
+            margin-bottom: 0;
         }
-        .date-info {
-            font-size: 12px;
-            color: #777;
-            margin-top: 5px;
+
+        @media (max-width: 768px) {
+            .company-app-container {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -150,7 +225,7 @@
             <div class="tab" data-target="company-section">Construction Company Applications</div>
         </div>
         
-        <!-- Architect Applications Section -->
+        
         <div id="architect-section" class="content-section active">
             <h2 class="architect-heading">Architects You Requested to Join</h2>
             <p>Track the status of your applications to join architects</p>
@@ -171,7 +246,7 @@
                         <p><strong>Name:</strong> <%= app.customerDetails.fullName %></p>
                         <p><strong>Email:</strong> <%= app.customerDetails.email %></p>
                         <p><strong>Contact:</strong> <%= app.customerDetails.contactNumber %></p>
-                        
+                     
                         <div class="section-title">Customer Address</div>
                         <p><strong>Street:</strong> <%= app.customerAddress.streetAddress %></p>
                         <p><strong>City:</strong> <%= app.customerAddress.city %></p>
@@ -216,7 +291,6 @@
             <% } %>
         </div>
         
-        <!-- Interior Designer Applications Section -->
         <div id="interior-section" class="content-section">
             <h2 class="interior-heading">Interior Designers You Requested to Join</h2>
             <p>Track the status of your applications to join interior designers</p>
@@ -245,53 +319,54 @@
             <% } %>
         </div>
         
-        <!-- Construction Company Applications Section -->
         <div id="company-section" class="content-section">
             <h2 class="company-heading">Construction Companies You Requested to Join</h2>
             <p>Track the status of your applications to join construction companies</p>
 
             <% if (companyApplications && companyApplications.length > 0) { %>
-                <% companyApplications.forEach(function(app) { %>
-                    <div class="application company-app">
-                        <div class="status company-status"><%= app.status %></div>
-                        <h3>
-                            <span class="project-name"><%= app.projectName %></span>
-                            <% if (app.company && app.company.name) { %>
-                                with <span><%= app.company.name %></span>
+                <div class="company-app-container">
+                    <% companyApplications.forEach(function(app) { %>
+                        <div class="application company-app">
+                            <div class="status company-status"><%= app.status %></div>
+                            <h3>
+                                <span class="project-name"><%= app.projectName %></span>
+                                <% if (app.company && app.company.name) { %>
+                                    with <span><%= app.company.name %></span>
+                                <% } %>
+                            </h3>
+                            <div class="date-info">Submitted: <%= new Date(app.createdAt).toLocaleDateString() %></div>
+                            
+                            <div class="section-title">Customer Information</div>
+                            <p><strong>Name:</strong> <%= app.customerName %></p>
+                            <p><strong>Email:</strong> <%= app.customerEmail %></p>
+                            <p><strong>Phone:</strong> <%= app.customerPhone %></p>
+                            
+                            <div class="section-title">Project Details</div>
+                            <p><strong>Address:</strong> <%= app.projectAddress %></p>
+                            <p><strong>Location Pincode:</strong> <%= app.projectLocation %></p>
+                            <p><strong>Total Area:</strong> <%= app.totalArea %> sq.meters</p>
+                            <p><strong>Building Type:</strong> <%= app.buildingType %></p>
+                            <% if (app.estimatedBudget) { %>
+                                <p><strong>Estimated Budget:</strong> $<%= app.estimatedBudget %></p>
                             <% } %>
-                        </h3>
-                        <div class="date-info">Submitted: <%= new Date(app.createdAt).toLocaleDateString() %></div>
-                        
-                        <div class="section-title">Customer Information</div>
-                        <p><strong>Name:</strong> <%= app.customerName %></p>
-                        <p><strong>Email:</strong> <%= app.customerEmail %></p>
-                        <p><strong>Phone:</strong> <%= app.customerPhone %></p>
-                        
-                        <div class="section-title">Project Details</div>
-                        <p><strong>Address:</strong> <%= app.projectAddress %></p>
-                        <p><strong>Location Pincode:</strong> <%= app.projectLocation %></p>
-                        <p><strong>Total Area:</strong> <%= app.totalArea %> sq.meters</p>
-                        <p><strong>Building Type:</strong> <%= app.buildingType %></p>
-                        <% if (app.estimatedBudget) { %>
-                            <p><strong>Estimated Budget:</strong> $<%= app.estimatedBudget %></p>
-                        <% } %>
-                        <% if (app.projectTimeline) { %>
-                            <p><strong>Project Timeline:</strong> <%= app.projectTimeline %> months</p>
-                        <% } %>
-                        
-                        <div class="section-title">Building Details</div>
-                        <p><strong>Total Floors:</strong> <%= app.totalFloors %></p>
-                        
-                        <div class="section-title">Additional Requirements</div>
-                        <p><strong>Special Requirements:</strong> <%= app.specialRequirements || 'None specified' %></p>
-                        <p><strong>Accessibility Needs:</strong> <%= app.accessibilityNeeds || 'None specified' %></p>
-                        <p><strong>Energy Efficiency:</strong> <%= app.energyEfficiency || 'Standard' %></p>
-                        
-                        <% if (app.siteFiles && app.siteFiles.length > 0) { %>
-                            <p><strong>Attached Files:</strong> <%= app.siteFiles.length %> file(s) uploaded</p>
-                        <% } %>
-                    </div>
-                <% }); %>
+                            <% if (app.projectTimeline) { %>
+                                <p><strong>Project Timeline:</strong> <%= app.projectTimeline %> months</p>
+                            <% } %>
+                            
+                            <div class="section-title">Building Details</div>
+                            <p><strong>Total Floors:</strong> <%= app.totalFloors %></p>
+                            
+                            <div class="section-title">Additional Requirements</div>
+                            <p><strong>Special Requirements:</strong> <%= app.specialRequirements || 'None specified' %></p>
+                            <p><strong>Accessibility Needs:</strong> <%= app.accessibilityNeeds || 'None specified' %></p>
+                            <p><strong>Energy Efficiency:</strong> <%= app.energyEfficiency || 'Standard' %></p>
+                            
+                            <% if (app.siteFiles && app.siteFiles.length > 0) { %>
+                                <p><strong>Attached Files:</strong> <%= app.siteFiles.length %> file(s) uploaded</p>
+                            <% } %>
+                        </div>
+                    <% }); %>
+                </div>
             <% } else { %>
                 <div class="no-applications">
                     <p>You haven't submitted any construction company applications yet.</p>
@@ -316,17 +391,6 @@
                     tab.classList.add('active');
                     const targetId = tab.getAttribute('data-target');
                     document.getElementById(targetId).classList.add('active');
-                });
-            });
-            
-            // Add click event listener to toggle the 'selected' class on applications
-            const applications = document.querySelectorAll('.application');
-            applications.forEach(app => {
-                app.addEventListener('click', () => {
-                    // Remove 'selected' class from all applications
-                    applications.forEach(a => a.classList.remove('selected'));
-                    // Add 'selected' class to the clicked application
-                    app.classList.add('selected');
                 });
             });
         });
