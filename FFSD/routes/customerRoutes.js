@@ -1,25 +1,26 @@
 const express = require('express');
 const router = express.Router();
-const { 
-  getDashboard, 
-  postConstructionForm, 
-  getJobRequestStatus, 
-  getConstructionCompaniesList, 
-  getArchitects, 
-  getArchitectForm, 
-  getOngoingProjects, 
-  getDesignIdeas, 
-  getInteriorDesignForm, 
-  getInteriorDesigners, 
-  getConstructionForm, 
-  getBidForm, 
-  getSettings, 
+const {
+  submitBidForm,
+  getDashboard,
+  postConstructionForm,
+  getJobRequestStatus,
+  getConstructionCompaniesList,
+  getArchitects,
+  getArchitectForm,
+  getOngoingProjects,
+  getDesignIdeas,
+  getInteriorDesignForm,
+  getInteriorDesigners,
+  getConstructionForm,
+  getBidForm,
+  getSettings,
   getBidSpace,
   // IMPORT NEW FAVORITES FUNCTIONS
   getFavorites,
   saveFavoriteDesign,
-  removeFavoriteDesign
-} = require('../controllers/customerController');
+  removeFavoriteDesign,
+} = require("../controllers/customerController");
 const auth = require('../middlewares/auth'); // Import authentication middleware
 
 // Public routes (no authentication required)
@@ -28,7 +29,16 @@ router.get('/customerdashboard', getDashboard);
 router.get('/architect', getArchitects);
 router.get('/architect_form', getArchitectForm);
 router.get('/design_ideas', getDesignIdeas);
-router.get('/constructionform', getConstructionForm);
+router.post("/constructionform", auth, postConstructionForm);
+router.post(
+  "/bidForm_Submit",
+  auth,
+  upload.fields([
+    { name: "siteFiles", maxCount: 10 },
+    { name: "floorImages", maxCount: 100 },
+  ]),
+  submitBidForm
+);
 router.get('/bidform', getBidForm);
 
 // Protected routes (require authentication)
@@ -41,10 +51,8 @@ router.get('/interior_designer', auth, getInteriorDesigners);
 router.get('/customersettings', auth, getSettings);
 router.get('/bidspace', auth, getBidSpace);
 
-// ====================================================================
+
 // FAVORITES API ROUTES (Same paths, but linked to new array logic)
-// NOTE: The ID in DELETE is now the designId (e.g., LivingRoom-1)
-// ====================================================================
 router.get('/api/customer/favorites', auth, getFavorites);
 router.post('/api/customer/favorites', auth, saveFavoriteDesign);
 router.delete('/api/customer/favorites/:id', auth, removeFavoriteDesign);

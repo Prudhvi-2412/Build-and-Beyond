@@ -86,6 +86,104 @@ const getConstructionForm = (req, res) => res.render('customer/construction_form
 
 const getBidForm = (req, res) => res.render('customer/bid_form');
 
+const submitBidForm = async (req, res) => {
+  // Files are available in req.files due to multer middleware
+  const siteFiles = req.files.siteFiles || [];
+  const floorImages = req.files.floorImages || [];
+
+  // Map file arrays to their paths for saving in the database
+  const siteFilepaths = siteFiles.map((file) => file.path);
+  // Floor images will be matched to their respective floor later
+
+  const {
+    projectName,
+    customerName,
+    customerEmail,
+    customerPhone,
+    projectAddress,
+    projectLocation, // Corresponds to projectLocation Pincode in the form
+    totalArea,
+    buildingType,
+    estimatedBudget,
+    projectTimeline,
+    totalFloors,
+    specialRequirements,
+    accessibilityNeeds,
+    energyEfficiency,
+    floors, // This will be an array of objects if names are correct (floors[i][prop])
+  } = req.body;
+
+  try {
+    if (!req.user || !req.user.user_id) {
+      // Handle case where auth failed but form submitted
+      return res
+        .status(401)
+        .send("Authentication required to submit a bid request.");
+    }
+
+    let parsedFloors = floors || [];
+
+    // When using 'floors[i][prop]' naming convention with Multer,
+    // the 'floors' variable in req.body might be an array-like object or a regular array.
+    // We need to ensure it's properly structured, and map image files to the correct floor.
+    if (!Array.isArray(parsedFloors)) {
+      // Flatten the array-like structure into a clean array
+      parsedFloors = Object.values(parsedFloors);
+    }
+
+    // Map floor images to the corresponding floor based on their order of appearance
+    const finalFloors = parsedFloors.map((floor, index) => {
+      return {
+        ...floor,
+        floorArea: Number(floor.floorArea), // Ensure numbers are stored as Number
+        floorNumber: Number(floor.floorNumber),
+        // Map the image path, assuming floorImages array maintains the order of floor submissions
+        floorImagePath: floorImages[index] ? floorImages[index].path : null,
+      };
+    });
+
+    // Create new Bid document
+    const newBid = new Bid({
+      projectName,
+      customerId: req.user.user_id, // Get customer ID from authenticated user
+      customerName,
+      customerEmail,
+      customerPhone,
+      projectAddress,
+      projectLocation, // Using the Pincode field for projectLocation
+      totalArea: Number(totalArea),
+      buildingType,
+      estimatedBudget: Number(estimatedBudget) || 0,
+      projectTimeline: Number(projectTimeline) || 0,
+      totalFloors: Number(totalFloors),
+      floors: finalFloors,
+      specialRequirements,
+      accessibilityNeeds,
+      energyEfficiency,
+      siteFiles: siteFilepaths, // Save the paths of the site files
+      status: "open", // Default status as per the model
+      companyBids: [], // Start with an empty array of company bids
+    });
+
+    await newBid.save();
+
+    // // Redirect to a success page or the job status page
+    // req.flash(
+    //   "success",
+    //   "Your project request has been submitted successfully!"
+    // );
+    res.redirect("/job_status");
+  } catch (error) {
+    console.error("Error in submitBidForm:", error);
+    // Handle MongoDB validation errors or other server errors
+    res
+      .status(500)
+      .send(
+        "Error submitting project request. Please check the fields and try again."
+      );
+  }
+};
+
 const getSettings = async (req, res) => {
   try {
     const user = await Customer.findById(req.user.user_id).lean();
@@ -285,6 +383,7 @@ const removeFavoriteDesign = async (req, res) => {
 // ====================================================================
 
 module.exports = {
+  submitBidForm,
   getDashboard,
   getJobRequestStatus,
   getConstructionCompaniesList,

@@ -92,6 +92,7 @@
             border: 1px solid transparent; /* Added for border highlight */
             position: relative;
             overflow: hidden;
+            max-width: 22vw;
         }
 
         .company-card:hover {
@@ -512,7 +513,7 @@
                         </div>
                     </div>
                     <div class="company-details">
-                        <%= company.description || 'Leading construction company with expertise in residential and commercial buildings, infrastructure development, and engineering services.' %>
+                        <%= company.aboutCompany || 'Leading construction company with expertise in residential and commercial buildings, infrastructure development, and engineering services.' %>
                     </div>
                     <div class="location">
                         <i class="fas fa-map-marker-alt"></i> <%= company.location && company.location.city ? company.location.city : 'Location not specified' %>, India
@@ -555,7 +556,7 @@
                             </div>
                         </div>
                         <p class="detail-description">
-                            <%= company.description || 'Company description not available.' %>
+                            <%= company.aboutForCustomers || 'Company description not available.' %>
                         </p>
                     </div>
                     <% if (company.teamMembers && company.teamMembers.length > 0) { %>
