@@ -30,6 +30,7 @@ router.get('/customerdashboard', getDashboard);
 router.get('/architect', getArchitects);
 router.get('/architect_form', getArchitectForm);
 router.get('/design_ideas', getDesignIdeas);
+router.get("/constructionform", getConstructionForm);
 router.post("/constructionform", auth, postConstructionForm);
 router.post(
   "/bidForm_Submit",
