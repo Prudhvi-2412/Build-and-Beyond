@@ -179,7 +179,7 @@ const architectHiringSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ["Pending", "Accepted", "Rejected"],
+    enum: ["Pending", "Accepted", "Rejected","Completed"],
     default: "Pending",
   },
   customer: {
@@ -250,6 +250,16 @@ const architectHiringSchema = new mongoose.Schema({
       },
     ],
   },
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now },
+  projectUpdates: [
+    {
+      updateText: { type: String, required: true },
+      updateImage: { type: String }, // URL from Cloudinary
+      createdAt: { type: Date, default: Date.now }
+    }
+  ],
+
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
 });
@@ -362,7 +372,7 @@ const designRequestSchema = new mongoose.Schema({
   customerId: { type: mongoose.Schema.Types.ObjectId, ref: 'Customer', required: false },
   workerId: { type: mongoose.Schema.Types.ObjectId, ref: 'Worker' },
   createdAt: { type: Date, default: Date.now },
-  status: { type: String, enum: ["pending", "accepted", "rejected"], default: "pending" },
+  status: { type: String, enum: ["pending", "accepted", "rejected","completed"], default: "pending" },
 });
 
 // Floor Schema for Bid
