@@ -34,7 +34,10 @@ connectDB();
 app.get('/', (req, res) => res.render('landing_page'));
 app.get('/signin_up', (req, res) => res.render('signin_up_'));
 app.get('/adminpage', (req, res) => res.render('adminlogin'));
-app.get('/logout', (req, res) => res.render('landing_page'));
+app.get('/logout', (req,res)=>{
+    res.clearCookie('token');
+    res.redirect('/');
+});
 app.get('/platformadmindashboard', (req, res) => res.render('platform_admin/platform_admin_dashboard'));
 
 app.use(authRoutes);

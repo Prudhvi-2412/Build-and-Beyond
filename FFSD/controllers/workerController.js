@@ -1,17 +1,29 @@
 const { Worker, ArchitectHiring, DesignRequest, Company, CompanytoWorker, WorkerToCompany } = require('../models');
 const mongoose = require("mongoose");
 
+// controllers/workerController.js
+
 const getJobs = async (req, res) => {
   try {
-    if (!req.user || !req.user.user_id) return res.status(401).json({ error: 'Unauthorized: User not found' });
-    const worker = await Worker.findById(req.user.user_id).select('isArchitect');
-    if (!worker) return res.status(404).json({ error: 'Worker not found' });
+    if (!req.user || !req.user.user_id) {
+      return res.status(401).json({ error: 'Unauthorized: User not found' });
+    }
+
+    // Fetch the full worker document instead of just 'isArchitect'
+    const worker = await Worker.findById(req.user.user_id).lean(); // Using .lean() for better performance
+
+    if (!worker) {
+      return res.status(404).json({ error: 'Worker not found' });
+    }
+
     if (worker.isArchitect) {
       const Jobs = await ArchitectHiring.find({ worker: req.user.user_id, status: 'Pending' }).sort({ updatedAt: -1 });
-      return res.render('worker/worker_jobs', { user: req.user, jobOffers: Jobs });
+      // Pass the full worker object as 'user'
+      return res.render('worker/worker_jobs', { user: worker, jobOffers: Jobs ,activePage: 'jobs'});
     } else {
       const Jobs = await DesignRequest.find({ workerId: req.user.user_id, status: 'pending' }).sort({ updatedAt: -1 });
-      return res.render('worker/InteriorDesigner_Jobs', { user: req.user, jobs: Jobs });
+      // Pass the full worker object as 'user'
+      return res.render('worker/InteriorDesigner_Jobs', { user: worker, jobs: Jobs ,activePage: 'jobs' });
     }
   } catch (error) {
     console.error('Error fetching accepted projects:', error.message);
@@ -22,13 +34,42 @@ const getJobs = async (req, res) => {
 const getJoinCompany = async (req, res) => {
   try {
     const workerId = req.user.user_id;
+    const { search, location, specialization } = req.query; // Get filter queries from URL
+
+    // Build a dynamic filter object for the database query
+    const companyFilter = {};
+    if (search) {
+      companyFilter.$or = [
+        { companyName: { $regex: search, $options: 'i' } }, // Case-insensitive search
+        { specialization: { $regex: search, $options: 'i' } }
+      ];
+    }
+    if (location) {
+      companyFilter['location.city'] = location;
+    }
+    if (specialization) {
+      companyFilter.specialization = specialization;
+    }
+    
     const user = await Worker.findById(workerId).lean();
-    const companies = await Company.find().lean();
-    const offers = await CompanytoWorker.find({ worker: req.user.user_id }).lean();
-    const jobApplications = await WorkerToCompany.find({ workerId: req.user.user_id }).lean();
-    res.render('worker/workers_join_company', { user, companies, offers, jobApplications });
+    // Use the filter object in the .find() method
+    const companies = await Company.find(companyFilter).lean(); 
+    
+    const offers = await CompanytoWorker.find({ worker: workerId, status: 'Pending' })
+                                        .populate('company')
+                                        .lean();
+    const jobApplications = await WorkerToCompany.find({ workerId: workerId }).lean();
+    
+    res.render('worker/workers_join_company', { 
+      user, 
+      companies, 
+      offers, 
+      jobApplications, 
+      activePage: 'join',
+      query: req.query // Pass the query back to the template to pre-fill filters
+    });
   } catch (error) {
-    console.error('Error fetching data:', error);
+    console.error('Error fetching data for Join Company page:', error);
     res.status(500).send('Server error');
   }
 };
@@ -43,21 +84,39 @@ const getEditProfile = (req, res) => res.render('worker/worker_profile_edit');
 const getDashboard = async (req, res) => {
   try {
     if (!req.user || !req.user.user_id) return res.status(401).send('Unauthorized: User not authenticated');
-    const worker = await Worker.findById(req.user.user_id).lean();
+    
+    const workerId = req.user.user_id;
+    const worker = await Worker.findById(workerId).lean();
     if (!worker) return res.status(404).send('Worker not found');
-    const [offers, companies, jobs] = await Promise.all([
-      CompanytoWorker.find({ worker: req.user.user_id, status: 'Pending' }).populate('company', 'companyName').sort({ createdAt: -1 }).limit(3).lean(),
+
+    const [offers, companies, jobs, offerCount, applicationCount] = await Promise.all([
+      CompanytoWorker.find({ worker: workerId, status: 'Pending' }).populate('company', 'companyName').sort({ createdAt: -1 }).limit(3).lean(),
+      // MODIFIED THIS LINE to sort companies by most recently created
       Company.find({}).sort({ createdAt: -1 }).limit(3).lean(),
-      DesignRequest.find({ workerId: req.user.user_id, status: 'pending' }).sort({ createdAt: -1 }).limit(3).lean()
+      DesignRequest.find({ workerId: workerId, status: 'pending' }).sort({ createdAt: -1 }).limit(3).lean(),
+      CompanytoWorker.countDocuments({ worker: workerId, status: 'Pending' }),
+      WorkerToCompany.countDocuments({ workerId: workerId, status: 'Pending' })
     ]);
+
     const enhancedJobs = jobs.map(job => ({ ...job, timeline: job.roomType === 'Residential' ? '2 weeks' : '1 month', budget: job.roomSize?.length && job.roomSize?.width ? job.roomSize.length * job.roomSize.width * 1000 : 0 }));
-    res.render('worker/worker_dashboard', { workerName: worker.name || 'Builder', offers, companies, jobs: enhancedJobs, user: req.user });
+    
+    res.render('worker/worker_dashboard', { 
+        workerName: worker.name || 'Builder', 
+        offers, 
+        companies, 
+        jobs: enhancedJobs, 
+        user: worker,
+        activePage: 'dashboard',
+        stats: {
+            pendingOffers: offerCount,
+            activeApplications: applicationCount
+        }
+    });
   } catch (error) {
     console.error('Dashboard error:', error);
     res.status(500).render('error', { message: 'Dashboard Loading Failed', error: process.env.NODE_ENV === 'development' ? error : {} });
   }
 };
-
 const getWorkerById = async (req, res) => {
   try {
     const worker = await Worker.findById(req.params.id).select('name email title rating about specialties projects contact location linkedin previousWork profileImage').lean();
@@ -249,5 +308,193 @@ const updateWorkerProfile = async (req, res) => {
     res.status(500).json({ message: 'Server error while updating profile.' });
   }
 };
+const updateAvailability = async (req, res) => {
+  try {
+    const workerId = req.user.user_id;
+    const { availability } = req.body;
 
-module.exports = { getJobs, getJoinCompany, getSettings, getEditProfile, getDashboard, getWorkerById, deleteWorkerRequest,createWorkerRequest , updateWorkerProfile};
+    // Validate the input
+    if (!['available', 'busy', 'unavailable'].includes(availability)) {
+      return res.status(400).json({ message: 'Invalid availability status.' });
+    }
+
+    // Find the worker by their ID and update their status
+    await Worker.findByIdAndUpdate(workerId, { availability });
+
+    res.status(200).json({ success: true, message: 'Availability updated successfully.' });
+  } catch (error) {
+    console.error('Error updating availability:', error);
+    res.status(500).json({ message: 'Server error while updating availability.' });
+  }
+};
+const acceptOffer = async (req, res) => {
+  try {
+    const offer = await CompanytoWorker.findById(req.params.id);
+    // Security check to ensure the offer belongs to the logged-in worker
+    if (!offer || offer.worker.toString() !== req.user.user_id) {
+      return res.status(404).send('Offer not found or you are not authorized.');
+    }
+    offer.status = 'Accepted';
+    await offer.save();
+    res.redirect('/workerjoin_company'); // Redirect back to the offers page
+  } catch (error) {
+    console.error('Error accepting offer:', error);
+    res.status(500).send('Server Error');
+  }
+};
+
+// ADD THIS NEW FUNCTION TO DECLINE AN OFFER
+const declineOffer = async (req, res) => {
+  try {
+    const offer = await CompanytoWorker.findById(req.params.id);
+    // Security check
+    if (!offer || offer.worker.toString() !== req.user.user_id) {
+      return res.status(404).send('Offer not found or you are not authorized.');
+    }
+    offer.status = 'Denied';
+    await offer.save();
+    res.redirect('/workerjoin_company'); // Redirect back to the offers page
+  } catch (error) {
+    console.error('Error declining offer:', error);
+    res.status(500).send('Server Error');
+  }
+};
+const updateJobStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
+    let { status, type } = req.body; // 'type' will be 'architect' or 'interior'
+    const workerId = req.user.user_id;
+
+    if (!['Accepted', 'Rejected'].includes(status)) {
+        return res.status(400).json({ success: false, error: 'Invalid status' });
+    }
+
+    let job;
+
+    if (type === 'architect') {
+        // Architect schema uses Capitalized status
+        job = await ArchitectHiring.findById(id);
+        if (!job || (job.worker && job.worker.toString() !== workerId)) {
+            return res.status(404).json({ success: false, error: 'Job not found or unauthorized' });
+        }
+    } else if (type === 'interior') {
+        // Interior Designer schema uses lowercase status, so we convert it
+        status = status.toLowerCase(); 
+        job = await DesignRequest.findById(id);
+        if (!job || (job.workerId && job.workerId.toString() !== workerId)) {
+            return res.status(404).json({ success: false, error: 'Job not found or unauthorized' });
+        }
+    } else {
+        return res.status(400).json({ success: false, error: 'Invalid job type' });
+    }
+
+    job.status = status; // This now saves the correctly cased status
+    await job.save();
+
+    res.json({ success: true, message: `Job has been ${status.toLowerCase()}.` });
+
+  } catch (error) {
+    console.error(`Error updating ${req.body.type} job status:`, error);
+    res.status(500).json({ success: false, error: 'Internal server error' });
+  }
+};
+const getOngoingProjects = async (req, res) => {
+  try {
+    const workerId = req.user.user_id;
+    const worker = await Worker.findById(workerId).lean();
+    if (!worker) {
+        return res.status(404).send('Worker not found');
+    }
+
+    let allProjects = [];
+    if (worker.isArchitect) {
+        // Fetch all Architect jobs that are Accepted, Completed, OR Rejected
+        allProjects = await ArchitectHiring.find({ 
+            worker: workerId, 
+            status: { $in: ['Accepted', 'Completed', 'Rejected'] } 
+        }).lean();
+    } else {
+        // Fetch all Interior Design jobs that are accepted, completed, OR rejected
+        allProjects = await DesignRequest.find({ 
+            workerId: workerId, 
+            status: { $in: ['accepted', 'completed', 'rejected'] } 
+        }).lean();
+    }
+
+    res.render('worker/worker_ongoing_projects', { 
+      user: worker, 
+      projects: allProjects,
+      activePage: 'ongoing' 
+    });
+
+  } catch (error) {
+    console.error('Error fetching ongoing projects:', error);
+    res.status(500).send('Server Error');
+  }
+};
+const postProjectUpdate = async (req, res) => {
+  try {
+    const { projectId, projectType, updateText } = req.body;
+    const workerId = req.user.user_id;
+
+    let project;
+    const newUpdate = { updateText, createdAt: new Date() };
+    if (req.file) {
+      newUpdate.updateImage = req.file.path; // Save Cloudinary URL
+    }
+
+    if (projectType === 'architect') {
+      project = await ArchitectHiring.findById(projectId);
+      if (!project || (project.worker && project.worker.toString() !== workerId)) {
+        return res.status(404).send('Project not found or unauthorized.');
+      }
+    } else if (projectType === 'interior') {
+      project = await DesignRequest.findById(projectId);
+      if (!project || (project.workerId && project.workerId.toString() !== workerId)) {
+        return res.status(404).send('Project not found or unauthorized.');
+      }
+    } else {
+      return res.status(400).send('Invalid project type.');
+    }
+
+    project.projectUpdates.unshift(newUpdate);
+    await project.save();
+    res.redirect('/worker/ongoing-projects');
+  } catch (error) {
+    console.error('Error posting project update:', error);
+    res.status(500).send('Server Error');
+  }
+};
+const markProjectAsCompleted = async (req, res) => {
+  try {
+    const { projectId, projectType } = req.body;
+    const workerId = req.user.user_id;
+
+    let project;
+    if (projectType === 'architect') {
+      project = await ArchitectHiring.findById(projectId);
+      if (!project || project.worker.toString() !== workerId) {
+        return res.status(404).send('Project not found or unauthorized.');
+      }
+      project.status = 'Completed';
+    } else if (projectType === 'interior') {
+      project = await DesignRequest.findById(projectId);
+      if (!project || project.workerId.toString() !== workerId) {
+        return res.status(404).send('Project not found or unauthorized.');
+      }
+      project.status = 'completed';
+    } else {
+      return res.status(400).send('Invalid project type.');
+    }
+
+    await project.save();
+    res.redirect('/worker/ongoing-projects');
+
+  } catch (error) {
+    console.error('Error marking project as completed:', error);
+    res.status(500).send('Server Error');
+  }
+};
+module.exports = { getJobs, getJoinCompany, getSettings, getEditProfile, getDashboard, getWorkerById, deleteWorkerRequest,
+  createWorkerRequest , updateWorkerProfile,updateAvailability,acceptOffer,declineOffer, updateJobStatus ,
+  getOngoingProjects,postProjectUpdate,markProjectAsCompleted };

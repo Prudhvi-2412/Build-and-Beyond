@@ -565,95 +565,69 @@ body {
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const jobListContainer = document.getElementById('jobList');
-            const jobDetailsPanel = document.getElementById('jobDetailsPanel');
             const searchInput = document.getElementById('searchInput');
-            
-            // Handle job card clicks
+
+            // Handle job card clicks to show details
             jobListContainer.addEventListener('click', function(e) {
                 const jobCard = e.target.closest('.job-card');
                 if (jobCard) {
-                    // Remove active class from all job cards
-                    document.querySelectorAll('.job-card').forEach(card => 
-                        card.classList.remove('active')
-                    );
-                    
-                    // Add active class to clicked job card
+                    document.querySelectorAll('.job-card').forEach(card => card.classList.remove('active'));
                     jobCard.classList.add('active');
-                    
                     const jobId = jobCard.dataset.id;
-                    
-                    // Hide all job details
                     document.querySelectorAll('.job-details-content').forEach(details => {
                         details.style.display = 'none';
                     });
-                    
-                    // Show empty state if no job is found
                     document.getElementById('emptyState').style.display = 'none';
-                    
-                    // Show selected job details
                     const selectedJobDetails = document.getElementById(`jobDetails${jobId}`);
                     if (selectedJobDetails) {
                         selectedJobDetails.style.display = 'block';
                     }
                 }
             });
-            
+
             // Search functionality
             searchInput.addEventListener('input', function() {
                 const searchTerm = this.value.toLowerCase();
-                
-                // Filter job cards based on search term
                 document.querySelectorAll('.job-card').forEach(card => {
-                    const title = card.querySelector('.job-title').textContent.toLowerCase();
-                    const type = card.querySelector('.job-type').textContent.toLowerCase();
-                    const summary = card.querySelector('.job-summary').textContent.toLowerCase();
-                    
-                    if (title.includes(searchTerm) || type.includes(searchTerm) || summary.includes(searchTerm)) {
-                        card.style.display = 'block';
+                    const cardText = card.textContent.toLowerCase();
+                    card.style.display = cardText.includes(searchTerm) ? 'block' : 'none';
+                });
+            });
+
+            // --- THIS FUNCTION IS NOW CORRECT ---
+            async function updateJobStatus(jobId, status) {
+                try {
+                    // It now calls the correct route: /jobs/:id/status
+                    const response = await fetch(`/jobs/${jobId}/status`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        // It now sends the 'type' of job, which is 'architect' for this page
+                        body: JSON.stringify({ status: status, type: 'architect' }),
+                    });
+                    const data = await response.json();
+                    if (data.success) {
+                        alert(`Job offer ${status.toLowerCase()} successfully.`);
+                        window.location.reload(); // Reload the page to show the change
                     } else {
-                        card.style.display = 'none';
+                        throw new Error(data.error || 'Failed to update status');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('An error occurred: ' + error.message);
+                }
+            }
+
+            // Add event listeners to all accept/deny buttons
+            document.querySelectorAll('.accept-button, .deny-button').forEach(button => {
+                button.addEventListener('click', function(event) {
+                    event.stopPropagation(); // Prevents the card from being clicked as well
+                    const jobId = this.dataset.id;
+                    const status = this.classList.contains('accept-button') ? 'Accepted' : 'Rejected';
+                    if (confirm(`Are you sure you want to ${status.toLowerCase()} this job?`)) {
+                        updateJobStatus(jobId, status);
                     }
                 });
             });
-            
-            // Handle accept/deny button clicks
-            document.querySelectorAll('.accept-button').forEach(button => {
-                button.addEventListener('click', function() {
-                    const jobId = this.dataset.id;
-                    updateJobStatus(jobId, 'Accepted');
-                });
-            });
-            
-            document.querySelectorAll('.deny-button').forEach(button => {
-                button.addEventListener('click', function() {
-                    const jobId = this.dataset.id;
-                    updateJobStatus(jobId, 'Rejected');
-                });
-            });
-            
-            // Function to update job status
-            // function updateJobStatus(jobId, status) {
-            //     fetch(`/architect-jobs/${jobId}/update-status`, {
-            //         method: 'POST',
-            //         headers: {
-            //             'Content-Type': 'application/json',
-            //         },
-            //         body: JSON.stringify({ status: status, workerId: '<= currentUser._id %>' }),
-            //     })
-            //     .then(response => response.json())
-            //     .then(data => {
-            //         if (data.success) {
-            //             // Refresh the page or update UI accordingly
-            //             window.location.reload();
-            //         } else {
-            //             alert('Failed to update job status. Please try again.');
-            //         }
-            //     })
-            //     .catch(error => {
-            //         console.error('Error:', error);
-            //         alert('An error occurred. Please try again.');
-            //     });
-            // }
         });
     </script>
 </body>
