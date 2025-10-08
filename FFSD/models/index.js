@@ -3,33 +3,27 @@ const bcrypt = require('bcrypt');
 const Schema = mongoose.Schema;
 
 // ====================================================================
-// NEW SCHEMA FOR FAVORITE DESIGNS
+// CORRECTED SCHEMA FOR FAVORITE DESIGNS (Document-per-Customer)
 // ====================================================================
 const favoriteDesignSchema = new mongoose.Schema({
+  // This ensures only ONE favorites document can exist per customer
   customerId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Customer',
     required: true,
+    unique: true, 
   },
-  designId: {
-    type: String, // e.g., "LivingRoom-1"
-    required: true,
-  },
-  category: {
-    type: String, // e.g., "LivingRoom"
-    required: true,
-  },
-  title: {
-    type: String, // e.g., "Living Room Design 1"
-    required: true,
-  },
-  imageUrl: {
-    type: String, // The actual image link
-    required: true,
-  },
+  designs: [{
+    designId: { type: String, required: true }, // e.g., "LivingRoom-1"
+    category: { type: String, required: true }, // e.g., "LivingRoom"
+    title: { type: String, required: true }, // e.g., "Living Room Design 1"
+    imageUrl: { type: String, required: true }, // The actual image link
+    _id: false // Prevents MongoDB from creating a sub-document ID for each design
+  }]
 }, { timestamps: true });
 
-favoriteDesignSchema.index({ customerId: 1, designId: 1 }, { unique: true });
+// Note: The previous index is replaced by making customerId unique.
+
 // ====================================================================
 
 

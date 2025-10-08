@@ -453,9 +453,9 @@
             overflow: hidden;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             transition: transform 0.3s ease;
-            /* Added for image fix */
             display: flex;
             flex-direction: column; 
+            border: 1px solid #e2e8f0; 
         }
 
         .favorite-item:hover {
@@ -464,44 +464,24 @@
 
         .favorite-item img {
             width: 100%;
-            height: 200px;
+            height: 150px; 
             object-fit: cover;
         }
 
         .favorite-item-info {
             padding: 15px;
             background: white;
-            flex-grow: 1; /* Added for layout consistency */
+            flex-grow: 1;
         }
 
         .favorite-item-title {
             font-weight: 600;
             color: #1e293b;
+            line-height: 1.3; 
             margin-bottom: 5px;
         }
 
-        .remove-favorite {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: rgba(239, 68, 68, 0.9);
-            border: none;
-            color: white;
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-            z-index: 10;
-        }
-
-        .remove-favorite:hover {
-            background: #dc2626;
-            transform: scale(1.1);
-        }
+        /* 🚨 REMOVED CSS FOR .remove-favorite button as it's no longer needed */
 
         .empty-favorites {
             text-align: center;
@@ -758,16 +738,14 @@
             ]
         };
         
-        // This will now store favorited designs loaded from the server, keyed by designId
         let favorites = {}; 
 
-        // Utility function for API calls (assuming token auth in localStorage)
         async function fetchData(url, method = 'GET', data = null) {
             const options = {
                 method,
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('customerToken')}` // Assuming customer token
+                    'Authorization': `Bearer ${localStorage.getItem('customerToken')}`
                 },
             };
             if (data) {
@@ -787,35 +765,29 @@
             }
         }
 
-        // Load Favorites from Backend
         async function loadFavorites() {
             try {
-                // Endpoint: GET /api/customer/favorites
                 const response = await fetchData('/api/customer/favorites');
                 
                 favorites = response.favorites.reduce((acc, fav) => {
-                    // Reformat the array of documents into the object map the front-end expects
                     acc[fav.designId] = {
                         category: fav.category,
-                        index: fav.designId.split('-')[1], // Extract index for consistency
+                        index: fav.designId.split('-')[1],
                         image: fav.imageUrl,
                         title: fav.title,
-                        _id: fav._id // Keep the MongoDB ID for easy removal
+                        _id: fav.designId
                     };
                     return acc;
                 }, {});
 
                 updateFavoritesCount();
-                // Re-render all cards to show the correct heart status
                 generateDesignCards(); 
 
             } catch (error) {
                 console.error("Failed to load favorites:", error);
-                // Handle unauthorized/missing token if necessary
             }
         }
         
-        // Dropdown functionality
         const dropdownBtn = document.getElementById('dropdownBtn');
         const dropdownContent = document.getElementById('dropdownContent');
         const activeCategory = document.getElementById('activeCategory');
@@ -856,7 +828,6 @@
             }
         }
 
-        // Create design card
         function createDesignCard(category, index, order) {
             const card = document.createElement('div');
             card.className = 'design-card';
@@ -866,7 +837,6 @@
                 ? imageLinks[category][index-1]
                 : 'https://via.placeholder.com/400x250?text=Image+Not+Found';
             const designId = `${category}-${index}`;
-            // Check against the favorites object loaded from the server
             const isFavorite = favorites[designId] ? 'active' : ''; 
             card.innerHTML = `
                 <div class="card-image-container">
@@ -888,7 +858,6 @@
             return card;
         }
 
-        // Generate design cards
         function generateDesignCards() {
             categories.forEach(category => {
                 const grid = document.getElementById(`${category}Grid`);
@@ -906,7 +875,6 @@
             attachFavoriteListeners();
         }
 
-        // Favorites functionality
         function attachFavoriteListeners() {
             const favoriteBtns = document.querySelectorAll('.favorite-btn');
             favoriteBtns.forEach(btn => {
@@ -918,7 +886,6 @@
             });
         }
 
-        // Toggles the favorite status via API call
         async function toggleFavorite(btn) {
             const id = btn.getAttribute('data-id');
             const category = btn.getAttribute('data-category');
@@ -927,11 +894,12 @@
             const title = `${category.replace(/([A-Z])/g, ' $1').trim()} Design ${index}`;
 
             if (favorites[id]) {
-                // REMOVE FAVORITE
-                const mongoId = favorites[id]._id; 
+                // REMOVE FAVORITE: Use designId as the identifier in the URL
+                const designIdToRemove = id; 
                 try {
-                    // Endpoint: DELETE /api/customer/favorites/:id
-                    await fetchData(`/api/customer/favorites/${mongoId}`, 'DELETE');
+                    // This API call is technically now an un-needed feature in the UI, 
+                    // but we keep the logic here just in case the main grid button is clicked to un-favorite.
+                    await fetchData(`/api/customer/favorites/${designIdToRemove}`, 'DELETE');
                     
                     delete favorites[id];
                     btn.classList.remove('active');
@@ -949,21 +917,19 @@
                     category: category,
                     title: title,
                     imageUrl: image,
-                    // customerId is added by the backend from the auth token
                 };
                 
                 try {
                     // Endpoint: POST /api/customer/favorites
                     const response = await fetchData('/api/customer/favorites', 'POST', newFavData);
                     
-                    // Add the server's response (which contains the new MongoDB _id) to local state
-                    favorites[id] = { ...newFavData, _id: response.favorite._id }; 
+                    favorites[id] = { ...newFavData, _id: id }; 
                     btn.classList.add('active');
                     updateFavoritesCount();
 
                 } catch (error) {
                     console.error("Failed to add favorite:", error);
-                    alert("Failed to add favorite. Please try again.");
+                    alert("Failed to add favorite. Please try again. It might already be saved.");
                 }
             }
         }
@@ -973,7 +939,6 @@
             document.getElementById('favoritesCount').textContent = count;
         }
 
-        // Favorites modal
         const favoritesBtn = document.getElementById('favoritesBtn');
         const favoritesModal = document.getElementById('favoritesModal');
         const closeModal = document.getElementById('closeModal');
@@ -994,7 +959,6 @@
             favoritesModal.classList.add('show');
         }
 
-        // 🚨 FIX APPLIED HERE: Corrected the HTML template to show the image.
         function renderFavorites() {
             const favoriteKeys = Object.keys(favorites);
             if (favoriteKeys.length === 0) {
@@ -1013,50 +977,35 @@
                 const item = document.createElement('div');
                 item.className = 'favorite-item';
                 
+                // 🚨 FIX: Removed the remove-favorite button entirely from the modal HTML
                 item.innerHTML = `
                     <img src="${fav.image}" alt="${fav.title}">
-                    <button class="remove-favorite" data-id="${key}">
-                        <i class="fas fa-times"></i>
-                    </button>
                     <div class="favorite-item-info">
                         <div class="favorite-item-title">${fav.title}</div>
                     </div>
                 `;
-                
+
                 favoritesGrid.appendChild(item);
             });
             
-            // Attach remove listeners
-            const removeBtns = document.querySelectorAll('.remove-favorite');
-            removeBtns.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const id = btn.getAttribute('data-id');
-                    removeFavorite(id);
-                });
-            });
+            // 🚨 FIX: Removed the code block that attached listeners to the remove button
         }
 
-        // Remove favorite from modal, which also calls the API
+        // 🚨 Removed the entire removeFavorite function as it is no longer used by the modal
+        /*
         function removeFavorite(designId) {
-            // Find the button in the main grid and trigger its click handler to reuse API logic
             const mainGridBtn = document.querySelector(`.favorite-btn[data-id="${designId}"]`);
             if (mainGridBtn) {
                 mainGridBtn.click();
             }
-
-            // Immediately re-render the modal content based on local state change
             renderFavorites();
         }
+        */
 
-        // Initialize
         async function init() {
-            // 1. Load favorites from the backend first
-            await loadFavorites(); 
-            // 2. Then generate the cards (which uses the updated favorites state)
-            generateDesignCards(); 
-            // 3. Set the active category
+            await loadFavorites();
+            generateDesignCards();
             setActiveCategory('LivingRoom');
-            // 4. Update count (already handled in loadFavorites)
         }
 
         document.addEventListener('DOMContentLoaded', init);

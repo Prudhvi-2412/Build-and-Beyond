@@ -1,6 +1,6 @@
 const { Customer, Worker, ArchitectHiring, DesignRequest, ConstructionProjectSchema, Bid, Company, FavoriteDesign } = require('../models/index');
 const { getTargetDate } = require('../utils/helpers');
-const mongoose = require('mongoose'); // Needed for checking ObjectId validity
+const mongoose = require('mongoose');
 
 const getDashboard = (req, res) => res.render('customer/customer_dashboard');
 
@@ -127,10 +127,8 @@ const postConstructionForm = async (req, res) => {
       floors
     } = req.body;
 
-    // Handle file uploads if any (e.g., siteFilepaths)
     const siteFilepaths = req.files ? req.files.map(file => file.path) : [];
 
-    // Parse floors if sent as JSON string
     let parsedFloors = [];
     if (typeof floors === 'string') {
       try {
@@ -174,7 +172,7 @@ const postConstructionForm = async (req, res) => {
 
 
 // ====================================================================
-// NEW FAVORITES API CONTROLLERS
+// CORRECTED FAVORITES API CONTROLLERS (Using Array Operations)
 // ====================================================================
 
 /**
@@ -188,8 +186,13 @@ const getFavorites = async (req, res) => {
         }
         const customerId = req.user.user_id;
 
-        const favorites = await FavoriteDesign.find({ customerId }).lean();
+        // Find the single favorites document for the customer
+        const favoritesDoc = await FavoriteDesign.findOne({ customerId }).lean();
 
+        // If the document exists, return the designs array, otherwise return an empty array
+        const favorites = favoritesDoc ? favoritesDoc.designs : [];
+
+        // The front-end code expects the 'favorites' key in the response
         res.status(200).json({ favorites });
     } catch (error) {
         console.error('Error fetching favorites:', error);
@@ -199,7 +202,7 @@ const getFavorites = async (req, res) => {
 
 /**
  * POST /api/customer/favorites
- * Adds a new design to the customer's favorites.
+ * Adds a new design to the customer's favorites array.
  */
 const saveFavoriteDesign = async (req, res) => {
     try {
@@ -213,26 +216,32 @@ const saveFavoriteDesign = async (req, res) => {
             return res.status(400).json({ message: 'Missing required design fields.' });
         }
 
-        const newFavorite = new FavoriteDesign({
-            customerId,
-            designId,
-            category,
-            title,
-            imageUrl
-        });
+        // The new design object to be added to the array
+        const newDesign = { designId, category, title, imageUrl };
 
-        const savedFavorite = await newFavorite.save();
+        // Find and update: Use $addToSet to add the design only if designId doesn't exist
+        // upsert: true means if the document doesn't exist, create it.
+        const updatedDoc = await FavoriteDesign.findOneAndUpdate(
+            { customerId },
+            { $addToSet: { designs: newDesign } },
+            { new: true, upsert: true }
+        );
+
+        if (!updatedDoc) {
+             return res.status(500).json({ message: 'Failed to create or update favorites document.' });
+        }
+
+        // Return the successfully added item (the last one in the array)
+        const addedDesign = updatedDoc.designs.find(d => d.designId === designId);
 
         res.status(201).json({ 
             message: 'Design added to favorites!', 
-            favorite: savedFavorite 
+            // The front-end needs the design details back, including a unique ID for removal. 
+            // Since Mongoose arrays don't get custom IDs, we use designId for client-side tracking.
+            favorite: { ...addedDesign.toObject(), _id: addedDesign.designId } 
         });
 
     } catch (error) {
-        // Mongoose duplicate key error (11000)
-        if (error.code === 11000) {
-            return res.status(409).json({ message: 'This design is already in your favorites.' });
-        }
         console.error('Error saving favorite design:', error);
         res.status(500).json({ message: 'Failed to save favorite due to a server error.' });
     }
@@ -240,7 +249,7 @@ const saveFavoriteDesign = async (req, res) => {
 
 /**
  * DELETE /api/customer/favorites/:id
- * Removes a favorite design by its MongoDB _id.
+ * Removes a favorite design using the designId (which the front-end now uses as _id).
  */
 const removeFavoriteDesign = async (req, res) => {
     try {
@@ -248,17 +257,22 @@ const removeFavoriteDesign = async (req, res) => {
             return res.status(401).json({ message: 'Unauthorized' });
         }
         const customerId = req.user.user_id;
-        const favoriteMongoId = req.params.id; 
+        const designIdToRemove = req.params.id; // This is the designId, e.g., "LivingRoom-1"
 
-        if (!mongoose.Types.ObjectId.isValid(favoriteMongoId)) {
-            return res.status(400).json({ message: 'Invalid favorite ID format.' });
+        // Use $pull to remove the object from the 'designs' array based on its designId
+        const result = await FavoriteDesign.updateOne(
+            { customerId },
+            { $pull: { designs: { designId: designIdToRemove } } }
+        );
+
+        if (result.modifiedCount === 0 && result.matchedCount === 0) {
+            return res.status(404).json({ message: 'Favorite list not found or design not in favorites.' });
         }
-
-        // Delete the document, ensuring the customerId matches for security
-        const result = await FavoriteDesign.deleteOne({ _id: favoriteMongoId, customerId });
-
-        if (result.deletedCount === 0) {
-            return res.status(404).json({ message: 'Favorite not found or unauthorized to delete.' });
+        
+        // Ensure the deletion was successful
+        if (result.modifiedCount === 0 && result.matchedCount === 1) {
+            // This happens if the designId was not found in the array
+            return res.status(404).json({ message: 'Design not found in favorites array.' });
         }
 
         res.status(200).json({ message: 'Favorite design removed successfully.' });
