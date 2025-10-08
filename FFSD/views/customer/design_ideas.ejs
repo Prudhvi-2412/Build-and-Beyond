@@ -453,6 +453,9 @@
             overflow: hidden;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             transition: transform 0.3s ease;
+            /* Added for image fix */
+            display: flex;
+            flex-direction: column; 
         }
 
         .favorite-item:hover {
@@ -468,6 +471,7 @@
         .favorite-item-info {
             padding: 15px;
             background: white;
+            flex-grow: 1; /* Added for layout consistency */
         }
 
         .favorite-item-title {
@@ -491,6 +495,7 @@
             align-items: center;
             justify-content: center;
             transition: all 0.3s ease;
+            z-index: 10;
         }
 
         .remove-favorite:hover {
@@ -630,7 +635,7 @@
     </style>
 </head>
 <body>
-        <%- include('navbar_customer') %>
+    <%- include('navbar_customer') %>
     <div class="container">
         <div class="page-header">
             <h1>Design Ideas Gallery</h1>
@@ -690,7 +695,6 @@
         </section>
     </div>
 
-    <!-- Favorites Modal -->
     <div class="favorites-modal" id="favoritesModal">
         <div class="favorites-content">
             <div class="favorites-header">
@@ -704,15 +708,13 @@
             </div>
             <div class="favorites-body">
                 <div class="favorites-grid" id="favoritesGrid">
-                    <!-- Favorites will be populated here -->
-                </div>
+                    </div>
             </div>
         </div>
     </div>
     <%- include('customer_footer') %>
     <script>
         const categories = ['LivingRoom', 'Balcony', 'Bedroom', 'Bathroom', 'Kitchen'];
-        
         const imageLinks = {
             LivingRoom: [
                 'https://cdn.mos.cms.futurecdn.net/DGtgx67LZm6Aq6A25C9Frf-1024-80.jpg.webp',
@@ -755,26 +757,78 @@
                 'https://hips.hearstapps.com/hmg-prod/images/hbx070124cover-001-66a7a5e94483f.jpg?crop=0.888888888888889xw:1xh;center,top&resize=980:*',
             ]
         };
+        
+        // This will now store favorited designs loaded from the server, keyed by designId
+        let favorites = {}; 
 
-        let favorites = {};
+        // Utility function for API calls (assuming token auth in localStorage)
+        async function fetchData(url, method = 'GET', data = null) {
+            const options = {
+                method,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('customerToken')}` // Assuming customer token
+                },
+            };
+            if (data) {
+                options.body = JSON.stringify(data);
+            }
 
+            try {
+                const response = await fetch(url, options);
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({ message: `HTTP error! Status: ${response.status}` }));
+                    throw new Error(errorData.message || 'API request failed.');
+                }
+                return response.json();
+            } catch (error) {
+                console.error('Fetch Error:', error);
+                throw error;
+            }
+        }
+
+        // Load Favorites from Backend
+        async function loadFavorites() {
+            try {
+                // Endpoint: GET /api/customer/favorites
+                const response = await fetchData('/api/customer/favorites');
+                
+                favorites = response.favorites.reduce((acc, fav) => {
+                    // Reformat the array of documents into the object map the front-end expects
+                    acc[fav.designId] = {
+                        category: fav.category,
+                        index: fav.designId.split('-')[1], // Extract index for consistency
+                        image: fav.imageUrl,
+                        title: fav.title,
+                        _id: fav._id // Keep the MongoDB ID for easy removal
+                    };
+                    return acc;
+                }, {});
+
+                updateFavoritesCount();
+                // Re-render all cards to show the correct heart status
+                generateDesignCards(); 
+
+            } catch (error) {
+                console.error("Failed to load favorites:", error);
+                // Handle unauthorized/missing token if necessary
+            }
+        }
+        
         // Dropdown functionality
         const dropdownBtn = document.getElementById('dropdownBtn');
         const dropdownContent = document.getElementById('dropdownContent');
         const activeCategory = document.getElementById('activeCategory');
         const categoryBtns = document.querySelectorAll('.category-btn');
-
         dropdownBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             dropdownContent.classList.toggle('show');
         });
-
         window.addEventListener('click', (e) => {
             if (!e.target.closest('.dropdown')) {
                 dropdownContent.classList.remove('show');
             }
         });
-
         categoryBtns.forEach(btn => {
             btn.addEventListener('click', () => {
                 const category = btn.getAttribute('data-category');
@@ -810,11 +864,10 @@
             
             const imageSrc = imageLinks[category] && imageLinks[category][index-1] 
                 ? imageLinks[category][index-1]
-                : 'https://via.placeholder.com/400x250?text=Image+Not+Found'; 
-                
+                : 'https://via.placeholder.com/400x250?text=Image+Not+Found';
             const designId = `${category}-${index}`;
-            const isFavorite = favorites[designId] ? 'active' : '';
-            
+            // Check against the favorites object loaded from the server
+            const isFavorite = favorites[designId] ? 'active' : ''; 
             card.innerHTML = `
                 <div class="card-image-container">
                     <img src="${imageSrc}" alt="${category} Design ${index}" class="card-image">
@@ -832,7 +885,6 @@
                     </div>
                 </div>
             `;
-            
             return card;
         }
 
@@ -851,7 +903,6 @@
                     grid.appendChild(card);
                 }
             });
-            
             attachFavoriteListeners();
         }
 
@@ -867,27 +918,54 @@
             });
         }
 
-        function toggleFavorite(btn) {
+        // Toggles the favorite status via API call
+        async function toggleFavorite(btn) {
             const id = btn.getAttribute('data-id');
             const category = btn.getAttribute('data-category');
             const index = btn.getAttribute('data-index');
             const image = btn.getAttribute('data-image');
-            
+            const title = `${category.replace(/([A-Z])/g, ' $1').trim()} Design ${index}`;
+
             if (favorites[id]) {
-                delete favorites[id];
-                btn.classList.remove('active');
+                // REMOVE FAVORITE
+                const mongoId = favorites[id]._id; 
+                try {
+                    // Endpoint: DELETE /api/customer/favorites/:id
+                    await fetchData(`/api/customer/favorites/${mongoId}`, 'DELETE');
+                    
+                    delete favorites[id];
+                    btn.classList.remove('active');
+                    updateFavoritesCount();
+
+                } catch (error) {
+                    console.error("Failed to remove favorite:", error);
+                    alert("Failed to remove favorite. Please try again.");
+                }
+
             } else {
-                favorites[id] = {
+                // ADD FAVORITE
+                const newFavData = {
+                    designId: id,
                     category: category,
-                    index: index,
-                    image: image,
-                    title: `${category.replace(/([A-Z])/g, ' $1').trim()} Design ${index}`
+                    title: title,
+                    imageUrl: image,
+                    // customerId is added by the backend from the auth token
                 };
-                btn.classList.add('active');
+                
+                try {
+                    // Endpoint: POST /api/customer/favorites
+                    const response = await fetchData('/api/customer/favorites', 'POST', newFavData);
+                    
+                    // Add the server's response (which contains the new MongoDB _id) to local state
+                    favorites[id] = { ...newFavData, _id: response.favorite._id }; 
+                    btn.classList.add('active');
+                    updateFavoritesCount();
+
+                } catch (error) {
+                    console.error("Failed to add favorite:", error);
+                    alert("Failed to add favorite. Please try again.");
+                }
             }
-            
-            updateFavoritesCount();
-            saveFavorites();
         }
 
         function updateFavoritesCount() {
@@ -895,39 +973,30 @@
             document.getElementById('favoritesCount').textContent = count;
         }
 
-        function saveFavorites() {
-            // In a real app, you would save to localStorage or a backend
-            // For this demo, we're just keeping in memory
-        }
-
         // Favorites modal
         const favoritesBtn = document.getElementById('favoritesBtn');
         const favoritesModal = document.getElementById('favoritesModal');
         const closeModal = document.getElementById('closeModal');
         const favoritesGrid = document.getElementById('favoritesGrid');
-
         favoritesBtn.addEventListener('click', () => {
             openFavoritesModal();
         });
-
         closeModal.addEventListener('click', () => {
             favoritesModal.classList.remove('show');
         });
-
         favoritesModal.addEventListener('click', (e) => {
             if (e.target === favoritesModal) {
                 favoritesModal.classList.remove('show');
             }
         });
-
         function openFavoritesModal() {
             renderFavorites();
             favoritesModal.classList.add('show');
         }
 
+        // 🚨 FIX APPLIED HERE: Corrected the HTML template to show the image.
         function renderFavorites() {
             const favoriteKeys = Object.keys(favorites);
-            
             if (favoriteKeys.length === 0) {
                 favoritesGrid.innerHTML = `
                     <div class="empty-favorites">
@@ -939,7 +1008,6 @@
             }
             
             favoritesGrid.innerHTML = '';
-            
             favoriteKeys.forEach(key => {
                 const fav = favorites[key];
                 const item = document.createElement('div');
@@ -968,25 +1036,27 @@
             });
         }
 
-        function removeFavorite(id) {
-            delete favorites[id];
-            updateFavoritesCount();
-            renderFavorites();
-            
-            // Update the favorite button in the main grid
-            const favoriteBtn = document.querySelector(`.favorite-btn[data-id="${id}"]`);
-            if (favoriteBtn) {
-                favoriteBtn.classList.remove('active');
+        // Remove favorite from modal, which also calls the API
+        function removeFavorite(designId) {
+            // Find the button in the main grid and trigger its click handler to reuse API logic
+            const mainGridBtn = document.querySelector(`.favorite-btn[data-id="${designId}"]`);
+            if (mainGridBtn) {
+                mainGridBtn.click();
             }
-            
-            saveFavorites();
+
+            // Immediately re-render the modal content based on local state change
+            renderFavorites();
         }
 
         // Initialize
-        function init() {
-            generateDesignCards();
+        async function init() {
+            // 1. Load favorites from the backend first
+            await loadFavorites(); 
+            // 2. Then generate the cards (which uses the updated favorites state)
+            generateDesignCards(); 
+            // 3. Set the active category
             setActiveCategory('LivingRoom');
-            updateFavoritesCount();
+            // 4. Update count (already handled in loadFavorites)
         }
 
         document.addEventListener('DOMContentLoaded', init);

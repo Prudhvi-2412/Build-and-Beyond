@@ -1,5 +1,6 @@
-const { Customer, Worker, ArchitectHiring, DesignRequest, ConstructionProjectSchema, Bid, Company } = require('../models/index');
+const { Customer, Worker, ArchitectHiring, DesignRequest, ConstructionProjectSchema, Bid, Company, FavoriteDesign } = require('../models/index');
 const { getTargetDate } = require('../utils/helpers');
+const mongoose = require('mongoose'); // Needed for checking ObjectId validity
 
 const getDashboard = (req, res) => res.render('customer/customer_dashboard');
 
@@ -171,6 +172,104 @@ const postConstructionForm = async (req, res) => {
   }
 };
 
+
+// ====================================================================
+// NEW FAVORITES API CONTROLLERS
+// ====================================================================
+
+/**
+ * GET /api/customer/favorites
+ * Fetches all favorited designs for the logged-in customer.
+ */
+const getFavorites = async (req, res) => {
+    try {
+        if (!req.user || !req.user.user_id) {
+            return res.status(401).json({ message: 'Unauthorized' });
+        }
+        const customerId = req.user.user_id;
+
+        const favorites = await FavoriteDesign.find({ customerId }).lean();
+
+        res.status(200).json({ favorites });
+    } catch (error) {
+        console.error('Error fetching favorites:', error);
+        res.status(500).json({ message: 'Failed to retrieve favorites.' });
+    }
+};
+
+/**
+ * POST /api/customer/favorites
+ * Adds a new design to the customer's favorites.
+ */
+const saveFavoriteDesign = async (req, res) => {
+    try {
+        if (!req.user || !req.user.user_id) {
+            return res.status(401).json({ message: 'Unauthorized' });
+        }
+        const customerId = req.user.user_id;
+        const { designId, category, title, imageUrl } = req.body;
+
+        if (!designId || !category || !title || !imageUrl) {
+            return res.status(400).json({ message: 'Missing required design fields.' });
+        }
+
+        const newFavorite = new FavoriteDesign({
+            customerId,
+            designId,
+            category,
+            title,
+            imageUrl
+        });
+
+        const savedFavorite = await newFavorite.save();
+
+        res.status(201).json({ 
+            message: 'Design added to favorites!', 
+            favorite: savedFavorite 
+        });
+
+    } catch (error) {
+        // Mongoose duplicate key error (11000)
+        if (error.code === 11000) {
+            return res.status(409).json({ message: 'This design is already in your favorites.' });
+        }
+        console.error('Error saving favorite design:', error);
+        res.status(500).json({ message: 'Failed to save favorite due to a server error.' });
+    }
+};
+
+/**
+ * DELETE /api/customer/favorites/:id
+ * Removes a favorite design by its MongoDB _id.
+ */
+const removeFavoriteDesign = async (req, res) => {
+    try {
+        if (!req.user || !req.user.user_id) {
+            return res.status(401).json({ message: 'Unauthorized' });
+        }
+        const customerId = req.user.user_id;
+        const favoriteMongoId = req.params.id; 
+
+        if (!mongoose.Types.ObjectId.isValid(favoriteMongoId)) {
+            return res.status(400).json({ message: 'Invalid favorite ID format.' });
+        }
+
+        // Delete the document, ensuring the customerId matches for security
+        const result = await FavoriteDesign.deleteOne({ _id: favoriteMongoId, customerId });
+
+        if (result.deletedCount === 0) {
+            return res.status(404).json({ message: 'Favorite not found or unauthorized to delete.' });
+        }
+
+        res.status(200).json({ message: 'Favorite design removed successfully.' });
+    } catch (error) {
+        console.error('Error removing favorite design:', error);
+        res.status(500).json({ message: 'Failed to remove favorite.' });
+    }
+};
+
+// ====================================================================
+
 module.exports = {
   getDashboard,
   getJobRequestStatus,
@@ -185,5 +284,9 @@ module.exports = {
   getBidForm,
   getSettings,
   getBidSpace,
-  postConstructionForm
+  postConstructionForm,
+  // EXPORT NEW FAVORITES FUNCTIONS
+  getFavorites,
+  saveFavoriteDesign,
+  removeFavoriteDesign
 };

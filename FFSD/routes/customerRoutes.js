@@ -1,6 +1,25 @@
 const express = require('express');
 const router = express.Router();
-const { getDashboard, postConstructionForm, getJobRequestStatus, getConstructionCompaniesList, getArchitects, getArchitectForm, getOngoingProjects, getDesignIdeas, getInteriorDesignForm, getInteriorDesigners, getConstructionForm, getBidForm, getSettings, getBidSpace } = require('../controllers/customerController');
+const { 
+  getDashboard, 
+  postConstructionForm, 
+  getJobRequestStatus, 
+  getConstructionCompaniesList, 
+  getArchitects, 
+  getArchitectForm, 
+  getOngoingProjects, 
+  getDesignIdeas, 
+  getInteriorDesignForm, 
+  getInteriorDesigners, 
+  getConstructionForm, 
+  getBidForm, 
+  getSettings, 
+  getBidSpace,
+  // IMPORT NEW FAVORITES FUNCTIONS
+  getFavorites,
+  saveFavoriteDesign,
+  removeFavoriteDesign
+} = require('../controllers/customerController');
 const auth = require('../middlewares/auth'); // Import authentication middleware
 
 // Public routes (no authentication required)
@@ -21,5 +40,16 @@ router.get('/interiordesign_form', auth, getInteriorDesignForm); // Protected in
 router.get('/interior_designer', auth, getInteriorDesigners); // Protected interior designers
 router.get('/customersettings', auth, getSettings); // Protected settings
 router.get('/bidspace', auth, getBidSpace); // Protected bid space
+
+// ====================================================================
+// NEW PROTECTED FAVORITES API ROUTES (Used by EJS AJAX calls)
+// 
+// NOTE: These routes MUST be mounted under a /api/customer prefix 
+// in your main app.js or server.js file for the /api/customer/favorites 
+// URL to resolve correctly.
+// ====================================================================
+router.get('/api/customer/favorites', auth, getFavorites);
+router.post('/api/customer/favorites', auth, saveFavoriteDesign);
+router.delete('/api/customer/favorites/:id', auth, removeFavoriteDesign);
 
 module.exports = router;

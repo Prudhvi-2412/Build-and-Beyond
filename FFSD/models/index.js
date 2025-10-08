@@ -2,6 +2,37 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const Schema = mongoose.Schema;
 
+// ====================================================================
+// NEW SCHEMA FOR FAVORITE DESIGNS
+// ====================================================================
+const favoriteDesignSchema = new mongoose.Schema({
+  customerId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Customer',
+    required: true,
+  },
+  designId: {
+    type: String, // e.g., "LivingRoom-1"
+    required: true,
+  },
+  category: {
+    type: String, // e.g., "LivingRoom"
+    required: true,
+  },
+  title: {
+    type: String, // e.g., "Living Room Design 1"
+    required: true,
+  },
+  imageUrl: {
+    type: String, // The actual image link
+    required: true,
+  },
+}, { timestamps: true });
+
+favoriteDesignSchema.index({ customerId: 1, designId: 1 }, { unique: true });
+// ====================================================================
+
+
 // Customer Schema
 const customerSchema = new mongoose.Schema(
   {
@@ -479,4 +510,6 @@ module.exports = {
   Bid: mongoose.model('Bid', BidSchema),
   WorkerToCompany: mongoose.model('WorkerToCompany', jobApplicationSchema),
   CompanytoWorker: mongoose.model('CompanytoWorker', companyToWorkerSchema),
+  // EXPORT THE NEW FAVORITE DESIGN MODEL
+  FavoriteDesign: mongoose.model('FavoriteDesign', favoriteDesignSchema),
 };
