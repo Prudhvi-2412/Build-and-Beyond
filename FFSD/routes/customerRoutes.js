@@ -21,6 +21,7 @@ const {
   saveFavoriteDesign,
   removeFavoriteDesign,
 } = require("../controllers/customerController");
+const {upload} = require('../middlewares/upload')
 const auth = require('../middlewares/auth'); // Import authentication middleware
 
 // Public routes (no authentication required)
