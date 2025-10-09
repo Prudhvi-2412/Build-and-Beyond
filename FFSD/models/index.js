@@ -44,6 +44,7 @@ const companySchema = new mongoose.Schema(
     },
     description: { type: String },
     aboutCompany: { type: String },
+    aboutForCustomers: { type: String },
     whyJoinUs: { type: String },
     currentOpenings: [{ type: String }],
     specialization: [{ type: String }],

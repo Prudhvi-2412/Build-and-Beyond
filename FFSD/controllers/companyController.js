@@ -111,97 +111,130 @@ const getProjectRequests = async (req, res) => {
 
 // Add this new function to your controllers file
 const updateProjectStatusController = async (req, res) => {
-  try {
-    const { projectId } = req.params; // Get projectId from the URL (e.g., "123")
-    const { status } = req.body; // Get status from the request body (e.g., "accepted")
-    const { user_id } = req.user; // Get the companyId from the logged-in user
+  try {
+    // CORRECT: Destructure projectId directly from the req.params object
+    const { projectId } = req.params; 
+    
+    // CORRECT: Destructure status directly from the req.body object
+    const { status } = req.body; 
 
-    // Find the project by its ID and the companyId to ensure a user can only update their own projects
-    const updatedProject = await ConstructionProjectSchema.findOneAndUpdate(
-      { _id: projectId, companyId: user_id },
-      { status: status }, // The fields to update
-      { new: true } // This option returns the updated document
-    );
+    // Assuming req.user contains the logged-in user's ID as user_id
+    const { user_id } = req.user; 
 
-    if (!updatedProject) {
-      // If no project was found with that ID for that user, return a 404
-      return res.status(404).json({ error: 'Project not found or you do not have permission to update it.' });
-    }
+    const updatedProject = await ConstructionProjectSchema.findOneAndUpdate(
+      // The query now uses the correctly extracted variables
+      { _id: projectId, companyId: user_id }, 
+      { status: status }, 
+      { new: true } 
+    );
 
-    // If the update was successful, send a success response
-    res.status(200).json({ message: 'Project status updated successfully', project: updatedProject });
+    if (!updatedProject) {
+      return res.status(404).json({ error: 'Project not found or you do not have permission to update it.' });
+    }
 
-  } catch (error) {
-    console.error('Error updating project status:', error);
-    res.status(500).json({ error: 'Failed to update project status' });
-  }
+    res.status(200).json({ message: 'Project status updated successfully', project: updatedProject });
+
+  } catch (error) {
+    console.error('Error updating project status:', error);
+    res.status(500).json({ error: 'Failed to update project status' });
+  }
 };
-
 // In controllers/companyController.js
 
 const handleBidActionController = async (req, res) => {
-  try {
-    const { bidId } = req.params;
-    const { status } = req.body;
-    const { user_id } = req.user;
+  try {
+    const { bidId, status } = req.params;   // ✅ Correct destructuring
+    const { user_id } = req.user;
 
-    const bid = await Bid.findById(bidId);
+    const bid = await Bid.findById(bidId);
+    if (!bid) return res.status(404).json({ message: 'Bid not found.' });
 
-    if (!bid) {
-      return res.status(404).json({ message: 'Bid not found.' });
-    }
+    if (status === 'accepted') {
+      const newProject = new ConstructionProjectSchema({
+        projectName: bid.projectName || 'Unnamed Project',
+        customerName: bid.customerName,
+        customerId: bid.customerId,
+        customerEmail: bid.customerEmail,
+        customerPhone: bid.customerPhone,
+        projectAddress: bid.projectAddress,
+        projectLocationPincode: bid.projectLocation,
+        estimatedBudget: bid.estimatedBudget,
+        projectTimeline: bid.projectTimeline,
+        totalArea: bid.totalArea,
+        buildingType: bid.buildingType,
+        totalFloors: bid.totalFloors,
+        floors: bid.floors,
+        specialRequirements: bid.specialRequirements,
+        accessibilityNeeds: bid.accessibilityNeeds,
+        energyEfficiency: bid.energyEfficiency,
+        siteFilepaths: bid.siteFiles,
+        companyId: user_id,
+        status: 'accepted'
+      });
 
-    if (status === 'accepted') {
-    
-      // Create a new ConstructionProject, copying all relevant details
-      const newProject = new ConstructionProjectSchema({
-        // --- THIS IS THE CORRECTED PART ---
-        projectName: bid.projectName,
-        customerName: bid.customerName,
-        customerId: bid.customerId,
-        customerEmail: bid.customerEmail,     // <-- ADDED THIS
-        customerPhone: bid.customerPhone,     // <-- ADDED THIS
-        projectAddress: bid.projectAddress,
-        projectLocation: bid.projectLocation,
-        estimatedBudget: bid.estimatedBudget,
-        projectTimeline: bid.projectTimeline,
-        totalArea: bid.totalArea,
-        buildingType: bid.buildingType,
-        totalFloors: bid.totalFloors,
-        floors: bid.floors,
-        specialRequirements: bid.specialRequirements,
-        accessibilityNeeds: bid.accessibilityNeeds,
-        energyEfficiency: bid.energyEfficiency,
-        siteFiles: bid.siteFiles,
-        // --- End of corrected part ---
+      await newProject.save();
+      bid.status = 'awarded';
+      await bid.save();
 
-        companyId: user_id,
-        status: 'accepted'
-      });
+      return res.status(201).json({ message: 'Bid accepted and project created!', project: newProject });
+    }
 
-      // Now, when you save, the validation will pass
-      await newProject.save();
+    if (status === 'rejected') {
+      bid.status = 'closed';
+      await bid.save();
+      return res.status(200).json({ message: 'Bid has been rejected.' });
+    }
 
-      bid.status = 'awarded';
-      await bid.save();
-      
-      return res.status(201).json({ message: 'Bid accepted and project created!', project: newProject });
-    }
-    
-    if (status === 'rejected') {
-      bid.status = 'closed';
-      await bid.save();
-      return res.status(200).json({ message: 'Bid has been rejected.' });
-    }
+    res.status(400).json({ message: 'Invalid status provided.' });
 
-    res.status(400).json({ message: 'Invalid status provided.' });
-
-  } catch (error) {
-    // This is where the validation error was being caught
-    console.error('Error handling bid action:', error);
-    res.status(500).json({ error: 'Server error while handling bid action.' });
-  }
+  } catch (error) {
+    console.error('Error handling bid action:', error);
+    res.status(500).json({ error: 'Server error while handling bid action.' });
+  }
 };
+
+const submitBidController = async (req, res) => {
+    // 1. Get the data from the form submission
+    const { bidId, bidPrice, companyName, companyId } = req.body;
+
+    // 2. Basic validation to ensure we have the necessary data
+    if (!bidId || !bidPrice || !companyId || !companyName) {
+        // If data is missing, redirect back with an error
+        return res.redirect('/companybids?error=invalid_data');
+    }
+
+    try {
+        // 3. Find the main project document using its ID
+        const projectBid = await Bid.findById(bidId);
+
+        if (!projectBid) {
+            // If no project is found with that ID, it's an error
+            return res.redirect('/companybids?error=project_not_found');
+        }
+
+        // 4. Create the new company bid sub-document object
+        const newCompanyBid = {
+            companyId: companyId,
+            companyName: companyName,
+            bidPrice: parseFloat(bidPrice) // Ensure bidPrice is a number
+        };
+
+        // 5. Push the new bid object into the 'companyBids' array
+        projectBid.companyBids.push(newCompanyBid);
+
+        // 6. Save the parent document. This is the crucial step!
+        await projectBid.save();
+
+        // 7. Redirect back to the bids page with a success message
+        res.redirect('/companybids?success=bid_submitted');
+
+    } catch (error) {
+        console.error('Error submitting bid:', error);
+        // If a database error occurs, redirect with a server error message
+        res.redirect('/companybids?error=server_error');
+    }
+};
+
 
 const getCompanyRevenue = async (req, res) => {
   try {
@@ -242,7 +275,13 @@ const getHiring = async (req, res) => {
     const companyId = req.user.user_id;
     const workers = await Worker.find().lean();
     const processedWorkers = workers.map(worker => ({ ...worker, profileImage: worker.profileImage || `https://api.dicebear.com/9.x/male/svg?seed=${encodeURIComponent((worker.name || 'worker').replace(/\s+/g, ''))}&mouth=smile`, rating: worker.rating || 0 }));
-    const workerRequests = await WorkerToCompany.find({ companyId }).populate('workerId').lean();
+    const workerRequests = await WorkerToCompany.find({
+      companyId: companyId,
+      status: 'Pending'
+    })
+    .populate('workerId')
+    .lean();
+
     const requestedWorkersRaw = await CompanytoWorker.find({ company: companyId }).populate('worker', 'name email location profileImage').lean();
     const requestedWorkers = requestedWorkersRaw.map(request => ({ _id: request._id, positionApplying: request.position, expectedSalary: request.salary, status: request.status, location: request.location, worker: { name: request.worker?.name || 'Unknown', email: request.worker?.email || 'N/A' } }));
     res.render('company/hiring', { workers: processedWorkers, workerRequests, requestedWorkers });
@@ -250,6 +289,35 @@ const getHiring = async (req, res) => {
     console.error('Error loading hiring page:', err);
     res.status(500).send('Error loading hiring page');
   }
+};
+
+const handleWorkerRequest = async (req, res) => {
+  try {
+    const { requestId } = req.params; // The ID of the WorkerToCompany request
+    const { status } = req.body; // 'accepted' or 'rejected'
+    const companyId = req.user.user_id;
+
+    if (!['accepted', 'rejected'].includes(status)) {
+      return res.status(400).json({ error: 'Invalid status provided.' });
+    }
+
+    // Find the request and ensure it belongs to the logged-in company
+    const updatedRequest = await WorkerToCompany.findOneAndUpdate(
+      { _id: requestId, companyId: companyId },
+      { status: status }, // Update the status field
+      { new: true }      // Return the updated document
+    );
+
+    if (!updatedRequest) {
+      return res.status(404).json({ error: 'Request not found or you do not have permission.' });
+    }
+
+    res.status(200).json({ message: `Worker request has been ${status}.`, request: updatedRequest });
+
+  } catch (error) {
+    console.error('Error handling worker request:', error);
+    res.status(500).json({ error: 'Server error while handling worker request.' });
+  }
 };
 
 // START: ADD THIS NEW FUNCTION
@@ -297,9 +365,54 @@ const createHireRequest = async (req, res) => {
 };
 // END: ADD THIS NEW FUNCTION
 
+// In controllers/companyController.js
+
 const getSettings = async (req, res) => {
-  const user = await Company.findById(req.user.user_id);
-  res.render('company/company_settings', { user });
+  try {
+    const companyFromDB = await Company.findById(req.user.user_id);
+
+    if (!companyFromDB) {
+      return res.status(404).send("Company not found.");
+    }
+
+    // Format the location object into a readable string
+    let formattedLocation = 'Not specified';
+    if (companyFromDB.location && companyFromDB.location.city) {
+      formattedLocation = `${companyFromDB.location.city}, ${companyFromDB.location.state || ''}`.trim();
+      if (formattedLocation.endsWith(',')) {
+        formattedLocation = formattedLocation.slice(0, -1);
+      }
+    }
+
+    const company = {
+      workerProfile: {
+        // Using exact names from your schema
+        name: companyFromDB.companyName || 'N/A',
+        location: formattedLocation,
+        size: companyFromDB.size || 'N/A',
+        specializations: companyFromDB.specialization || [], // Corrected: specialization (singular)
+        currentOpenings: companyFromDB.currentOpenings || [],
+        about: companyFromDB.aboutCompany || '', // Corrected: aboutCompany
+        whyJoin: companyFromDB.whyJoinUs || '' // Corrected: whyJoinUs
+      },
+      customerProfile: {
+        name: companyFromDB.companyName || 'N/A',
+        location: formattedLocation,
+        projectsCompleted: companyFromDB.projectsCompleted || '0',
+        yearsInBusiness: companyFromDB.yearsInBusiness || '0',
+        about: companyFromDB.aboutForCustomers || '', // Using a single 'about' field for both for now
+        didYouKnow: companyFromDB.didYouKnow || '',
+        teamMembers: companyFromDB.teamMembers || [],
+        completedProjects: companyFromDB.completedProjects || []
+      }
+    };
+
+    res.render('company/company_settings', { company });
+  
+  } catch (error) {
+    console.error("Error in getSettings:", error);
+    res.status(500).send("An error occurred while loading settings.");
+  }
 };
 
 const getBids = async (req, res) => {
@@ -328,6 +441,62 @@ const getBids = async (req, res) => {
   }
 };
 
+// In companyController.js
+
+const updateCompanyProfile = async (req, res) => {
+    // This single function will handle BOTH profile updates.
+    // It uses req.body.profileType to know which form was submitted.
+    
+    const { profileType } = req.body;
+    const companyId = req.user.user_id;
+
+    if (!profileType) {
+        return res.status(400).json({ message: 'Profile type is required.' });
+    }
+
+    try {
+        const company = await Company.findById(companyId);
+        if (!company) {
+            return res.status(404).json({ message: 'Company not found' });
+        }
+
+        if (profileType === 'worker') {
+            // This logic is for the WORKER PROFILE (sent as JSON)
+            const { companyLocation, companySize, specializations, aboutCompany, whyJoinUs, currentOpenings } = req.body;
+            
+            if (companyLocation) company.location.city = companyLocation;
+            company.size = companySize;
+            company.specialization = specializations.split(',').map(s => s.trim());
+            company.aboutCompany = aboutCompany;
+            company.whyJoinUs = whyJoinUs;
+            company.currentOpenings = currentOpenings;
+
+        } else if (profileType === 'customer') {
+            // This logic is for the CUSTOMER PROFILE (sent as FormData)
+            const { companyLocation, projectsCompleted, yearsInBusiness, customerAboutCompany, didYouKnow, teamMembers, completedProjects } = req.body;
+
+            if (companyLocation) company.location.city = companyLocation;
+            company.projectsCompleted = projectsCompleted;
+            company.yearsInBusiness = yearsInBusiness;
+            company.aboutForCustomers = customerAboutCompany; // Assuming you want to update the main 'about'
+            company.didYouKnow = didYouKnow;
+
+            // For file uploads, req.files will be available because of multer.
+            // You would add logic here to upload images to a service like Cloudinary,
+            // get back the URLs, and then update the teamMembers/completedProjects arrays.
+            // For now, we update with the text data sent from the form.
+            if (teamMembers) company.teamMembers = JSON.parse(teamMembers);
+            if (completedProjects) company.completedProjects = JSON.parse(completedProjects);
+        }
+
+        await company.save();
+        res.json({ message: 'Profile updated successfully!' });
+
+    } catch (error) {
+        console.error('Error updating company profile:', error);
+        res.status(500).json({ message: 'Server error while updating profile.' });
+    }
+};
 // Add other company controllers like revenue, etc., if needed
 
-module.exports = { getDashboard, getOngoingProjects, getProjectRequests, updateProjectStatusController, handleBidActionController, getHiring, getSettings, getBids , getCompanyRevenue, createHireRequest };
+module.exports = { getDashboard, getOngoingProjects, getProjectRequests, updateProjectStatusController, handleBidActionController, getHiring, getSettings, getBids , getCompanyRevenue, createHireRequest,  updateCompanyProfile, handleWorkerRequest, submitBidController};

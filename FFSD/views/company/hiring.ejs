@@ -1294,47 +1294,47 @@
             });
 
             const hireForm = document.getElementById('hire-form');
-            hireForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
+hireForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
 
-                const formData = new FormData(hireForm);
-                const workerId = hireModalWorkerName.getAttribute('data-worker-id');
-                const data = {
-                    position: formData.get('position'),
-                    location: formData.get('location'),
-                    salary: parseFloat(formData.get('salary')),
-                    workerId: workerId
-                };
+    const formData = new FormData(hireForm);
+    const workerId = hireModalWorkerName.getAttribute('data-worker-id');
+    const data = {
+        position: formData.get('position'),
+        location: formData.get('location'),
+        salary: parseFloat(formData.get('salary')),
+        workerId: workerId
+    };
 
-                if (!data.position || !data.location || !data.salary || !data.workerId) {
-                    showNotification('Please fill in all fields.', 'error');
-                    return;
-                }
+    if (!data.position || !data.location || !data.salary || !data.workerId) {
+        showNotification('Please fill in all fields.', 'error');
+        return;
+    }
 
-                try {
-                    const response = await fetch('/companytoworker', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]')?.content || ''
-                        },
-                        body: JSON.stringify(data)
-                    });
+    try {
+        const response = await fetch('/companytoworker', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]')?.content || ''
+            },
+            body: JSON.stringify(data)
+        });
 
-                    const result = await response.json();
+        const result = await response.json();
 
-                    if (response.ok) {
-                        showNotification(`Hire request sent to ${hireModalWorkerName.textContent.replace('Sending hire request to ', '')} successfully!`, 'success');
-                        closeModal(hireModal);
-                        hireForm.reset();
-                    } else {
-                        showNotification('Error: ' + result.error, 'error');
-                    }
-                } catch (err) {
-                    console.error('Error submitting form:', err);
-                    showNotification('An error occurred while sending the request.', 'error');
-                }
-            });
+        if (response.ok) {
+            showNotification(`Hire request sent to ${hireModalWorkerName.textContent.replace('Sending hire request to ', '')} successfully!`, 'success');
+            closeModal(hireModal);
+            hireForm.reset();
+        } else {
+            showNotification('Error: ' + result.error, 'error');
+        }
+    } catch (err) {
+        console.error('Error submitting form:', err);
+        showNotification('An error occurred while sending the request.', 'error');
+    }
+    });
 
             cancelHireBtn.addEventListener('click', () => {
                 closeModal(hireModal);
@@ -1366,7 +1366,7 @@
             actionButtons.forEach(button => {
                 button.addEventListener('click', () => {
                     const requestId = button.getAttribute('data-request-id');
-                    const status = button.classList.contains('btn-accept') ? 'Accepted' : 'Rejected';
+                    const status = button.classList.contains('btn-accept') ? 'accepted' : 'rejected';
                     updateRequestStatus(requestId, status);
                 });
             });
@@ -1374,42 +1374,45 @@
 
         // Update Request Status via AJAX
         function updateRequestStatus(requestId, status) {
-            const card = document.querySelector(`button[data-request-id="${requestId}"]`).closest('.request-card');
-            const buttons = card.querySelectorAll('button');
-            buttons.forEach(btn => btn.disabled = true);
+    const card = document.querySelector(`button[data-request-id="${requestId}"]`).closest('.request-card');
+    const buttons = card.querySelectorAll('button');
+    buttons.forEach(btn => btn.disabled = true);
 
-            fetch('/update-company-request', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]')?.content || ''
-                },
-                body: JSON.stringify({ requestId, status })
-            })
-            .then(response => {
-                if (!response.ok) throw new Error('Network response was not ok');
-                return response.json();
-            })
-            .then(data => {
-                if (data.success) {
-                    showNotification(`Request ${status.toLowerCase()} successfully`, 'success');
-                    card.remove(); // Remove card after status update
-                    if (document.querySelectorAll('.request-card').length === 0) {
-                        document.querySelector('.request-list').innerHTML = '<p>No worker requests at this time.</p>';
-                    }
-                } else {
-                    throw new Error(data.message || 'Update failed');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                showNotification(`Failed to update: ${error.message}`, 'error');
-            })
-            .finally(() => {
-                buttons.forEach(btn => btn.disabled = false);
-            });
+    // --- START: CORRECTED FETCH CALL ---
+    fetch(`/worker-request/${requestId}`, { // 1. URL is updated to include requestId
+        method: 'PATCH', // 2. Method is now PATCH
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]')?.content || ''
+        },
+        body: JSON.stringify({ status }) // 3. Body only sends the status
+    })
+    // --- END: CORRECTED FETCH CALL ---
+
+    .then(response => {
+        // The rest of your function logic is correct and does not need to change.
+        if (!response.ok) {
+            // Try to get a more specific error message from the server
+            return response.json().then(err => { throw new Error(err.error || 'Network response was not ok') });
         }
-
+        return response.json();
+    })
+    .then(data => {
+        // I've adjusted this slightly to use the server's message for success
+        showNotification(data.message || `Request ${status.toLowerCase()} successfully`, 'success');
+        card.remove(); 
+        if (document.querySelectorAll('.request-card').length === 0) {
+            document.querySelector('.request-list').innerHTML = '<p>No worker requests at this time.</p>';
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showNotification(`Failed to update: ${error.message}`, 'error');
+    })
+    .finally(() => {
+        buttons.forEach(btn => btn.disabled = false);
+    });
+    }
         // Initialize search and filter functionality
         function initializeSearchAndFilters() {
             searchInputs.forEach(input => {

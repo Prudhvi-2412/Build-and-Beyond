@@ -599,8 +599,8 @@
         // The updateProjectStatus function we debugged earlier
         async function updateProjectStatus(bidId, status) {
         // THIS IS THE ONLY LINE TO CHANGE
-        const apiRoute = `/api/bids/${bidId}/status`; // Change "projects" to "bids"
-
+        const apiRoute = `/api/bids/${bidId}/${status}`; // Change "projects" to "bids"
+        
         console.log(`Attempting to update bid ${bidId} to status: ${status} via ${apiRoute}`);
         if (!bidId) {
             alert('Error: Bid ID is missing.');

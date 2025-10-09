@@ -213,11 +213,14 @@
         transition: background-color 0.2s ease;
     }
     /* Override for display mode to keep original row layout */
-    #customer-profile-display .team-member, #worker-profile-display .current-opening-item {
+    #customer-profile-display .team-member, #worker-profile-display .current-opening-item, #customer-profile-display .project-item {
         flex-direction: row;
         align-items: center;
         padding: 1rem 0;
         border: none;
+    }
+    #customer-profile-display .project-item {
+        align-items: flex-start;
     }
     .team-member img {
         width: 60px;
@@ -241,17 +244,9 @@
         margin-right: 1rem;
         border-radius: 6px;
     }
-    /* Override for display mode project item info alignment */
-    #customer-profile-display .project-item {
-        flex-direction: row;
-        align-items: flex-start;
-        padding: 1rem 0;
-        border: none;
-    }
     #customer-profile-display .project-info {
         flex: 1;
     }
-
     .did-you-know {
         background-color: var(--background-dark);
         padding: 1.5rem;
@@ -289,8 +284,17 @@
         min-height: 120px;
         resize: vertical;
     }
-</style>
-
+    /* Styling for dynamically added items in edit mode */
+    .dynamic-item-edit {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-top: 0.5rem;
+    }
+    .dynamic-item-edit .form-control {
+        flex-grow: 1;
+    }
+    </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -322,40 +326,39 @@
                         <div id="worker-profile-display">
                             <div class="form-group">
                                 <label>Company Name</label>
-                                <p>L&T Construction</p>
+                                <p><%= company.workerProfile.name %></p>
                             </div>
                             <div class="form-group">
                                 <label>Location</label>
-                                <p>Chennai, India</p>
+                                <p><%= company.workerProfile.location %></p>
                             </div>
                             <div class="form-group">
                                 <label>Company Size</label>
-                                <p>1000+ Employees</p>
+                                <p><%= company.workerProfile.size %> Employees</p>
                             </div>
                             <div class="form-group">
                                 <label>Specializations</label>
                                 <div class="skills-tags">
-                                    <span class="skill-tag">Commercial Construction</span>
-                                    <span class="skill-tag">High-Rise Buildings</span>
-                                    <span class="skill-tag">Infrastructure</span>
+                                    <% company.workerProfile.specializations.forEach(spec => { %>
+                                        <span class="skill-tag"><%= spec %></span>
+                                    <% }) %>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label>Current Openings</label>
-                                <div class="current-opening-item">
-                                    <h4>Project Manager</h4>
-                                </div>
-                                <div class="current-opening-item">
-                                    <h4>Site Engineer</h4>
-                                </div>
+                                <% company.workerProfile.currentOpenings.forEach(opening => { %>
+                                    <div class="current-opening-item">
+                                        <h4><%= opening %></h4>
+                                    </div>
+                                <% }) %>
                             </div>
                             <div class="form-group">
                                 <label>About the Company</label>
-                                <p>L&T Construction is a leading construction company with over 25 years of experience in delivering high-quality commercial and infrastructure projects across the country. We pride ourselves on innovation, safety, and timely project delivery.</p>
+                                <p><%= company.workerProfile.about %></p>
                             </div>
                             <div class="form-group">
                                 <label>Why Join Our Team?</label>
-                                <p>We offer competitive salaries, comprehensive benefits, opportunities for career growth, and the chance to work on landmark projects that shape skylines. Our team culture values collaboration, continuous learning, and work-life balance.</p>
+                                <p><%= company.workerProfile.whyJoin %></p>
                             </div>
                             <button id="edit-worker-profile-btn" class="btn">Edit Worker Profile</button>
                         </div>
@@ -363,53 +366,44 @@
                         <form id="worker-profile-edit" style="display: none;">
                             <div class="form-group">
                                 <label for="companyName">Company Name</label>
-                                <input type="text" id="companyName" class="form-control" value="L&T Construction" readonly>
+                                <input type="text" id="companyName" class="form-control" value="<%= company.workerProfile.name %>" readonly>
                             </div>
                             <div class="form-group">
                                 <label for="companyLocation">Location</label>
-                                <input type="text" id="companyLocation" class="form-control" value="Mumbai, India">
+                                <input type="text" id="companyLocation" class="form-control" value="<%= company.workerProfile.location %>">
                             </div>
                             <div class="form-group">
                                 <label>Company Size</label>
                                 <div class="company-size-selector">
-                                    <label class="company-size-option selected">
-                                        <input type="radio" name="companySize" value="1-10" checked> 1-10 Employees
-                                    </label>
-                                    <label class="company-size-option">
-                                        <input type="radio" name="companySize" value="11-50"> 11-50 Employees
-                                    </label>
-                                    <label class="company-size-option">
-                                        <input type="radio" name="companySize" value="51-200"> 51-200 Employees
-                                    </label>
-                                    <label class="company-size-option">
-                                        <input type="radio" name="companySize" value="201-1000"> 201-1000 Employees
-                                    </label>
-                                    <label class="company-size-option">
-                                        <input type="radio" name="companySize" value="1000+"> 1000+ Employees
-                                    </label>
+                                    <% const sizes = ["1-10", "11-50", "51-200", "201-1000", "1000+"]; %>
+                                    <% sizes.forEach(size => { %>
+                                        <label class="company-size-option <%= company.workerProfile.size === size ? 'selected' : '' %>">
+                                            <input type="radio" name="companySize" value="<%= size %>" <%= company.workerProfile.size === size ? 'checked' : '' %>> <%= size %> Employees
+                                        </label>
+                                    <% }) %>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="specializations">Specializations (comma separated)</label>
-                                <input type="text" id="specializations" class="form-control" value="Commercial Construction, High-Rise Buildings, Infrastructure">
+                                <input type="text" id="specializations" class="form-control" value="<%= company.workerProfile.specializations.join(', ') %>">
                             </div>
-                            <div class="form-group">
+                            <div class="form-group" id="openings-container">
                                 <label>Current Openings</label>
-                                <div class="current-opening-item">
-                                    <input type="text" class="form-control" value="Project Manager">
-                                </div>
-                                <div class="current-opening-item" style="margin-top: 1rem;">
-                                    <input type="text" class="form-control" value="Site Engineer">
-                                </div>
-                                <button type="button" class="btn btn-secondary" style="margin-top: 0.5rem;">+ Add Opening</button>
+                                <% company.workerProfile.currentOpenings.forEach(opening => { %>
+                                    <div class="dynamic-item-edit">
+                                        <input type="text" class="form-control" value="<%= opening %>">
+                                        <button type="button" class="btn btn-danger" onclick="this.parentElement.remove()">Remove</button>
+                                    </div>
+                                <% }) %>
+                                <button type="button" id="add-opening-btn" class="btn btn-secondary" style="margin-top: 0.5rem;">+ Add Opening</button>
                             </div>
                             <div class="form-group">
                                 <label for="aboutCompany">About the Company</label>
-                                <textarea id="aboutCompany" class="form-control">L&T Construction is a leading construction company with over 25 years of experience in delivering high-quality commercial and infrastructure projects across the country. We pride ourselves on innovation, safety, and timely project delivery.</textarea>
+                                <textarea id="aboutCompany" class="form-control"><%= company.workerProfile.about %></textarea>
                             </div>
                             <div class="form-group">
                                 <label for="whyJoinUs">Why Join Our Team?</label>
-                                <textarea id="whyJoinUs" class="form-control">We offer competitive salaries, comprehensive benefits, opportunities for career growth, and the chance to work on landmark projects that shape skylines. Our team culture values collaboration, continuous learning, and work-life balance.</textarea>
+                                <textarea id="whyJoinUs" class="form-control"><%= company.workerProfile.whyJoin %></textarea>
                             </div>
                             <button type="button" id="cancel-worker-edit-btn" class="btn btn-secondary" style="margin-right: 1rem;">Cancel</button>
                             <button type="submit" class="btn">Save Changes</button>
@@ -420,137 +414,111 @@
                         <div id="customer-profile-display">
                             <div class="form-group">
                                 <label>Company Name</label>
-                                <p>L&T Corporation</p>
+                                <p><%= company.customerProfile.name %></p>
                             </div>
                             <div class="form-group">
                                 <label>Location</label>
-                                <p>Mumbai, India</p>
+                                <p><%= company.customerProfile.location %></p>
                             </div>
                             <div class="form-group">
                                 <label>Projects Completed</label>
-                                <p>150+</p>
+                                <p><%= company.customerProfile.projectsCompleted %></p>
                             </div>
                             <div class="form-group">
                                 <label>Years in Business</label>
-                                <p>25 years</p>
+                                <p><%= company.customerProfile.yearsInBusiness %></p>
                             </div>
                             <div class="form-group">
-                                <label>About the Company</label>
-                                <p>L&T Corporation is a diversified conglomerate with interests in technology, manufacturing, and real estate development. We've been transforming ideas into reality for over two decades, creating spaces that inspire and endure.</p>
+                                <label>About Company For Customers</label>
+                                <p><%= company.customerProfile.about %></p>
                             </div>
                             <div class="form-group">
                                 <label>Team Members</label>
-                                <div class="team-member">
-                                    <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Team Member">
-                                    <div class="team-member-info">
-                                        <h4>Rajesh Kumar</h4>
-                                        <p>CEO & Founder</p>
+                                <% company.customerProfile.teamMembers.forEach(member => { %>
+                                    <div class="team-member">
+                                        <img src="<%= member.imageUrl %>" alt="<%= member.name %>">
+                                        <div class="team-member-info">
+                                            <h4><%= member.name %></h4>
+                                            <p><%= member.position %></p>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="team-member">
-                                    <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Team Member">
-                                    <div class="team-member-info">
-                                        <h4>Priya Sharma</h4>
-                                        <p>Head of Projects</p>
-                                    </div>
-                                </div>
+                                <% }) %>
                             </div>
                             <div class="form-group">
                                 <label>Completed Projects</label>
-                                <div class="project-item">
-                                    <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Project">
-                                    <div class="project-info">
-                                        <h4>Downtown Office Complex</h4>
-                                        <p>A 25-story commercial tower with retail spaces and premium office accommodations in the heart of the city.</p>
+                                <% company.customerProfile.completedProjects.forEach(project => { %>
+                                    <div class="project-item">
+                                        <img src="<%= project.imageUrl %>" alt="<%= project.title %>">
+                                        <div class="project-info">
+                                            <h4><%= project.title %></h4>
+                                            <p><%= project.description %></p>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="project-item">
-                                    <img src="https://images.unsplash.com/photo-1505692952047-1a78307da8f2?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Project">
-                                    <div class="project-info">
-                                        <h4>Tech Park Campus</h4>
-                                        <p>A 10-acre integrated technology park with office spaces, research facilities, and recreational areas.</p>
-                                    </div>
-                                </div>
+                                <% }) %>
                             </div>
                             <div class="did-you-know">
                                 <h4>Did You Know?</h4>
-                                <p>Our company was the first in the region to implement sustainable construction practices across all projects, reducing environmental impact by 40% compared to industry standards.</p>
+                                <p><%= company.customerProfile.didYouKnow %></p>
                             </div>
                             <button id="edit-customer-profile-btn" class="btn">Edit Customer Profile</button>
                         </div>
                         
                         <form id="customer-profile-edit" style="display: none;">
-                            <div class="form-group">
+                           <div class="form-group">
                                 <label for="customerCompanyName">Company Name</label>
-                                <input type="text" id="customerCompanyName" class="form-control" value="L&T Corporation" readonly>
+                                <input type="text" id="customerCompanyName" class="form-control" value="<%= company.customerProfile.name %>" readonly>
                             </div>
                             <div class="form-group">
                                 <label for="customerCompanyLocation">Location</label>
-                                <input type="text" id="customerCompanyLocation" class="form-control" value="Mumbai, India">
+                                <input type="text" id="customerCompanyLocation" class="form-control" value="<%= company.customerProfile.location %>">
                             </div>
                             <div class="form-group">
                                 <label for="projectsCompleted">Projects Completed</label>
-                                <input type="text" id="projectsCompleted" class="form-control" value="150+">
+                                <input type="text" id="projectsCompleted" class="form-control" value="<%= company.customerProfile.projectsCompleted %>">
                             </div>
                             <div class="form-group">
                                 <label for="yearsInBusiness">Years in Business</label>
-                                <input type="text" id="yearsInBusiness" class="form-control" value="25 years">
+                                <input type="text" id="yearsInBusiness" class="form-control" value="<%= company.customerProfile.yearsInBusiness %>">
                             </div>
                             <div class="form-group">
                                 <label for="customerAboutCompany">About the Company</label>
-                                <textarea id="customerAboutCompany" class="form-control">L&T Corporation is a diversified conglomerate with interests in technology, manufacturing, and real estate development. We've been transforming ideas into reality for over two decades, creating spaces that inspire and endure.</textarea>
+                                <textarea id="customerAboutCompany" class="form-control"><%= company.customerProfile.about %></textarea>
                             </div>
                             <div class="form-group" id="team-member-container">
                                 <label>Team Members</label>
-                                <div class="team-member">
-                                    <div style="display: flex; align-items: center; margin-bottom: 0.5rem;">
-                                        <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Team Member" style="margin-right: 1rem;">
-                                        <input type="file" id="member1Image" name="memberImages" style="display: none;" onchange="updateImagePreview(this)">
-                                        <button type="button" class="btn btn-secondary" onclick="document.getElementById('member1Image').click()">Change Image</button>
+                                <% company.customerProfile.teamMembers.forEach((member, index) => { %>
+                                    <div class="team-member">
+                                        <div style="display: flex; align-items: center; margin-bottom: 0.5rem;">
+                                            <img src="<%= member.imageUrl %>" alt="Team Member" style="margin-right: 1rem;">
+                                            <input type="file" id="member<%= index %>Image" name="memberImages" style="display: none;" onchange="updateImagePreview(this)">
+                                            <button type="button" class="btn btn-secondary" onclick="document.getElementById('member<%= index %>Image').click()">Change Image</button>
+                                        </div>
+                                        <input type="text" class="form-control" value="<%= member.name %>" style="margin-bottom: 0.5rem;">
+                                        <input type="text" class="form-control" value="<%= member.position %>">
+                                        <button type="button" class="btn btn-danger" style="margin-top: 0.5rem;" onclick="this.closest('.team-member').remove()">Remove</button>
                                     </div>
-                                    <input type="text" class="form-control" value="Rajesh Kumar" style="margin-bottom: 0.5rem;">
-                                    <input type="text" class="form-control" value="CEO & Founder">
-                                    <button type="button" class="btn btn-danger" style="margin-top: 0.5rem; background-color: var(--danger-color-darker);" onclick="this.closest('.team-member').remove()">Remove</button>
-                                </div>
-                                <div class="team-member" style="margin-top: 1rem;">
-                                    <div style="display: flex; align-items: center; margin-bottom: 0.5rem;">
-                                        <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Team Member" style="margin-right: 1rem;">
-                                        <input type="file" id="member2Image" name="memberImages" style="display: none;" onchange="updateImagePreview(this)">
-                                        <button type="button" class="btn btn-secondary" onclick="document.getElementById('member2Image').click()">Change Image</button>
-                                    </div>
-                                    <input type="text" class="form-control" value="Priya Sharma" style="margin-bottom: 0.5rem;">
-                                    <input type="text" class="form-control" value="Head of Projects">
-                                    <button type="button" class="btn btn-danger" style="margin-top: 0.5rem; background-color: var(--danger-color-darker);" onclick="this.closest('.team-member').remove()">Remove</button>
-                                </div>
+                                <% }) %>
                                 <button type="button" id="add-team-member-btn" class="btn btn-secondary" style="margin-top: 0.5rem;">+ Add Team Member</button>
                             </div>
                             <div class="form-group" id="project-container">
                                 <label>Completed Projects</label>
+                                <% company.customerProfile.completedProjects.forEach((project, index) => { %>
                                 <div class="project-item">
                                     <div style="display: flex; align-items: center; margin-bottom: 0.5rem;">
-                                        <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Project" style="margin-right: 1rem;">
-                                        <input type="file" id="project1Image" name="projectImages" style="display: none;" onchange="updateImagePreview(this)">
-                                        <button type="button" class="btn btn-secondary" onclick="document.getElementById('project1Image').click()">Change Image</button>
+                                        <img src="<%= project.imageUrl %>" alt="Project" style="margin-right: 1rem;">
+                                        <input type="file" id="project<%= index %>Image" name="projectImages" style="display: none;" onchange="updateImagePreview(this)">
+                                        <button type="button" class="btn btn-secondary" onclick="document.getElementById('project<%= index %>Image').click()">Change Image</button>
                                     </div>
-                                    <input type="text" class="form-control" value="Downtown Office Complex" style="margin-bottom: 0.5rem;">
-                                    <textarea class="form-control">A 25-story commercial tower with retail spaces and premium office accommodations in the heart of the city.</textarea>
-                                    <button type="button" class="btn btn-danger" style="margin-top: 0.5rem; background-color: var(--danger-color-darker);" onclick="this.closest('.project-item').remove()">Remove</button>
+                                    <input type="text" class="form-control" value="<%= project.title %>" style="margin-bottom: 0.5rem;">
+                                    <textarea class="form-control"><%= project.description %></textarea>
+                                    <button type="button" class="btn btn-danger" style="margin-top: 0.5rem;" onclick="this.closest('.project-item').remove()">Remove</button>
                                 </div>
-                                <div class="project-item" style="margin-top: 1rem;">
-                                    <div style="display: flex; align-items: center; margin-bottom: 0.5rem;">
-                                        <img src="https://images.unsplash.com/photo-1505692952047-1a78307da8f2?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Project" style="margin-right: 1rem;">
-                                        <input type="file" id="project2Image" name="projectImages" style="display: none;" onchange="updateImagePreview(this)">
-                                        <button type="button" class="btn btn-secondary" onclick="document.getElementById('project2Image').click()">Change Image</button>
-                                    </div>
-                                    <input type="text" class="form-control" value="Tech Park Campus" style="margin-bottom: 0.5rem;">
-                                    <textarea class="form-control">A 10-acre integrated technology park with office spaces, research facilities, and recreational areas.</textarea>
-                                    <button type="button" class="btn btn-danger" style="margin-top: 0.5rem; background-color: var(--danger-color-darker);" onclick="this.closest('.project-item').remove()">Remove</button>
-                                </div>
+                                <% }) %>
                                 <button type="button" id="add-project-btn" class="btn btn-secondary" style="margin-top: 0.5rem;">+ Add Project</button>
                             </div>
                             <div class="form-group">
                                 <label for="didYouKnow">Did You Know?</label>
-                                <textarea id="didYouKnow" class="form-control">Our company was the first in the region to implement sustainable construction practices across all projects, reducing environmental impact by 40% compared to industry standards.</textarea>
+                                <textarea id="didYouKnow" class="form-control"><%= company.customerProfile.didYouKnow %></textarea>
                             </div>
                             <button type="button" id="cancel-customer-edit-btn" class="btn btn-secondary" style="margin-right: 1rem;">Cancel</button>
                             <button type="submit" class="btn">Save Changes</button>
@@ -559,27 +527,27 @@
                 </div>
 
                 <div id="security" class="settings-section">
-                    <h2>Security Settings</h2>
-                    <form>
-                        <div class="form-group">
-                            <label for="currentPassword">Current Password</label>
-                            <input type="password" id="currentPassword" class="form-control">
-                        </div>
-                        <div class="form-group">
-                            <label for="newPassword">New Password</label>
-                            <input type="password" id="newPassword" class="form-control">
-                        </div>
-                        <div class="form-group">
-                            <label for="confirmPassword">Confirm New Password</label>
-                            <input type="password" id="confirmPassword" class="form-control">
-                        </div>
-                        <button type="submit" class="btn">Update Password</button>
-                        <hr style="margin: 2rem 0;">
-                    </form>
+                     <h2>Security Settings</h2>
+                     <form>
+                         <div class="form-group">
+                             <label for="currentPassword">Current Password</label>
+                             <input type="password" id="currentPassword" class="form-control">
+                         </div>
+                         <div class="form-group">
+                             <label for="newPassword">New Password</label>
+                             <input type="password" id="newPassword" class="form-control">
+                         </div>
+                         <div class="form-group">
+                             <label for="confirmPassword">Confirm New Password</label>
+                             <input type="password" id="confirmPassword" class="form-control">
+                         </div>
+                         <button type="submit" class="btn">Update Password</button>
+                         <hr style="margin: 2rem 0;">
+                     </form>
                 </div>
 
                 <div id="help-center" class="settings-section">
-                <h2>Help Center</h2>
+                    <h2>Help Center</h2>
                     <div style="margin-bottom: 2rem;">
                         <h3 style="margin-bottom: 1rem; color: var(--text-primary);">Frequently Asked Questions</h3>
                         <div style="padding: 1rem; border: 1px solid var(--border-dark); border-radius: 4px; margin-bottom: 1rem; background-color: var(--background-dark);">
@@ -651,7 +619,7 @@
                 </div>
                 <input type="text" class="form-control" value="" placeholder="New Member Name" style="margin-bottom: 0.5rem;">
                 <input type="text" class="form-control" value="" placeholder="Position/Title">
-                <button type="button" class="btn btn-danger" style="margin-top: 0.5rem; background-color: var(--danger-color-darker);" onclick="this.closest('.team-member').remove()">Remove</button>
+                <button type="button" class="btn btn-danger" style="margin-top: 0.5rem;" onclick="this.closest('.team-member').remove()">Remove</button>
             `;
             return div;
         }
@@ -666,13 +634,13 @@
             div.style.marginTop = '1rem';
             div.innerHTML = `
                 <div style="display: flex; align-items: center; margin-bottom: 0.5rem;">
-                    <img src="https://via.placeholder.com/120x80" alt="New Project" style="margin-right: 1rem;">
+                    <img src="https://via.placeholder.com/120x80" alt="New Project" style="margin-right: 1rem; width: 120px; height: 80px; border-radius: 6px; object-fit: cover;">
                     <input type="file" id="${newFileId}" name="projectImages" style="display: none;" onchange="updateImagePreview(this)">
                     <button type="button" class="btn btn-secondary" onclick="document.getElementById('${newFileId}').click()">Change Image</button>
                 </div>
                 <input type="text" class="form-control" value="" placeholder="New Project Title" style="margin-bottom: 0.5rem;">
-                <textarea class="form-control" placeholder="A brief description of the new project." style="margin-top: 0.5rem;"></textarea>
-                <button type="button" class="btn btn-danger" style="margin-top: 0.5rem; background-color: var(--danger-color-darker);" onclick="this.closest('.project-item').remove()">Remove</button>
+                <textarea class="form-control" placeholder="A brief description of the new project."></textarea>
+                <button type="button" class="btn btn-danger" style="margin-top: 0.5rem;" onclick="this.closest('.project-item').remove()">Remove</button>
             `;
             return div;
         }
@@ -792,7 +760,21 @@
                 });
             });
 
-            // --- 6. Dynamic Content Buttons (Customer Profile) ---
+            // --- 6. Dynamic Content Buttons (Worker & Customer Profiles) ---
+            const addOpeningBtn = document.getElementById('add-opening-btn');
+            const openingsContainer = document.getElementById('openings-container');
+            if(addOpeningBtn && openingsContainer) {
+                addOpeningBtn.addEventListener('click', function() {
+                    const newOpeningDiv = document.createElement('div');
+                    newOpeningDiv.className = 'dynamic-item-edit';
+                    newOpeningDiv.innerHTML = `
+                        <input type="text" class="form-control" placeholder="Job Title">
+                        <button type="button" class="btn btn-danger" onclick="this.parentElement.remove()">Remove</button>
+                    `;
+                    openingsContainer.insertBefore(newOpeningDiv, addOpeningBtn);
+                });
+            }
+
             const addTeamMemberBtn = document.getElementById('add-team-member-btn');
             const teamMemberContainer = document.getElementById('team-member-container');
             
@@ -829,10 +811,10 @@
                         specializations: document.getElementById('specializations').value,
                         aboutCompany: document.getElementById('aboutCompany').value,
                         whyJoinUs: document.getElementById('whyJoinUs').value,
-                        currentOpenings: Array.from(document.querySelectorAll('#worker-profile-edit .current-opening-item input'))
-                                         .map(input => input.value)
+                        currentOpenings: Array.from(document.querySelectorAll('#openings-container .dynamic-item-edit input'))
+                                              .map(input => input.value)
                     };
-        
+    
                     try {
                         const response = await fetch('/update-company-profile', {
                             method: 'POST',
@@ -857,18 +839,14 @@
                         if (!response.ok) {
                             throw new Error(result.message || 'Failed to update profile');
                         }
-        
-                        // On success: Update UI
-                        document.querySelector('#worker-profile-display .form-group:nth-child(2) p').textContent = formData.companyLocation;
-                        document.querySelector('#worker-profile-display .form-group:nth-child(3) p').textContent = formData.companySize + ' Employees';
-                        document.querySelector('#worker-profile-display .form-group:nth-child(4) .skills-tags').innerHTML = 
-                            formData.specializations.split(',').map(skill => 
-                                `<span class="skill-tag">${skill.trim()}</span>`
-                            ).join('');
+    
+                        // NOTE: To fully update the UI, you would ideally reload the page
+                        // or manually update every single field on the display side.
+                        // For simplicity, we just show success and toggle the view.
                         
                         workerProfileDisplay.style.display = 'block';
                         workerProfileEdit.style.display = 'none';
-                        showAlert('Worker Profile updated successfully!', 'success');
+                        showAlert('Worker Profile updated successfully! Please refresh to see all changes.', 'success');
                     } catch (error) {
                         console.error('Error:', error);
                         showAlert('Error updating worker profile: ' + error.message, 'error');
@@ -956,7 +934,7 @@
                         document.getElementById('customer-profile-display').style.display = 'block';
                         document.getElementById('customer-profile-edit').style.display = 'none';
 
-                        showAlert('Customer Profile updated successfully!', 'success');
+                        showAlert('Customer Profile updated successfully! Please refresh to see all changes.', 'success');
                         
                     } catch (error) {
                         console.error('Error:', error);
