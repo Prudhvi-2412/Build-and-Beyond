@@ -1,5 +1,6 @@
-const { Customer, Worker, ArchitectHiring, DesignRequest, ConstructionProjectSchema, Bid, Company } = require('../models/index');
+const { Customer, Worker, ArchitectHiring, DesignRequest, ConstructionProjectSchema, Bid, Company, FavoriteDesign } = require('../models/index');
 const { getTargetDate } = require('../utils/helpers');
+const mongoose = require('mongoose');
 
 const getDashboard = (req, res) => res.render('customer/customer_dashboard');
 
@@ -85,6 +86,104 @@ const getConstructionForm = (req, res) => res.render('customer/construction_form
 
 const getBidForm = (req, res) => res.render('customer/bid_form');
 
+const submitBidForm = async (req, res) => {
+  // Files are available in req.files due to multer middleware
+  const siteFiles = req.files.siteFiles || [];
+  const floorImages = req.files.floorImages || [];
+
+  // Map file arrays to their paths for saving in the database
+  const siteFilepaths = siteFiles.map((file) => file.path);
+  // Floor images will be matched to their respective floor later
+
+  const {
+    projectName,
+    customerName,
+    customerEmail,
+    customerPhone,
+    projectAddress,
+    projectLocation, // Corresponds to projectLocation Pincode in the form
+    totalArea,
+    buildingType,
+    estimatedBudget,
+    projectTimeline,
+    totalFloors,
+    specialRequirements,
+    accessibilityNeeds,
+    energyEfficiency,
+    floors, // This will be an array of objects if names are correct (floors[i][prop])
+  } = req.body;
+
+  try {
+    if (!req.user || !req.user.user_id) {
+      // Handle case where auth failed but form submitted
+      return res
+        .status(401)
+        .send("Authentication required to submit a bid request.");
+    }
+
+    let parsedFloors = floors || [];
+
+    // When using 'floors[i][prop]' naming convention with Multer,
+    // the 'floors' variable in req.body might be an array-like object or a regular array.
+    // We need to ensure it's properly structured, and map image files to the correct floor.
+    if (!Array.isArray(parsedFloors)) {
+      // Flatten the array-like structure into a clean array
+      parsedFloors = Object.values(parsedFloors);
+    }
+
+    // Map floor images to the corresponding floor based on their order of appearance
+    const finalFloors = parsedFloors.map((floor, index) => {
+      return {
+        ...floor,
+        floorArea: Number(floor.floorArea), // Ensure numbers are stored as Number
+        floorNumber: Number(floor.floorNumber),
+        // Map the image path, assuming floorImages array maintains the order of floor submissions
+        floorImagePath: floorImages[index] ? floorImages[index].path : null,
+      };
+    });
+
+    // Create new Bid document
+    const newBid = new Bid({
+      projectName,
+      customerId: req.user.user_id, // Get customer ID from authenticated user
+      customerName,
+      customerEmail,
+      customerPhone,
+      projectAddress,
+      projectLocation, // Using the Pincode field for projectLocation
+      totalArea: Number(totalArea),
+      buildingType,
+      estimatedBudget: Number(estimatedBudget) || 0,
+      projectTimeline: Number(projectTimeline) || 0,
+      totalFloors: Number(totalFloors),
+      floors: finalFloors,
+      specialRequirements,
+      accessibilityNeeds,
+      energyEfficiency,
+      siteFiles: siteFilepaths, // Save the paths of the site files
+      status: "open", // Default status as per the model
+      companyBids: [], // Start with an empty array of company bids
+    });
+
+    await newBid.save();
+
+    // // Redirect to a success page or the job status page
+    // req.flash(
+    //   "success",
+    //   "Your project request has been submitted successfully!"
+    // );
+    res.redirect("/job_status");
+  } catch (error) {
+    console.error("Error in submitBidForm:", error);
+    // Handle MongoDB validation errors or other server errors
+    res
+      .status(500)
+      .send(
+        "Error submitting project request. Please check the fields and try again."
+      );
+  }
+};
+
 const getSettings = async (req, res) => {
   try {
     const user = await Customer.findById(req.user.user_id).lean();
@@ -126,10 +225,8 @@ const postConstructionForm = async (req, res) => {
       floors
     } = req.body;
 
-    // Handle file uploads if any (e.g., siteFilepaths)
     const siteFilepaths = req.files ? req.files.map(file => file.path) : [];
 
-    // Parse floors if sent as JSON string
     let parsedFloors = [];
     if (typeof floors === 'string') {
       try {
@@ -171,7 +268,122 @@ const postConstructionForm = async (req, res) => {
   }
 };
 
+
+// ====================================================================
+// CORRECTED FAVORITES API CONTROLLERS (Using Array Operations)
+// ====================================================================
+
+/**
+ * GET /api/customer/favorites
+ * Fetches all favorited designs for the logged-in customer.
+ */
+const getFavorites = async (req, res) => {
+    try {
+        if (!req.user || !req.user.user_id) {
+            return res.status(401).json({ message: 'Unauthorized' });
+        }
+        const customerId = req.user.user_id;
+
+        // Find the single favorites document for the customer
+        const favoritesDoc = await FavoriteDesign.findOne({ customerId }).lean();
+
+        // If the document exists, return the designs array, otherwise return an empty array
+        const favorites = favoritesDoc ? favoritesDoc.designs : [];
+
+        // The front-end code expects the 'favorites' key in the response
+        res.status(200).json({ favorites });
+    } catch (error) {
+        console.error('Error fetching favorites:', error);
+        res.status(500).json({ message: 'Failed to retrieve favorites.' });
+    }
+};
+
+/**
+ * POST /api/customer/favorites
+ * Adds a new design to the customer's favorites array.
+ */
+const saveFavoriteDesign = async (req, res) => {
+    try {
+        if (!req.user || !req.user.user_id) {
+            return res.status(401).json({ message: 'Unauthorized' });
+        }
+        const customerId = req.user.user_id;
+        const { designId, category, title, imageUrl } = req.body;
+
+        if (!designId || !category || !title || !imageUrl) {
+            return res.status(400).json({ message: 'Missing required design fields.' });
+        }
+
+        // The new design object to be added to the array
+        const newDesign = { designId, category, title, imageUrl };
+
+        // Find and update: Use $addToSet to add the design only if designId doesn't exist
+        // upsert: true means if the document doesn't exist, create it.
+        const updatedDoc = await FavoriteDesign.findOneAndUpdate(
+            { customerId },
+            { $addToSet: { designs: newDesign } },
+            { new: true, upsert: true }
+        );
+
+        if (!updatedDoc) {
+             return res.status(500).json({ message: 'Failed to create or update favorites document.' });
+        }
+
+        // Return the successfully added item (the last one in the array)
+        const addedDesign = updatedDoc.designs.find(d => d.designId === designId);
+
+        res.status(201).json({ 
+            message: 'Design added to favorites!', 
+            // The front-end needs the design details back, including a unique ID for removal. 
+            // Since Mongoose arrays don't get custom IDs, we use designId for client-side tracking.
+            favorite: { ...addedDesign.toObject(), _id: addedDesign.designId } 
+        });
+
+    } catch (error) {
+        console.error('Error saving favorite design:', error);
+        res.status(500).json({ message: 'Failed to save favorite due to a server error.' });
+    }
+};
+
+/**
+ * DELETE /api/customer/favorites/:id
+ * Removes a favorite design using the designId (which the front-end now uses as _id).
+ */
+const removeFavoriteDesign = async (req, res) => {
+    try {
+        if (!req.user || !req.user.user_id) {
+            return res.status(401).json({ message: 'Unauthorized' });
+        }
+        const customerId = req.user.user_id;
+        const designIdToRemove = req.params.id; // This is the designId, e.g., "LivingRoom-1"
+
+        // Use $pull to remove the object from the 'designs' array based on its designId
+        const result = await FavoriteDesign.updateOne(
+            { customerId },
+            { $pull: { designs: { designId: designIdToRemove } } }
+        );
+
+        if (result.modifiedCount === 0 && result.matchedCount === 0) {
+            return res.status(404).json({ message: 'Favorite list not found or design not in favorites.' });
+        }
+        
+        // Ensure the deletion was successful
+        if (result.modifiedCount === 0 && result.matchedCount === 1) {
+            // This happens if the designId was not found in the array
+            return res.status(404).json({ message: 'Design not found in favorites array.' });
+        }
+
+        res.status(200).json({ message: 'Favorite design removed successfully.' });
+    } catch (error) {
+        console.error('Error removing favorite design:', error);
+        res.status(500).json({ message: 'Failed to remove favorite.' });
+    }
+};
+
+// ====================================================================
+
 module.exports = {
+  submitBidForm,
   getDashboard,
   getJobRequestStatus,
   getConstructionCompaniesList,
@@ -185,5 +397,9 @@ module.exports = {
   getBidForm,
   getSettings,
   getBidSpace,
-  postConstructionForm
+  postConstructionForm,
+  // EXPORT NEW FAVORITES FUNCTIONS
+  getFavorites,
+  saveFavoriteDesign,
+  removeFavoriteDesign
 };

@@ -2,6 +2,31 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const Schema = mongoose.Schema;
 
+// ====================================================================
+// CORRECTED SCHEMA FOR FAVORITE DESIGNS (Document-per-Customer)
+// ====================================================================
+const favoriteDesignSchema = new mongoose.Schema({
+  // This ensures only ONE favorites document can exist per customer
+  customerId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Customer',
+    required: true,
+    unique: true, 
+  },
+  designs: [{
+    designId: { type: String, required: true }, // e.g., "LivingRoom-1"
+    category: { type: String, required: true }, // e.g., "LivingRoom"
+    title: { type: String, required: true }, // e.g., "Living Room Design 1"
+    imageUrl: { type: String, required: true }, // The actual image link
+    _id: false // Prevents MongoDB from creating a sub-document ID for each design
+  }]
+}, { timestamps: true });
+
+// Note: The previous index is replaced by making customerId unique.
+
+// ====================================================================
+
+
 // Customer Schema
 const customerSchema = new mongoose.Schema(
   {
@@ -155,7 +180,7 @@ const architectHiringSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ["Pending", "Accepted", "Rejected"],
+    enum: ["Pending", "Accepted", "Rejected","Completed"],
     default: "Pending",
   },
   customer: {
@@ -226,6 +251,16 @@ const architectHiringSchema = new mongoose.Schema({
       },
     ],
   },
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now },
+  projectUpdates: [
+    {
+      updateText: { type: String, required: true },
+      updateImage: { type: String }, // URL from Cloudinary
+      createdAt: { type: Date, default: Date.now }
+    }
+  ],
+
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
 });
@@ -338,7 +373,7 @@ const designRequestSchema = new mongoose.Schema({
   customerId: { type: mongoose.Schema.Types.ObjectId, ref: 'Customer', required: false },
   workerId: { type: mongoose.Schema.Types.ObjectId, ref: 'Worker' },
   createdAt: { type: Date, default: Date.now },
-  status: { type: String, enum: ["pending", "accepted", "rejected"], default: "pending" },
+  status: { type: String, enum: ["pending", "accepted", "rejected","completed"], default: "pending" },
 });
 
 // Floor Schema for Bid
@@ -480,4 +515,6 @@ module.exports = {
   Bid: mongoose.model('Bid', BidSchema),
   WorkerToCompany: mongoose.model('WorkerToCompany', jobApplicationSchema),
   CompanytoWorker: mongoose.model('CompanytoWorker', companyToWorkerSchema),
+  // EXPORT THE NEW FAVORITE DESIGN MODEL
+  FavoriteDesign: mongoose.model('FavoriteDesign', favoriteDesignSchema),
 };

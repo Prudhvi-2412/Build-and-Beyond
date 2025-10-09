@@ -561,118 +561,84 @@
     </main>
 
     <script>
-        // DOM elements
+    document.addEventListener('DOMContentLoaded', () => {
         const jobListContainer = document.getElementById('jobList');
-        const jobDetailsPanel = document.getElementById('jobDetailsPanel');
         const emptyState = document.getElementById('emptyState');
-
-        // Show job details
+        
+        // Function to show job details
         function showJobDetails(jobId) {
-            // Update active state of job cards
             document.querySelectorAll('.job-card').forEach(card => {
                 card.classList.toggle('active', card.dataset.id === jobId);
             });
-
-            // Hide empty state and all job details
             emptyState.style.display = 'none';
             document.querySelectorAll('.job-details-content').forEach(content => {
                 content.classList.remove('active');
             });
-
-            // Show selected job details
             const selectedJob = document.querySelector(`.job-details-content[data-id="${jobId}"]`);
             if (selectedJob) {
                 selectedJob.classList.add('active');
-                
-                // Get job title from the selected job details
-                const jobTitle = selectedJob.querySelector('.details-header-left h2').textContent;
-
-                // Add event listeners to action buttons
-                const acceptButton = selectedJob.querySelector('.accept-button');
-                const denyButton = selectedJob.querySelector('.deny-button');
-
-                if (acceptButton && denyButton) {
-                    // Remove existing listeners to prevent duplicates
-                    const newAcceptButton = acceptButton.cloneNode(true);
-                    const newDenyButton = denyButton.cloneNode(true);
-                    acceptButton.replaceWith(newAcceptButton);
-                    denyButton.replaceWith(newDenyButton);
-
-                    newAcceptButton.addEventListener('click', async () => {
-                        const type = newAcceptButton.getAttribute('data-type');
-                        const id = newAcceptButton.getAttribute('data-id');
-                        if (confirm(`Are you sure you want to accept the offer for "${jobTitle}"?`)) {
-                            try {
-                                const response = await fetch(`/accept-job/${type}/${id}`, {
-                                    method: 'POST',
-                                    headers: { 'Content-Type': 'application/json' }
-                                });
-                                const result = await response.json();
-                                if (result.success) {
-                                    alert(`Congratulations! You have accepted the offer for "${jobTitle}".`);
-                                    location.reload();
-                                } else {
-                                    alert(`Error: ${result.error}`);
-                                }
-                            } catch (error) {
-                                alert('An error occurred while accepting the offer.');
-                            }
-                        }
-                    });
-
-                    newDenyButton.addEventListener('click', async () => {
-                        const type = newDenyButton.getAttribute('data-type');
-                        const id = newDenyButton.getAttribute('data-id');
-                        if (confirm(`Are you sure you want to decline the offer for "${jobTitle}"?`)) {
-                            try {
-                                const response = await fetch(`/reject-job/${type}/${id}`, {
-                                    method: 'POST',
-                                    headers: { 'Content-Type': 'application/json' }
-                                });
-                                const result = await response.json();
-                                if (result.success) {
-                                    alert(`Offer for "${jobTitle}" declined. The client has been notified.`);
-                                    location.reload();
-                                } else {
-                                    alert(`Error: ${result.error}`);
-                                }
-                            } catch (error) {
-                                alert('An error occurred while rejecting the offer.');
-                            }
-                        }
-                    });
-                }
             }
         }
 
-        // Initialize the page
-        document.addEventListener('DOMContentLoaded', () => {
-            // Add click event listeners to job cards
+        // Add click event listeners to job cards
+        document.querySelectorAll('.job-card').forEach(card => {
+            card.addEventListener('click', () => showJobDetails(card.dataset.id));
+        });
+
+        // Show first job details by default if jobs exist
+        <% if (jobs && jobs.length > 0) { %>
+            const firstJobCard = document.querySelector('.job-card');
+            if (firstJobCard) {
+                showJobDetails(firstJobCard.dataset.id);
+            }
+        <% } else { %>
+            emptyState.style.display = 'flex';
+        <% } %>
+
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
             document.querySelectorAll('.job-card').forEach(card => {
-                card.addEventListener('click', () => showJobDetails(card.dataset.id));
-            });
-
-            // Show empty state initially if no jobs
-            <% if (!jobs || jobs.length === 0) { %>
-                emptyState.style.display = 'flex';
-            <% } else { %>
-                // Show first job details by default
-                const firstJobCard = document.querySelector('.job-card');
-                if (firstJobCard) {
-                    showJobDetails(firstJobCard.dataset.id);
-                }
-            <% } %>
-
-            // Search functionality
-            document.getElementById('searchInput').addEventListener('input', (e) => {
-                const searchTerm = e.target.value.toLowerCase();
-                document.querySelectorAll('.job-card').forEach(card => {
-                    const title = card.querySelector('.job-title').textContent.toLowerCase();
-                    const summary = card.querySelector('.job-summary').textContent.toLowerCase();
-                    card.style.display = (title.includes(searchTerm) || summary.includes(searchTerm)) ? 'block' : 'none';
-                });
+                const cardText = card.textContent.toLowerCase();
+                card.style.display = cardText.includes(searchTerm) ? 'block' : 'none';
             });
         });
-    </script>
+
+        // --- THIS IS THE CORRECTED FUNCTIONALITY ---
+        async function updateJobStatus(jobId, status) {
+             try {
+                // It now calls the correct route: /jobs/:id/status
+                const response = await fetch(`/jobs/${jobId}/status`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    // This correctly sends 'interior' as the job type
+                    body: JSON.stringify({ status: status, type: 'interior' }),
+                });
+                const data = await response.json();
+                if (data.success) {
+                    alert(`Job offer ${status.toLowerCase()} successfully.`);
+                    window.location.reload();
+                } else {
+                    throw new Error(data.error || 'Failed to update status');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred: ' + error.message);
+            }
+        }
+
+        // Add event listeners to all accept/deny buttons
+        document.querySelectorAll('.accept-button, .deny-button').forEach(button => {
+            button.addEventListener('click', function(event) {
+                event.stopPropagation(); // Prevents the card click event
+                const jobId = this.dataset.id;
+                const status = this.classList.contains('accept-button') ? 'Accepted' : 'Rejected';
+                 if (confirm(`Are you sure you want to ${status.toLowerCase()} this job?`)) {
+                    updateJobStatus(jobId, status);
+                }
+            });
+        });
+    });
+</script>
 </body>
 </html>

@@ -1,25 +1,62 @@
 const express = require('express');
 const router = express.Router();
-const { getDashboard, postConstructionForm, getJobRequestStatus, getConstructionCompaniesList, getArchitects, getArchitectForm, getOngoingProjects, getDesignIdeas, getInteriorDesignForm, getInteriorDesigners, getConstructionForm, getBidForm, getSettings, getBidSpace } = require('../controllers/customerController');
+const {
+  submitBidForm,
+  getDashboard,
+  postConstructionForm,
+  getJobRequestStatus,
+  getConstructionCompaniesList,
+  getArchitects,
+  getArchitectForm,
+  getOngoingProjects,
+  getDesignIdeas,
+  getInteriorDesignForm,
+  getInteriorDesigners,
+  getConstructionForm,
+  getBidForm,
+  getSettings,
+  getBidSpace,
+  // IMPORT NEW FAVORITES FUNCTIONS
+  getFavorites,
+  saveFavoriteDesign,
+  removeFavoriteDesign,
+} = require("../controllers/customerController");
+const {upload} = require('../middlewares/upload')
 const auth = require('../middlewares/auth'); // Import authentication middleware
 
 // Public routes (no authentication required)
-router.get('/home', getDashboard); // Entry point or public dashboard
-router.get('/customerdashboard', getDashboard); // Specific dashboard view
-router.get('/architect', getArchitects); // Public list of architects
-router.get('/architect_form', getArchitectForm); // Public architect form
-router.get('/design_ideas', getDesignIdeas); // Public design ideas
-router.get('/constructionform', getConstructionForm); // Public construction form
-router.get('/bidform', getBidForm); // Public bid form
+router.get('/home', getDashboard);
+router.get('/customerdashboard', getDashboard);
+router.get('/architect', getArchitects);
+router.get('/architect_form', getArchitectForm);
+router.get('/design_ideas', getDesignIdeas);
+router.get("/constructionform", getConstructionForm);
+router.post("/constructionform", auth, postConstructionForm);
+router.post(
+  "/bidForm_Submit",
+  auth,
+  upload.fields([
+    { name: "siteFiles", maxCount: 10 },
+    { name: "floorImages", maxCount: 100 },
+  ]),
+  submitBidForm
+);
+router.get('/bidform', getBidForm);
 
 // Protected routes (require authentication)
-router.post('/constructionform', auth, postConstructionForm); // Protected form submission
-router.get('/job_status', auth, getJobRequestStatus); // Protected job status
-router.get('/construction_companies_list', auth, getConstructionCompaniesList); // Protected companies list
-router.get('/ongoing_projects', auth, getOngoingProjects); // Protected ongoing projects
-router.get('/interiordesign_form', auth, getInteriorDesignForm); // Protected interior design form
-router.get('/interior_designer', auth, getInteriorDesigners); // Protected interior designers
-router.get('/customersettings', auth, getSettings); // Protected settings
-router.get('/bidspace', auth, getBidSpace); // Protected bid space
+router.post('/constructionform', auth, postConstructionForm);
+router.get('/job_status', auth, getJobRequestStatus);
+router.get('/construction_companies_list', auth, getConstructionCompaniesList);
+router.get('/ongoing_projects', auth, getOngoingProjects);
+router.get('/interiordesign_form', auth, getInteriorDesignForm);
+router.get('/interior_designer', auth, getInteriorDesigners);
+router.get('/customersettings', auth, getSettings);
+router.get('/bidspace', auth, getBidSpace);
+
+
+// FAVORITES API ROUTES (Same paths, but linked to new array logic)
+router.get('/api/customer/favorites', auth, getFavorites);
+router.post('/api/customer/favorites', auth, saveFavoriteDesign);
+router.delete('/api/customer/favorites/:id', auth, removeFavoriteDesign);
 
 module.exports = router;
