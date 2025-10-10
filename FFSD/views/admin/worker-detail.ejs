@@ -1,0 +1,345 @@
+<!-- worker-detail.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Worker Details - Admin</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            padding: 20px 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            color: #2d3748;
+            font-size: 24px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s;
+        }
+
+        .btn-back {
+            background: #6b7280;
+            color: white;
+        }
+
+        .btn-back:hover {
+            background: #4b5563;
+            transform: translateY(-2px);
+        }
+
+        .btn-delete {
+            background: #ef4444;
+            color: white;
+            margin-left: 10px;
+        }
+
+        .btn-delete:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
+        }
+
+        .detail-card {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .detail-header {
+            border-bottom: 3px solid #8b5cf6;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        .detail-header h2 {
+            color: #1f2937;
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        .detail-header .subtitle {
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+        }
+
+        .detail-item {
+            padding: 15px;
+            background: #f9fafb;
+            border-radius: 10px;
+            border-left: 4px solid #8b5cf6;
+        }
+
+        .detail-item label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .detail-item .value {
+            font-size: 16px;
+            color: #1f2937;
+            font-weight: 500;
+        }
+
+        .section-title {
+            font-size: 20px;
+            color: #1f2937;
+            margin: 40px 0 20px 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .alert {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .alert-info {
+            background: #dbeafe;
+            color: #1e40af;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        .list-item {
+            background: #f3f4f6;
+            padding: 10px 15px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+        }
+
+        img {
+            max-width: 100px;
+            height: auto;
+            border-radius: 8px;
+        }
+
+        .projects-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+        }
+
+        .project-card {
+            background: #f9fafb;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #8b5cf6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Worker Details</h1>
+            <div>
+                <a href="/admindashboard" class="btn btn-back">Back to Dashboard</a>
+                <form method="POST" action="/admin/workers/<%= worker._id %>?_method=DELETE" style="display: inline;">
+                    <button type="submit" class="btn btn-delete" onclick="return confirm('Are you sure?')">Delete</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="detail-card">
+            <div class="detail-header">
+                <h2><%= worker.name %></h2>
+                <div class="subtitle">Worker ID: <%= worker._id %> | Role: <%= worker.role %> | Availability: <%= worker.availability %></div>
+            </div>
+
+            <% if (typeof message !== 'undefined') { %>
+                <div class="alert alert-info"><%= message %></div>
+            <% } %>
+
+            <div class="section-title">Personal Information</div>
+            <div class="detail-grid">
+                <div class="detail-item">
+                    <label>Email</label>
+                    <div class="value"><%= worker.email %></div>
+                </div>
+                <div class="detail-item">
+                    <label>Phone</label>
+                    <div class="value"><%= worker.phone %></div>
+                </div>
+                <div class="detail-item">
+                    <label>Date of Birth</label>
+                    <div class="value"><%= new Date(worker.dob).toLocaleDateString() %></div>
+                </div>
+                <div class="detail-item">
+                    <label>Aadhaar Number</label>
+                    <div class="value"><%= worker.aadharNumber %></div>
+                </div>
+                <% if (worker.profileImage) { %>
+                <div class="detail-item full-width">
+                    <label>Profile Image</label>
+                    <div class="value"><img src="<%= worker.profileImage %>" alt="Profile"></div>
+                </div>
+                <% } %>
+            </div>
+
+            <div class="section-title">Professional Information</div>
+            <div class="detail-grid">
+                <div class="detail-item">
+                    <label>Specialization</label>
+                    <div class="value"><%= worker.specialization %></div>
+                </div>
+                <div class="detail-item">
+                    <label>Experience (Years)</label>
+                    <div class="value"><%= worker.experience %></div>
+                </div>
+                <div class="detail-item">
+                    <label>Professional Title</label>
+                    <div class="value"><%= worker.professionalTitle || 'N/A' %></div>
+                </div>
+                <div class="detail-item">
+                    <label>Rating</label>
+                    <div class="value"><%= worker.rating %> / 5</div>
+                </div>
+                <div class="detail-item">
+                    <label>Is Architect</label>
+                    <div class="value"><%= worker.isArchitect ? 'Yes' : 'No' %></div>
+                </div>
+                <div class="detail-item full-width">
+                    <label>About</label>
+                    <div class="value"><%= worker.about || 'N/A' %></div>
+                </div>
+            </div>
+
+            <div class="section-title">Specialties</div>
+            <div class="detail-grid">
+                <div class="detail-item full-width">
+                    <label>Specialties</label>
+                    <div class="value">
+                        <% if (worker.specialties && worker.specialties.length > 0) { %>
+                            <ul style="list-style: none;">
+                                <% worker.specialties.forEach(specialty => { %>
+                                    <li class="list-item"><%= specialty %></li>
+                                <% }); %>
+                            </ul>
+                        <% } else { %>
+                            None
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-title">Services Offered</div>
+            <div class="detail-grid">
+                <div class="detail-item full-width">
+                    <label>Services</label>
+                    <div class="value">
+                        <% if (worker.servicesOffered && worker.servicesOffered.length > 0) { %>
+                            <ul style="list-style: none;">
+                                <% worker.servicesOffered.forEach(service => { %>
+                                    <li class="list-item"><%= service %></li>
+                                <% }); %>
+                            </ul>
+                        <% } else { %>
+                            None
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-title">Projects</div>
+            <div class="projects-list">
+                <% if (worker.projects && worker.projects.length > 0) { %>
+                    <% worker.projects.forEach(project => { %>
+                        <div class="project-card">
+                            <div class="detail-item">
+                                <label>Project Name</label>
+                                <div class="value"><%= project.name %></div>
+                            </div>
+                            <div class="detail-item">
+                                <label>Year</label>
+                                <div class="value"><%= project.year %></div>
+                            </div>
+                            <div class="detail-item">
+                                <label>Location</label>
+                                <div class="value"><%= project.location %></div>
+                            </div>
+                            <div class="detail-item full-width">
+                                <label>Description</label>
+                                <div class="value"><%= project.description %></div>
+                            </div>
+                            <% if (project.image) { %>
+                            <div class="detail-item">
+                                <label>Image</label>
+                                <div class="value"><img src="<%= project.image %>" alt="Project"></div>
+                            </div>
+                            <% } %>
+                        </div>
+                    <% }); %>
+                <% } else { %>
+                    <p>No projects added.</p>
+                <% } %>
+            </div>
+
+            <div class="section-title">Certificates</div>
+            <div class="detail-grid">
+                <div class="detail-item full-width">
+                    <label>Certificate Files</label>
+                    <div class="value">
+                        <% if (worker.certificateFiles && worker.certificateFiles.length > 0) { %>
+                            <ul style="list-style: none;">
+                                <% worker.certificateFiles.forEach(file => { %>
+                                    <li class="list-item"><a href="<%= file %>" target="_blank">View Certificate</a></li>
+                                <% }); %>
+                            </ul>
+                        <% } else { %>
+                            None
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
