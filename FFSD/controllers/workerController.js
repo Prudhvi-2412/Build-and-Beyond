@@ -1,5 +1,6 @@
 const { Worker, ArchitectHiring, DesignRequest, Company, CompanytoWorker, WorkerToCompany } = require('../models');
 const mongoose = require("mongoose");
+const { findOrCreateChatRoom } = require('./chatController'); // NEW: Import the chat utility
 
 // controllers/workerController.js
 
@@ -390,7 +391,12 @@ const updateJobStatus = async (req, res) => {
 
     job.status = status; // This now saves the correctly cased status
     await job.save();
-
+    
+    // NEW: Find or create chat room immediately upon 'Accepted' status update
+    if (status === 'Accepted' || status === 'accepted') {
+      await findOrCreateChatRoom(job._id, type);
+    }
+    
     res.json({ success: true, message: `Job has been ${status.toLowerCase()}.` });
 
   } catch (error) {
@@ -407,23 +413,44 @@ const getOngoingProjects = async (req, res) => {
     }
 
     let allProjects = [];
+    let rawProjects = []; 
+
     if (worker.isArchitect) {
         // Fetch all Architect jobs that are Accepted, Completed, OR Rejected
-        allProjects = await ArchitectHiring.find({ 
+        rawProjects = await ArchitectHiring.find({ 
             worker: workerId, 
             status: { $in: ['Accepted', 'Completed', 'Rejected'] } 
         }).lean();
+        
+        // NEW: Add chat ID to projects
+        allProjects = await Promise.all(rawProjects.map(async (project) => {
+            if (project.status === 'Accepted') {
+                const chatRoom = await findOrCreateChatRoom(project._id, 'architect');
+                return { ...project, projectType: 'architect', chatId: chatRoom ? chatRoom.roomId : null };
+            }
+            return { ...project, projectType: 'architect', chatId: null };
+        }));
+
     } else {
         // Fetch all Interior Design jobs that are accepted, completed, OR rejected
-        allProjects = await DesignRequest.find({ 
+        rawProjects = await DesignRequest.find({ 
             workerId: workerId, 
             status: { $in: ['accepted', 'completed', 'rejected'] } 
         }).lean();
+
+        // NEW: Add chat ID to projects
+        allProjects = await Promise.all(rawProjects.map(async (project) => {
+            if (project.status === 'accepted') {
+                const chatRoom = await findOrCreateChatRoom(project._id, 'interior');
+                return { ...project, projectType: 'interior', chatId: chatRoom ? chatRoom.roomId : null };
+            }
+            return { ...project, projectType: 'interior', chatId: null };
+        }));
     }
 
     res.render('worker/worker_ongoing_projects', { 
       user: worker, 
-      projects: allProjects,
+      projects: allProjects, 
       activePage: 'ongoing' 
     });
 

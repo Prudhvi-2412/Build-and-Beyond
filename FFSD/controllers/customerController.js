@@ -1,15 +1,36 @@
 const { Customer, Worker, ArchitectHiring, DesignRequest, ConstructionProjectSchema, Bid, Company, FavoriteDesign } = require('../models/index');
 const { getTargetDate } = require('../utils/helpers');
 const mongoose = require('mongoose');
+const { findOrCreateChatRoom } = require('./chatController'); // NEW: Import the chat utility
 
 const getDashboard = (req, res) => res.render('customer/customer_dashboard');
 
 const getJobRequestStatus = async (req, res) => {
   try {
     if (!req.user || !req.user.user_id) return res.status(401).send('Unauthorized');
-    const architectApplications = await ArchitectHiring.find({ customer: req.user.user_id }).lean();
-    const interiorApplications = await DesignRequest.find({ customerId: req.user.user_id }).lean();
+    
+    // Fetch raw applications
+    const rawArchitectApplications = await ArchitectHiring.find({ customer: req.user.user_id }).lean();
+    const rawInteriorApplications = await DesignRequest.find({ customerId: req.user.user_id }).lean();
     const companyApplications = await ConstructionProjectSchema.find({ customerId: req.user.user_id }).lean();
+
+    // NEW: Map applications to include chat room information
+    const architectApplications = await Promise.all(rawArchitectApplications.map(async (app) => {
+        if (app.status === 'Accepted' && app.worker) { // Check status and worker assignment
+            const chatRoom = await findOrCreateChatRoom(app._id, 'architect');
+            return { ...app, chatId: chatRoom ? chatRoom.roomId : null };
+        }
+        return app;
+    }));
+
+    const interiorApplications = await Promise.all(rawInteriorApplications.map(async (app) => {
+        if (app.status === 'accepted' && app.workerId) { // Check status and worker assignment
+            const chatRoom = await findOrCreateChatRoom(app._id, 'interior');
+            return { ...app, chatId: chatRoom ? chatRoom.roomId : null };
+        }
+        return app;
+    }));
+
     res.render('customer/Job_Status', { architectApplications, interiorApplications, companyApplications });
   } catch (error) {
     console.error('Error fetching job request status:', error);
