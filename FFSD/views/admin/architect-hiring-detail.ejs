@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Architect Hiring Details - Admin</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container { max-width: 1100px; margin: 0 auto; }
+        .header {
+            background: white;
+            padding: 20px 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header h1 { color: #2d3748; font-size: 24px; }
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s;
+        }
+        .btn-back { background: #6b7280; color: white; }
+        .btn-back:hover { background: #4b5563; transform: translateY(-2px); }
+        .btn-delete { background: #ef4444; color: white; margin-left: 10px; }
+        .btn-delete:hover { background: #dc2626; transform: translateY(-2px); }
+        .detail-card {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        .detail-header {
+            border-bottom: 3px solid #f59e0b;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        .detail-header h2 { color: #1f2937; font-size: 28px; margin-bottom: 5px; }
+        .detail-header .subtitle { color: #6b7280; font-size: 14px; }
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+        }
+        .detail-item {
+            padding: 15px;
+            background: #f9fafb;
+            border-radius: 10px;
+            border-left: 4px solid #f59e0b;
+        }
+        .detail-item label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+        .detail-item .value { font-size: 16px; color: #1f2937; font-weight: 500; }
+        .section-title {
+            font-size: 20px;
+            color: #1f2937;
+            margin: 40px 0 20px 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+        .badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+        }
+        .badge.Pending { background: #fef3c7; color: #92400e; }
+        .badge.Accepted { background: #d1fae5; color: #065f46; }
+        .badge.Rejected { background: #fee2e2; color: #991b1b; }
+        .badge.Completed { background: #dbeafe; color: #1e3a8a; }
+        .full-width { grid-column: 1 / -1; }
+        .floor-card {
+            background: #f9fafb;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 3px solid #f59e0b;
+        }
+        .image-preview {
+            max-width: 200px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏗️ Architect Hiring Details</h1>
+            <div>
+                <a href="/admindashboard" class="btn btn-back">← Back to Dashboard</a>
+                <button class="btn btn-delete" onclick="deleteHiring('<%= hiring._id %>')">🗑️ Delete</button>
+            </div>
+        </div>
+
+        <div class="detail-card">
+            <div class="detail-header">
+                <h2><%= hiring.projectName %></h2>
+                <p class="subtitle">Request ID: <%= hiring._id %></p>
+            </div>
+
+            <h3 class="section-title">Status & Basic Info</h3>
+            <div class="detail-grid">
+                <div class="detail-item">
+                    <label>Status</label>
+                    <div class="value"><span class="badge <%= hiring.status %>"><%= hiring.status %></span></div>
+                </div>
+                <div class="detail-item">
+                    <label>Created Date</label>
+                    <div class="value"><%= new Date(hiring.createdAt).toLocaleDateString() %></div>
+                </div>
+                <div class="detail-item">
+                    <label>Budget</label>
+                    <div class="value"><%= hiring.additionalDetails?.budget || 'Not specified' %></div>
+                </div>
+                <div class="detail-item">
+                    <label>Target Completion</label>
+                    <div class="value">
+                        <%= hiring.additionalDetails?.completionDate ? new Date(hiring.additionalDetails.completionDate).toLocaleDateString() : 'Not specified' %>
+                    </div>
+                </div>
+            </div>
+
+            <h3 class="section-title">Customer Details</h3>
+            <div class="detail-grid">
+                <div class="detail-item">
+                    <label>Full Name</label>
+                    <div class="value"><%= hiring.customerDetails.fullName %></div>
+                </div>
+                <div class="detail-item">
+                    <label>Email</label>
+                    <div class="value"><%= hiring.customerDetails.email %></div>
+                </div>
+                <div class="detail-item">
+                    <label>Contact Number</label>
+                    <div class="value"><%= hiring.customerDetails.contactNumber %></div>
+                </div>
+            </div>
+
+            <h3 class="section-title">Customer Address</h3>
+            <div class="detail-grid">
+                <div class="detail-item">
+                    <label>Street Address</label>
+                    <div class="value"><%= hiring.customerAddress.streetAddress %></div>
+                </div>
+                <div class="detail-item">
+                    <label>City</label>
+                    <div class="value"><%= hiring.customerAddress.city %></div>
+                </div>
+                <div class="detail-item">
+                    <label>State</label>
+                    <div class="value"><%= hiring.customerAddress.state %></div>
+                </div>
+                <div class="detail-item">
+                    <label>Zip Code</label>
+                    <div class="value"><%= hiring.customerAddress.zipCode %></div>
+                </div>
+            </div>
+
+            <h3 class="section-title">Plot Information</h3>
+            <div class="detail-grid">
+                <div class="detail-item">
+                    <label>Plot Location</label>
+                    <div class="value"><%= hiring.plotInformation.plotLocation %></div>
+                </div>
+                <div class="detail-item">
+                    <label>Plot Size</label>
+                    <div class="value"><%= hiring.plotInformation.plotSize %></div>
+                </div>
+                <div class="detail-item">
+                    <label>Plot Orientation</label>
+                    <div class="value"><%= hiring.plotInformation.plotOrientation %></div>
+                </div>
+            </div>
+
+            <h3 class="section-title">Design Requirements</h3>
+            <div class="detail-grid">
+                <div class="detail-item">
+                    <label>Design Type</label>
+                    <div class="value"><%= hiring.designRequirements.designType %></div>
+                </div>
+                <div class="detail-item">
+                    <label>Architectural Style</label>
+                    <div class="value"><%= hiring.designRequirements.architecturalStyle %></div>
+                </div>
+                <div class="detail-item">
+                    <label>Number of Floors</label>
+                    <div class="value"><%= hiring.designRequirements.numFloors %></div>
+                </div>
+                <% if (hiring.designRequirements.specialFeatures) { %>
+                <div class="detail-item full-width">
+                    <label>Special Features</label>
+                    <div class="value"><%= hiring.designRequirements.specialFeatures %></div>
+                </div>
+                <% } %>
+            </div>
+
+            <% if (hiring.designRequirements.floorRequirements && hiring.designRequirements.floorRequirements.length > 0) { %>
+            <h3 class="section-title">Floor Requirements</h3>
+            <% hiring.designRequirements.floorRequirements.forEach(floor => { %>
+                <div class="floor-card">
+                    <strong>Floor <%= floor.floorNumber %>:</strong> <%= floor.details || 'No details provided' %>
+                </div>
+            <% }) %>
+            <% } %>
+
+            <% if (hiring.worker) { %>
+            <h3 class="section-title">Assigned Worker</h3>
+            <div class="detail-grid">
+                <div class="detail-item">
+                    <label>Worker Name</label>
+                    <div class="value"><%= hiring.worker.name %></div>
+                </div>
+                <div class="detail-item">
+                    <label>Worker Email</label>
+                    <div class="value"><%= hiring.worker.email %></div>
+                </div>
+            </div>
+            <% } %>
+
+            <h3 class="section-title">Timestamps</h3>
+            <div class="detail-grid">
+                <div class="detail-item">
+                    <label>Created At</label>
+                    <div class="value"><%= new Date(hiring.createdAt).toLocaleString() %></div>
+                </div>
+                <div class="detail-item">
+                    <label>Last Updated</label>
+                    <div class="value"><%= new Date(hiring.updatedAt).toLocaleString() %></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function deleteHiring(id) {
+            if (confirm('Are you sure you want to delete this architect hiring request?')) {
+                fetch(`/admin/delete-architectHiring/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json' }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Architect hiring deleted successfully');
+                        window.location.href = '/admindashboard';
+                    } else {
+                        alert('Error: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error deleting record');
+                });
+            }
+        }
+    </script>
+</body>
+</html>
