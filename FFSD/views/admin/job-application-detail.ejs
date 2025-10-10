@@ -1,0 +1,258 @@
+<!-- job-application-detail.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Application Details - Admin</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            padding: 20px 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            color: #2d3748;
+            font-size: 24px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s;
+        }
+
+        .btn-back {
+            background: #6b7280;
+            color: white;
+        }
+
+        .btn-back:hover {
+            background: #4b5563;
+            transform: translateY(-2px);
+        }
+
+        .btn-delete {
+            background: #ef4444;
+            color: white;
+            margin-left: 10px;
+        }
+
+        .btn-delete:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
+        }
+
+        .detail-card {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .detail-header {
+            border-bottom: 3px solid #8b5cf6;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        .detail-header h2 {
+            color: #1f2937;
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        .detail-header .subtitle {
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+        }
+
+        .detail-item {
+            padding: 15px;
+            background: #f9fafb;
+            border-radius: 10px;
+            border-left: 4px solid #8b5cf6;
+        }
+
+        .detail-item label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .detail-item .value {
+            font-size: 16px;
+            color: #1f2937;
+            font-weight: 500;
+        }
+
+        .section-title {
+            font-size: 20px;
+            color: #1f2937;
+            margin: 40px 0 20px 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .alert {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .alert-info {
+            background: #dbeafe;
+            color: #1e40af;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        .list-item {
+            background: #f3f4f6;
+            padding: 10px 15px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Job Application Details</h1>
+            <div>
+                <a href="/admindashboard" class="btn btn-back">Back to Dashboard</a>
+                <form method="POST" action="/admin/job-applications/<%= application._id %>?_method=DELETE" style="display: inline;">
+                    <button type="submit" class="btn btn-delete" onclick="return confirm('Are you sure?')">Delete</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="detail-card">
+            <div class="detail-header">
+                <h2>Application for <%= application.positionApplying %> at <%= application.compName %></h2>
+                <div class="subtitle">Application ID: <%= application._id %> | Status: <%= application.status %> | Applied: <%= new Date(application.createdAt).toLocaleDateString() %></div>
+            </div>
+
+            <% if (typeof message !== 'undefined') { %>
+                <div class="alert alert-info"><%= message %></div>
+            <% } %>
+
+            <div class="section-title">Applicant Information</div>
+            <div class="detail-grid">
+                <div class="detail-item">
+                    <label>Full Name</label>
+                    <div class="value"><%= application.fullName %></div>
+                </div>
+                <div class="detail-item">
+                    <label>Email</label>
+                    <div class="value"><%= application.email %></div>
+                </div>
+                <div class="detail-item">
+                    <label>Location</label>
+                    <div class="value"><%= application.location %></div>
+                </div>
+                <div class="detail-item">
+                    <label>LinkedIn</label>
+                    <div class="value"><a href="<%= application.linkedin %>" target="_blank"><%= application.linkedin || 'N/A' %></a></div>
+                </div>
+            </div>
+
+            <div class="section-title">Application Details</div>
+            <div class="detail-grid">
+                <div class="detail-item">
+                    <label>Experience (Years)</label>
+                    <div class="value"><%= application.experience %></div>
+                </div>
+                <div class="detail-item">
+                    <label>Expected Salary</label>
+                    <div class="value">$<%= application.expectedSalary %></div>
+                </div>
+                <div class="detail-item">
+                    <label>Position Applying For</label>
+                    <div class="value"><%= application.positionApplying %></div>
+                </div>
+                <div class="detail-item">
+                    <label>Company</label>
+                    <div class="value"><%= application.compName %></div>
+                </div>
+                <div class="detail-item">
+                    <label>Terms Agreed</label>
+                    <div class="value"><%= application.termsAgree ? 'Yes' : 'No' %></div>
+                </div>
+                <div class="detail-item full-width">
+                    <label>Work Experience</label>
+                    <div class="value"><%= application.workExperience %></div>
+                </div>
+            </div>
+
+            <div class="section-title">Primary Skills</div>
+            <div class="detail-grid">
+                <div class="detail-item full-width">
+                    <label>Skills</label>
+                    <div class="value">
+                        <% if (application.primarySkills && application.primarySkills.length > 0) { %>
+                            <ul style="list-style: none;">
+                                <% application.primarySkills.forEach(skill => { %>
+                                    <li class="list-item"><%= skill %></li>
+                                <% }); %>
+                            </ul>
+                        <% } else { %>
+                            None
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-title">Documents</div>
+            <div class="detail-grid">
+                <div class="detail-item full-width">
+                    <label>Resume</label>
+                    <div class="value"><a href="<%= application.resume %>" target="_blank">View Resume</a></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
