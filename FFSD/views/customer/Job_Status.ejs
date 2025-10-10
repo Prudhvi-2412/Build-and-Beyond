@@ -214,6 +214,19 @@
                 grid-template-columns: 1fr;
             }
         }
+        .application{
+            display: flex;
+            flex-direction: column;
+        }
+        .appliaction-data-section{
+            display: flex;
+            flex-wrap: wrap;
+            flex-direction: row;
+        }
+        .application-data{
+            width: 20vw;
+            padding: 0px 10px;
+        }
     </style>
 </head>
 <body>
@@ -233,55 +246,67 @@
             <% if (architectApplications && architectApplications.length > 0) { %>
                 <% architectApplications.forEach(function(app) { %>
                     <div class="application architect-app">
-                        <div class="status architect-status"><%= app.status %></div>
-                        <h3>
-                            <span class="project-name"><%= app.projectName %></span>
-                            <% if (app.worker && app.worker.name) { %>
-                                with <span><%= app.worker.name %></span>
-                            <% } %>
-                        </h3>
-                        <div class="date-info">Submitted: <%= new Date(app.createdAt).toLocaleDateString() %></div>
-                        
-                        <div class="section-title">Customer Details</div>
-                        <p><strong>Name:</strong> <%= app.customerDetails.fullName %></p>
-                        <p><strong>Email:</strong> <%= app.customerDetails.email %></p>
-                        <p><strong>Contact:</strong> <%= app.customerDetails.contactNumber %></p>
-                     
-                        <div class="section-title">Customer Address</div>
-                        <p><strong>Street:</strong> <%= app.customerAddress.streetAddress %></p>
-                        <p><strong>City:</strong> <%= app.customerAddress.city %></p>
-                        <p><strong>State:</strong> <%= app.customerAddress.state %></p>
-                        <p><strong>Zip Code:</strong> <%= app.customerAddress.zipCode %></p>
-                        
-                        <div class="section-title">Plot Information</div>
-                        <p><strong>Location/Address:</strong> <%= app.plotInformation.plotLocation %></p>
-                        <p><strong>Plot Size:</strong> <%= app.plotInformation.plotSize %></p>
-                        <p><strong>Plot Orientation:</strong> <%= app.plotInformation.plotOrientation %></p>
-
-                        <div class="section-title">Design Requirements</div>
-                        <p><strong>Type of Design:</strong> <%= app.designRequirements.designType %></p>
-                        <p><strong>Number of Floors:</strong> <%= app.designRequirements.numFloors %></p>
-                        <p><strong>Special Features:</strong> <%= app.designRequirements.specialFeatures || 'None specified' %></p>
-                        <p><strong>Preferred Architectural Style:</strong> <%= app.designRequirements.architecturalStyle %></p>
-                        
-                        <% if (app.designRequirements.floorRequirements && app.designRequirements.floorRequirements.length > 0) { %>
-                            <div class="section-title">Floor Requirements</div>
-                            <% app.designRequirements.floorRequirements.forEach(function(floor) { %>
-                                <p><strong>Floor <%= floor.floorNumber %>:</strong> <%= floor.details %></p>
-                            <% }); %>
-                        <% } %>
-
-                        <div class="section-title">Additional Details</div>
-                        <p><strong>Budget:</strong> <%= app.additionalDetails.budget || 'Not specified' %></p>
-                        <% if (app.additionalDetails.completionDate) { %>
-                            <p><strong>Preferred Completion Date:</strong> <%= new Date(app.additionalDetails.completionDate).toLocaleDateString() %></p>
-                        <% } else { %>
-                            <p><strong>Preferred Completion Date:</strong> Not specified</p>
-                        <% } %>
-                        
-                        <% if (app.additionalDetails.referenceImages && app.additionalDetails.referenceImages.length > 0) { %>
-                            <p><strong>Reference Images:</strong> <%= app.additionalDetails.referenceImages.length %> image(s) uploaded</p>
-                        <% } %>
+                        <div class="application-heading-section">
+                            <div class="status architect-status"><%= app.status %></div>
+                            <h3>
+                                <span class="project-name"><%= app.projectName %></span>
+                                <% if (app.worker && app.worker.name) { %>
+                                    with <span><%= app.worker.name %></span>
+                                <% } %>
+                            </h3>
+                            <div class="date-info">Submitted: <%= new Date(app.createdAt).toLocaleDateString() %></div>    
+                        </div>
+                        <div class="appliaction-data-section">
+                            <div class="application-data">
+                                <div class="section-title">Customer Details</div>
+                                <p><strong>Name:</strong> <%= app.customerDetails.fullName %></p>
+                                <p><strong>Email:</strong> <%= app.customerDetails.email %></p>
+                                <p><strong>Contact:</strong> <%= app.customerDetails.contactNumber %></p>
+                            </div>
+    
+                            <div class="application-data">
+                                <div class="section-title">Customer Address</div>
+                                <p><strong>Street:</strong> <%= app.customerAddress.streetAddress %></p>
+                                <p><strong>City:</strong> <%= app.customerAddress.city %></p>
+                                <p><strong>State:</strong> <%= app.customerAddress.state %></p>
+                                <p><strong>Zip Code:</strong> <%= app.customerAddress.zipCode %></p>
+                            </div>
+                            <div class="application-data">
+                                <div class="section-title">Plot Information</div>
+                                <p><strong>Location/Address:</strong> <%= app.plotInformation.plotLocation %></p>
+                                <p><strong>Plot Size:</strong> <%= app.plotInformation.plotSize %></p>
+                                <p><strong>Plot Orientation:</strong> <%= app.plotInformation.plotOrientation %></p>
+                            </div>
+    
+                            <div class="application-data">
+                                <div class="section-title">Design Requirements</div>
+                                <p><strong>Type of Design:</strong> <%= app.designRequirements.designType %></p>
+                                <p><strong>Number of Floors:</strong> <%= app.designRequirements.numFloors %></p>
+                                <p><strong>Special Features:</strong> <%= app.designRequirements.specialFeatures || 'None specified' %></p>
+                                <p><strong>Preferred Architectural Style:</strong> <%= app.designRequirements.architecturalStyle %></p>
+                            </div>
+                            <div class="application-data">
+                                <% if (app.designRequirements.floorRequirements && app.designRequirements.floorRequirements.length > 0) { %>
+                                    <div class="section-title">Floor Requirements</div>
+                                    <% app.designRequirements.floorRequirements.forEach(function(floor) { %>
+                                        <p><strong>Floor <%= floor.floorNumber %>:</strong> <%= floor.details %></p>
+                                    <% }); %>
+                                <% } %>
+                            </div>
+                            <div class="application-data">
+                                <div class="section-title">Additional Details</div>
+                                <p><strong>Budget:</strong> <%= app.additionalDetails.budget || 'Not specified' %></p>
+                                <% if (app.additionalDetails.completionDate) { %>
+                                    <p><strong>Preferred Completion Date:</strong> <%= new Date(app.additionalDetails.completionDate).toLocaleDateString() %></p>
+                                <% } else { %>
+                                    <p><strong>Preferred Completion Date:</strong> Not specified</p>
+                                <% } %>
+                                
+                                <% if (app.additionalDetails.referenceImages && app.additionalDetails.referenceImages.length > 0) { %>
+                                    <p><strong>Reference Images:</strong> <%= app.additionalDetails.referenceImages.length %> image(s) uploaded</p>
+                                <% } %>
+                            </div>
+                        </div>
                     </div>
                 <% }); %>
             <% } else { %>
