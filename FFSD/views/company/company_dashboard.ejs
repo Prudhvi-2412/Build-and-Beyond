@@ -7,31 +7,30 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
     <style>
     :root {
-        /* --- "Deep Dive" Dark Theme Palette --- */
-        --primary-accent: #2DD4BF; /* Vibrant Teal */
-        --primary-accent-darker: #14B8A6;
-        --background-dark: #111827; /* Deep Charcoal Blue */
-        --content-dark: #1F2937; /* Lighter shade for cards */
-        --border-dark: #374151;
-        --text-primary: #F9FAFB; /* Off-white for readability */
-        --text-secondary: #9CA3AF; /* Light grey for secondary info */
-        --text-dark: #111827;
+        /* --- "Soft Teal Finance" Theme (based on provided image) --- */
+        --primary-accent: #4A9D8F;       /* Muted, sophisticated teal */
+        --primary-accent-hover: #3A7C70; /* Darker teal for hover */
+        --background-light: #F8F9FA;     /* Very light, soft grey background */
+        --content-light: #FFFFFF;        /* Pure white for cards */
+        --text-primary: #212529;         /* Dark charcoal for text */
+        --text-secondary: #6C757D;       /* Medium grey for labels */
+        --text-on-accent: #FFFFFF;       /* White text for on-color buttons */
+        --button-secondary-bg: #F2F4F7;  /* Light grey for secondary buttons */
+        --highlight-color: #F59E0B;      /* Amber/Orange for pending items */
         
-        /* Status Colors for Dark Mode */
-        --status-warning-bg: rgba(251, 191, 36, 0.1);
-        --status-warning-text: #FBBF24;
-        --status-danger-bg: rgba(239, 68, 68, 0.1);
-        --status-danger-text: #EF4444;
-        --status-success-bg: rgba(16, 185, 129, 0.1);
-        --status-success-text: #10B981;
+        --status-success-bg: rgba(74, 157, 143, 0.1);
+        --status-success-text: var(--primary-accent);
+        --status-warning-bg: rgba(245, 158, 11, 0.1);
+        --status-warning-text: var(--highlight-color);
+        --status-danger-bg: rgba(220, 38, 38, 0.1);
+        --status-danger-text: #DC2626;
     }
 
-    /* Progress bar animation (unchanged) */
     @keyframes progress-animation {
         0% { width: 0; }
         100% { width: calc(var(--progress) * 1%); }
@@ -50,7 +49,7 @@
     }
 
     body {
-        background-color: var(--background-dark);
+        background-color: var(--background-light);
         color: var(--text-primary);
         display: flex;
         flex-direction: column;
@@ -62,14 +61,13 @@
     .main-container {
         flex: 1;
         padding: 2.5rem;
-        background-color: var(--background-dark);
     }
 
     .page-title {
         margin-bottom: 2rem;
-        color: var(--text-primary);
+        color: var(--primary-accent);
         font-size: 2.2rem;
-        font-weight: 700;
+        font-weight: 600;
     }
 
     .stats-container {
@@ -80,16 +78,17 @@
     }
 
     .stat-card {
-        background-color: var(--content-dark);
-        border-radius: 12px;
+        background-color: var(--content-light);
+        border-radius: 16px;
         padding: 1.5rem;
-        border: 1px solid var(--border-dark);
+        border: none;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
         transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
 
     .stat-card:hover {
         transform: translateY(-5px);
-        box-shadow: 0 0 25px rgba(45, 212, 191, 0.2);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.07);
     }
 
     .stat-card h3 {
@@ -97,12 +96,14 @@
         color: var(--text-secondary);
         margin-bottom: 0.5rem;
         font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
     }
 
     .stat-card .stat-value {
         font-size: 2.5rem;
-        font-weight: 700;
-        color: var(--primary-accent);
+        font-weight: 600;
+        color: var(--text-primary);
     }
 
     .section-header {
@@ -121,12 +122,11 @@
 
     .view-all a {
         color: var(--primary-accent);
-        cursor: pointer;
         font-weight: 600;
         transition: color 0.2s ease;
     }
     .view-all a:hover {
-        color: var(--text-primary);
+       color: var(--primary-accent-hover);
     }
 
     .cards-container {
@@ -136,11 +136,11 @@
     }
 
     .bid-card {
-        background-color: var(--content-dark);
-        border-radius: 12px;
+        background-color: var(--content-light);
+        border-radius: 16px;
         padding: 1.5rem;
-        border: 1px solid var(--border-dark);
-        border-top: 4px solid var(--primary-accent);
+        border: none;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
         display: flex;
         flex-direction: column;
         justify-content: space-between;
@@ -149,34 +149,43 @@
 
     .bid-card:hover {
         transform: translateY(-5px);
-        box-shadow: 0 0 25px rgba(45, 212, 191, 0.15);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.07);
     }
 
     .bid-card h3 {
         margin-bottom: 1rem;
         color: var(--text-primary);
         font-size: 1.2rem;
+        font-weight: 600;
     }
 
-    .bid-info {
-        margin-bottom: 1.5rem;
-    }
+    .bid-info { margin-bottom: 1.5rem; }
 
     .bid-info p {
         display: flex;
         justify-content: space-between;
+        align-items: center;
         margin-bottom: 0.75rem;
         font-size: 0.9rem;
     }
 
     .bid-info span:first-child {
         color: var(--text-secondary);
+        font-size: 0.8rem;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
     }
-
     .bid-info span:last-child {
         font-weight: 600;
         color: var(--text-primary);
     }
+    
+    .bid-info p:nth-last-child(2) span:last-child {
+         color: var(--highlight-color);
+         font-weight: 700;
+    }
+
 
     .bid-actions {
         display: flex;
@@ -186,7 +195,7 @@
 
     .btn {
         padding: 0.6rem 1.2rem;
-        border: 1px solid transparent;
+        border: none;
         border-radius: 8px;
         cursor: pointer;
         font-weight: 600;
@@ -196,46 +205,43 @@
 
     .btn-primary {
         background-color: var(--primary-accent);
-        color: var(--text-dark);
+        color: var(--text-on-accent);
     }
 
     .btn-primary:hover {
-        background-color: var(--primary-accent-darker);
-        box-shadow: 0 0 15px rgba(45, 212, 191, 0.4);
-        transform: translateY(-2px);
+        background-color: var(--primary-accent-hover);
+        box-shadow: 0 4px 8px rgba(74, 157, 143, 0.2);
     }
 
     .btn-secondary {
-        background-color: transparent;
-        color: var(--text-secondary);
-        border: 1px solid var(--border-dark);
-    }
-
-    .btn-secondary:hover {
-        background-color: var(--border-dark);
+        background-color: var(--button-secondary-bg);
         color: var(--text-primary);
     }
 
+    .btn-secondary:hover {
+        background-color: #E9ECEF;
+    }
+
     .timeline-container {
-        background-color: var(--content-dark);
-        border-radius: 12px;
+        background-color: var(--content-light);
+        border-radius: 16px;
         padding: 2rem;
         margin-top: 2.5rem;
-        border: 1px solid var(--border-dark);
+        border: none;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     }
 
     .timeline-project {
         display: flex;
         flex-wrap: wrap;
-        gap: 1rem;
+        gap: 1.5rem;
+        align-items: center;
         margin-bottom: 1.5rem;
         padding-bottom: 1.5rem;
-        border-bottom: 1px solid var(--border-dark);
+        border-bottom: 1px solid #F1F3F5;
     }
 
-    .timeline-project:last-child {
-        border-bottom: none;
-    }
+    .timeline-project:last-child { border-bottom: none; }
 
     .project-info {
         flex: 1;
@@ -246,6 +252,7 @@
         margin-bottom: 0.5rem;
         color: var(--text-primary);
         font-size: 1.1rem;
+        font-weight: 600;
     }
 
     .project-details {
@@ -261,22 +268,22 @@
     }
 
     .project-details span {
-        font-weight: 600;
+        font-weight: 500;
         color: var(--text-primary);
     }
 
     .progress-container {
-        background-color: var(--background-dark);
-        height: 10px;
-        border-radius: 5px;
+        background-color: #F1F3F5;
+        height: 8px;
+        border-radius: 4px;
         margin-bottom: 0.5rem;
         overflow: hidden;
     }
 
     .progress-bar {
         height: 100%;
-        border-radius: 5px;
-        background: linear-gradient(90deg, var(--primary-accent-darker), var(--primary-accent));
+        border-radius: 4px;
+        background: var(--primary-accent);
         animation: progress-animation 1s ease-out forwards;
     }
 
@@ -287,16 +294,23 @@
         color: var(--text-secondary);
         font-weight: 500;
     }
+    .progress-info span:last-child {
+        color: var(--highlight-color);
+        font-weight: 600;
+    }
+
 
     .project-status {
-        align-self: flex-start;
+        align-self: center;
         padding: 0.4rem 0.8rem;
-        border-radius: 6px;
+        border-radius: 9999px; /* pill shape */
         font-size: 0.8rem;
         font-weight: 600;
         margin-left: auto;
         background-color: var(--status-success-bg);
         color: var(--status-success-text);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
     }
 
     .status-delayed {
@@ -313,7 +327,7 @@
 <body>
     <%- include('navbar_company') %>
     <div class="main-container">
-        <h1 class="page-title">Dashboard</h1>
+        <h1 class="page-title">Revenue Management</h1>
 
         <div class="stats-container">
             <div class="stat-card">
@@ -321,11 +335,11 @@
                 <div class="stat-value"><%= activeProjects %></div>
             </div>
             <div class="stat-card">
-                <h3>Total Projects Completed</h3>
+                <h3>Completed Projects</h3>
                 <div class="stat-value"><%= completedProjects %></div>
             </div>
             <div class="stat-card">
-                <h3>This Month Revenue</h3>
+                <h3>Total Revenue</h3>
                 <div class="stat-value">₹<%= revenue.toLocaleString('en-IN') %></div>
             </div>
         </div>
@@ -362,7 +376,7 @@
                         </p>
                     </div>
                     <div class="bid-actions">
-                        <button class="btn btn-primary" onclick="showBidReviewModal(this)">Review Details</button>
+                        <button class="btn btn-primary" onclick="showBidReviewModal(this)">View Details</button>
                         <button class="btn btn-secondary" onclick="updateProjectStatus('<%= bid._id %>', 'rejected')">Decline</button>
                     </div>
                 </div>
@@ -385,7 +399,7 @@
                         <p><span>Due Date:</span><span><%= new Date(project.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) %></span></p>
                     </div>
                     <div class="bid-actions">
-                        <button class="btn btn-primary">Review Details</button>
+                        <button class="btn btn-primary">View Details</button>
                         <button class="btn btn-secondary">Decline</button>
                     </div>
                 </div>
@@ -408,7 +422,7 @@
                             <p>End: <span><%= project.projectTimeline ? new Date(new Date(project.createdAt).setMonth(new Date(project.createdAt).getMonth() + project.projectTimeline)).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'TBD' %></span></p>
                         </div>
                         <div class="progress-container">
-                            <div class="progress-bar" style="width: <%= calculateProgress(project.createdAt, project.projectTimeline) %>%;"></div>
+                            <div class="progress-bar" style="--progress: <%= calculateProgress(project.createdAt, project.projectTimeline) %>;"></div>
                         </div>
                         <div class="progress-info">
                             <span>Progress: <%= calculateProgress(project.createdAt, project.projectTimeline) %>%</span>
@@ -425,7 +439,9 @@
 
     <script>
         document.querySelectorAll('.progress-bar').forEach(bar => {
-            bar.style.setProperty('--progress', bar.dataset.progress);
+            const progress = bar.style.getPropertyValue('--progress').trim();
+            bar.style.width = `${progress}%`;
+            bar.style.animation = 'progress-animation 1s ease-out forwards';
         });
     </script>
 
@@ -485,27 +501,28 @@
 
         .bid-review-modal-backdrop {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(17, 24, 39, 0.8);
+            background-color: rgba(0, 0, 0, 0.5);
             display: flex; justify-content: center; align-items: center;
             z-index: 1000; opacity: 0; transition: opacity 0.3s ease;
         }
         .bid-review-modal-backdrop.visible { opacity: 1; }
 
         .bid-review-modal-content {
-            background-color: var(--content-dark); border: 1px solid var(--border-dark);
-            border-radius: 12px; width: 90%; max-width: 800px; max-height: 90vh;
+            background-color: var(--content-light);
+            border-radius: 16px; width: 90%; max-width: 800px; max-height: 90vh;
             display: flex; flex-direction: column;
             transform: scale(0.95); transition: transform 0.3s ease;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: none;
         }
         .bid-review-modal-backdrop.visible .bid-review-modal-content { transform: scale(1); }
 
         .bid-review-modal-header {
-            background-color: var(--background-dark); padding: 1rem 1.5rem;
+            background-color: var(--background-light); padding: 1rem 1.5rem;
             display: flex; justify-content: space-between; align-items: center;
-            border-bottom: 1px solid var(--border-dark);
+            border-bottom: 1px solid #F1F3F5;
         }
-        .modal-title { font-size: 1.2rem; color: var(--text-primary); }
+        .modal-title { font-size: 1.2rem; color: var(--text-primary); font-weight: 600; }
         .modal-close-btn {
             background: none; border: none; color: var(--text-secondary);
             font-size: 2rem; line-height: 1; cursor: pointer; transition: color 0.2s;
@@ -516,20 +533,31 @@
         .detail-section { margin-bottom: 2rem; }
         .detail-section:last-child { margin-bottom: 0; }
         .detail-section h3 {
-            color: var(--primary-accent); font-size: 1rem; font-weight: 600;
-            padding-bottom: 0.5rem; margin-bottom: 1rem; border-bottom: 1px solid var(--border-dark);
+            color: var(--primary-accent);
+            font-weight: 600;
+            font-size: 1rem; 
+            padding-bottom: 0.5rem; margin-bottom: 1rem; border-bottom: 1px solid #F1F3F5;
         }
         .detail-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; }
         .detail-grid.full { grid-template-columns: 1fr; }
         .detail-grid p { color: var(--text-primary); }
         .detail-grid strong { color: var(--text-secondary); font-weight: 500; margin-right: 0.5rem; }
 
-        .site-files-list a { display: block; color: var(--primary-accent); text-decoration: none; margin-bottom: 0.5rem; }
-        .site-files-list a:hover { text-decoration: underline; }
+        .site-files-list a { 
+            display: block; 
+            color: var(--primary-accent); 
+            text-decoration: none; 
+            margin-bottom: 0.5rem; 
+            font-weight: 500;
+        }
+        .site-files-list a:hover { 
+            color: var(--primary-accent-hover);
+            text-decoration: underline; 
+        }
 
         .bid-review-modal-footer {
             padding: 1rem 1.5rem; display: flex; justify-content: flex-end; gap: 1rem;
-            border-top: 1px solid var(--border-dark); background-color: var(--background-dark);
+            border-top: 1px solid #F1F3F5; background-color: var(--background-light);
         }
     </style>
 
