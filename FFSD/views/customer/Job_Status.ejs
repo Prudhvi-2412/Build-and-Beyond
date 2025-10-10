@@ -228,6 +228,9 @@
             width: 20vw;
             padding: 0px 10px;
         }
+        img{
+            max-width: 200px;
+        }
     </style>
 </head>
 <body>
@@ -326,7 +329,7 @@
                     <div class="application interior-app">
                         <div class="status interior-status"><%= app.status %></div>
                         <h3>
-                            <span class="project-name"><%= app.name %></span>
+                            <span class="project-name"><%= app.projectName %></span>
                         </h3>
                         <p><strong>Email:</strong> <%= app.email %></p>
                         
