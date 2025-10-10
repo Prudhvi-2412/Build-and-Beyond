@@ -181,8 +181,13 @@ const architectHiringSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ["Pending", "Accepted", "Rejected","Completed"],
+    enum: ["Pending", "Proposal Sent", "Accepted", "Rejected", "Completed"],
     default: "Pending",
+  },
+  proposal: {
+    price: { type: Number },
+    description: { type: String },
+    sentAt: { type: Date }
   },
   customer: {
     type: mongoose.Schema.Types.ObjectId,
@@ -374,7 +379,16 @@ const designRequestSchema = new mongoose.Schema({
   customerId: { type: mongoose.Schema.Types.ObjectId, ref: 'Customer', required: true },
   workerId: { type: mongoose.Schema.Types.ObjectId, ref: 'Worker' },
   createdAt: { type: Date, default: Date.now },
-  status: { type: String, enum: ["pending", "accepted", "rejected","completed"], default: "pending" },
+  status: { 
+    type: String, 
+    enum: ["pending", "proposal_sent", "accepted", "rejected", "completed"], 
+    default: "pending" 
+  },
+  proposal: {
+    price: { type: Number },
+    description: { type: String },
+    sentAt: { type: Date }
+  },
 });
 
 // Floor Schema for Bid
