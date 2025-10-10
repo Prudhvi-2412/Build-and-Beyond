@@ -179,6 +179,7 @@
     "simple-concat": "^1.0.1",
     "simple-get": "^4.0.1",
     "smart-buffer": "^4.2.0",
+    "socket.io": "^4.8.1",
     "socks": "^2.8.4",
     "socks-proxy-agent": "^6.2.1",
     "sprintf-js": "^1.1.3",
