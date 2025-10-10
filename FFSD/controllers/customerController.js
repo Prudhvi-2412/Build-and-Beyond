@@ -506,6 +506,89 @@ const acceptProposal = async (req, res) => {
         res.status(500).send('Server Error');
     }
 };
+const acceptCompanyBid = async (req, res) => {
+    try {
+        const { bidId, companyBidId } = req.params;
+        const customerId = req.user.user_id;
+
+        // Find the bid and ensure it belongs to the logged-in customer
+        const bid = await Bid.findOne({ _id: bidId, customerId: customerId });
+        if (!bid) {
+            return res.status(404).send('Bid not found or you are not authorized.');
+        }
+
+        // Find the specific company's bid within the main bid document
+        const companyBid = bid.companyBids.id(companyBidId);
+        if (!companyBid) {
+            return res.status(404).send('Company bid not found.');
+        }
+
+        // --- THIS IS WHERE THE PAYMENT LOGIC STARTS ---
+
+        // In a real application, you would now create a Stripe Checkout session.
+        // For now, we will simulate a successful payment by updating the status directly.
+
+        // 1. Update the main bid status
+        bid.status = 'awarded';
+        bid.winningBidId = companyBidId;
+
+        // 2. Populate the paymentDetails object
+        const platformFeePercentage = 0.05; // 5% commission
+        bid.paymentDetails.totalAmount = companyBid.bidPrice;
+        bid.paymentDetails.platformFee = companyBid.bidPrice * platformFeePercentage;
+        bid.paymentDetails.paymentStatus = 'paid'; // Mark as paid since we are simulating
+
+        // 3. Set up the initial 20% payout for the company
+        const advancePayout = companyBid.bidPrice * 0.20;
+        bid.paymentDetails.payouts.push({
+            amount: advancePayout,
+            status: 'pending' // This would be 'released' after a real payment
+        });
+        
+        await bid.save();
+
+        // Redirect the customer to their ongoing projects page
+        res.redirect('/ongoing_projects');
+
+    } catch (error) {
+        console.error('Error accepting company bid:', error);
+        res.status(500).send('Server Error');
+    }
+};
+const acceptCompanyProposal = async (req, res) => {
+  try {
+    const { projectId } = req.params;
+    const customerId = req.user.user_id;
+
+    const project = await ConstructionProjectSchema.findOne({ _id: projectId, customerId: customerId });
+    if (!project || project.status !== 'proposal_sent') {
+        return res.status(404).send('Project not found or proposal not available.');
+    }
+
+    // --- PAYMENT LOGIC WOULD GO HERE ---
+    // For now, we simulate a successful payment
+
+    project.status = 'accepted';
+    
+    const platformFeePercentage = 0.05; // 5% commission
+    project.paymentDetails.totalAmount = project.proposal.price;
+    project.paymentDetails.platformFee = project.proposal.price * platformFeePercentage;
+    project.paymentDetails.paymentStatus = 'paid';
+
+    const advancePayout = project.proposal.price * 0.20; // 20% advance
+    project.paymentDetails.payouts.push({
+        amount: advancePayout,
+        status: 'pending'
+    });
+
+    await project.save();
+    res.redirect('/ongoing_projects');
+
+  } catch (error) {
+    console.error('Error accepting company proposal:', error);
+    res.status(500).send('Server Error');
+  }
+};
 // ====================================================================
 
 module.exports = {
@@ -529,4 +612,6 @@ module.exports = {
   saveFavoriteDesign,
   removeFavoriteDesign,
   acceptProposal,
+  acceptCompanyBid,
+  acceptCompanyProposal
 };

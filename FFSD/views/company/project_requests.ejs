@@ -509,6 +509,17 @@
         .modal-actions { flex-direction: column; }
         .modal-btn { width: 100%; }
     }
+    .proposal-modal { display: none; position: fixed; z-index: 1001; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); backdrop-filter: blur(5px); }
+    .proposal-modal.active { display: flex; align-items: center; justify-content: center; }
+    .proposal-modal-content { background-color: var(--content-dark); border-radius: 12px; width: 90%; max-width: 600px; }
+    .proposal-modal-header { padding: 1rem 1.5rem; border-bottom: 1px solid var(--border-dark); }
+    .proposal-modal-body { padding: 1.5rem; }
+    .proposal-form-group { margin-bottom: 1rem; }
+    .proposal-form-label { display: block; margin-bottom: 0.5rem; font-weight: 500; color: var(--text-primary); }
+    .proposal-form-control { width: 100%; padding: 0.75rem; border: 1px solid var(--border-dark); border-radius: 4px; background-color: var(--background-dark); color: var(--text-primary); font-size: 1rem; }
+    .proposal-form-control:focus { outline: none; border-color: var(--primary-accent); }
+    .proposal-btn-primary { padding: 0.75rem 1.5rem; background-color: var(--primary-accent); color: var(--text-dark); border: none; border-radius: 4px; font-weight: 500; cursor: pointer; transition: background-color 0.2s; }
+    .proposal-btn-primary:hover { background-color: var(--primary-accent-darker); }
 </style>
 </head>
 <body>
@@ -537,8 +548,8 @@
                             </button>
                         </div>
                         <div class="card-actions" style="margin-top: 0.75rem;">
-                            <button class="card-btn btn-accept" onclick="updateProjectStatus('<%= project._id %>', 'accepted')">
-                                <i class="fas fa-check"></i> Accept
+                            <button class="card-btn btn-accept proposal-create-btn" data-project-id="<%= project._id %>">
+                                <i class="fas fa-file-signature"></i> Create Proposal
                             </button>
                             <button class="card-btn btn-reject" onclick="updateProjectStatus('<%= project._id %>', 'rejected')">
                                 <i class="fas fa-times"></i> Reject
@@ -549,7 +560,25 @@
             <% }) %>
         </div>
     </main>
-
+    <div class="proposal-modal" id="proposalModal">
+        <div class="proposal-modal-content">
+            <div class="proposal-modal-header"><h3>Create Proposal</h3></div>
+            <div class="proposal-modal-body">
+                <form action="/company/submit-proposal" method="POST">
+                    <input type="hidden" name="projectId" id="proposalProjectId">
+                    <div class="proposal-form-group">
+                        <label class="proposal-form-label">Project Price (₹)</label>
+                        <input type="number" name="price" required class="proposal-form-control">
+                    </div>
+                    <div class="proposal-form-group">
+                        <label class="proposal-form-label">Scope of Work</label>
+                        <textarea name="description" rows="4" required class="proposal-form-control"></textarea>
+                    </div>
+                    <button type="submit" class="proposal-btn-primary">Send Proposal</button>
+                </form>
+            </div>
+        </div>
+    </div>
     <div class="modal-backdrop" id="projectModal">
         <div class="modal">
             <div class="modal-header">
@@ -566,6 +595,21 @@
     </div>
 
     <script>
+        // Add this script to handle the proposal modal
+        document.addEventListener('click', function(e) {
+            const button = e.target.closest('.proposal-create-btn');
+            if (button) {
+                const projectId = button.dataset.projectId;
+                document.getElementById('proposalProjectId').value = projectId;
+                document.getElementById('proposalModal').classList.add('active');
+            }
+        });
+        // Add logic to close the modal
+        document.getElementById('proposalModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.classList.remove('active');
+            }
+        });
         async function showProjectDetails(projectId) {
             try {
                 const response = await fetch(`/api/projects/${projectId}`);
@@ -708,8 +752,8 @@
                     </div>
 
                     <div class="modal-actions">
-                        <button class="modal-btn modal-btn-accept" onclick="updateProjectStatus('${project._id}', 'accepted')">
-                            <i class="fas fa-check"></i> Accept Project
+                        <button class="card-btn btn-accept proposal-create-btn" data-project-id="${project._id}">
+                            <i class="fas fa-file-signature"></i> Create Proposal
                         </button>
                         <button class="modal-btn modal-btn-reject" onclick="updateProjectStatus('${project._id}', 'rejected')">
                             <i class="fas fa-times"></i> Reject Project

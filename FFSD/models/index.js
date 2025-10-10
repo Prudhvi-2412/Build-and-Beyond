@@ -281,8 +281,30 @@ const constructionProjectSchema = new mongoose.Schema({
   projectName: { type: String, required: true },
   status: {
     type: String,
-    enum: ["pending", "accepted", "rejected"],
+    enum: ["pending", "proposal_sent", "accepted", "rejected"],
     default: "pending",
+  },
+  proposal: {
+    price: { type: Number },
+    description: { type: String },
+    sentAt: { type: Date }
+  },
+  paymentDetails: {
+    totalAmount: { type: Number },
+    platformFee: { type: Number },
+    amountPaidToCompany: { type: Number, default: 0 },
+    paymentStatus: {
+      type: String,
+      enum: ['unpaid', 'paid', 'partially_paid', 'completed'],
+      default: 'unpaid'
+    },
+    payouts: [
+      {
+        amount: { type: Number, required: true },
+        status: { type: String, enum: ['pending', 'released'], default: 'pending' },
+        releaseDate: { type: Date }
+      }
+    ]
   },
   customerId: {
     type: mongoose.Schema.Types.ObjectId,
@@ -469,7 +491,28 @@ const BidSchema = new mongoose.Schema({
     enum: ["open", "closed", "awarded", "cancelled"],
     default: "open",
   },
-});
+  paymentDetails: {
+    totalAmount: { type: Number }, // The full bid price accepted by the customer
+    platformFee: { type: Number }, // The commission your platform will earn
+    amountPaidToCompany: { type: Number, default: 0 }, // Total amount released to the company so far
+    paymentStatus: {
+      type: String,
+      enum: ['unpaid', 'paid', 'partially_paid', 'completed'],
+      default: 'unpaid'
+    },
+    stripeSessionId: { type: String }, // To track the payment session in Stripe
+    payouts: [
+      {
+        amount: { type: Number, required: true },
+        status: { type: String, enum: ['pending', 'released'], default: 'pending' },
+        releaseDate: { type: Date }
+      }
+    ]
+  }
+},
+{ timestamps: true }
+);
+
 
 BidSchema.pre("save", function (next) {
   this.updatedAt = Date.now();

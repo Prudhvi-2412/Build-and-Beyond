@@ -100,14 +100,17 @@ const getOngoingProjects = async (req, res) => {
 };
 
 const getProjectRequests = async (req, res) => {
-  try {
-    const projects = await ConstructionProjectSchema.find({ status: 'pending', companyId: req.user.user_id }).lean();
-    res.render('company/project_requests', { projects });
-  } catch (error) {
-    console.error('Error fetching projects:', error);
-    res.status(500).json({ error: 'Failed to fetch projects' });
-  }
-}; 
+  try {
+    const projects = await ConstructionProjectSchema.find({ 
+      status: { $in: ['pending', 'proposal_sent'] }, 
+      companyId: req.user.user_id 
+    }).lean();
+    res.render('company/project_requests', { projects });
+  } catch (error) {
+    console.error('Error fetching projects:', error);
+    res.status(500).json({ error: 'Failed to fetch projects' });
+  }
+};
 
 // Add this new function to your controllers file
 const updateProjectStatusController = async (req, res) => {
@@ -560,6 +563,34 @@ const updateCompanyProfile = async (req, res) => {
         res.status(500).json({ message: 'Server error while updating profile.' });
     }
 };
+const submitProjectProposal = async (req, res) => {
+  try {
+    const { projectId, price, description } = req.body;
+    const companyId = req.user.user_id;
+
+    const project = await ConstructionProjectSchema.findOne({ _id: projectId, companyId: companyId });
+    if (!project) {
+      return res.status(404).send('Project not found or you are not authorized.');
+    }
+
+    project.status = 'proposal_sent';
+    project.proposal = {
+      price: parseFloat(price),
+      description: description,
+      sentAt: new Date()
+    };
+
+    await project.save();
+    res.redirect('/project_requests'); // Redirect back to the project requests page
+
+  } catch (error) {
+    console.error('Error submitting proposal:', error);
+    res.status(500).send('Server Error');
+  }
+};
 // Add other company controllers like revenue, etc., if needed
 
-module.exports = { getDashboard, getOngoingProjects, getProjectRequests, updateProjectStatusController, handleBidActionController, getHiring, getSettings, getBids , getCompanyRevenue, createHireRequest,  updateCompanyProfile, handleWorkerRequest, submitBidController, customerAcceptsBidController};
+module.exports = { getDashboard, getOngoingProjects, getProjectRequests, updateProjectStatusController, 
+  handleBidActionController, getHiring, getSettings, getBids , getCompanyRevenue, createHireRequest,  
+  updateCompanyProfile, handleWorkerRequest, submitBidController, 
+  customerAcceptsBidController , submitProjectProposal };

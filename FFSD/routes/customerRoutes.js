@@ -21,6 +21,7 @@ const {
   saveFavoriteDesign,
   removeFavoriteDesign,
   acceptProposal,
+  acceptCompanyBid,acceptCompanyProposal,
 } = require("../controllers/customerController");
 const {upload} = require('../middlewares/upload')
 const auth = require('../middlewares/auth'); // Import authentication middleware
@@ -60,5 +61,6 @@ router.get('/api/customer/favorites', auth, getFavorites);
 router.post('/api/customer/favorites', auth, saveFavoriteDesign);
 router.delete('/api/customer/favorites/:id', auth, removeFavoriteDesign);
 router.get('/customer/accept-proposal/:type/:id', auth, acceptProposal);
-
+router.get('/customer/accept-bid/:bidId/:companyBidId', auth, acceptCompanyBid);
+router.get('/customer/accept-company-proposal/:projectId', auth, acceptCompanyProposal);
 module.exports = router;

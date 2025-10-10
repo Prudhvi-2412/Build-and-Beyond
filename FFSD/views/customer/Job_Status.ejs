@@ -449,6 +449,15 @@
                             <% if (app.siteFiles && app.siteFiles.length > 0) { %>
                                 <p><strong>Attached Files:</strong> <%= app.siteFiles.length %> file(s) uploaded</p>
                             <% } %>
+                            <% if (app.status === 'proposal_sent' && app.proposal) { %>
+                                <div class="proposal-section">
+                                    <div class="proposal-price">₹<%= app.proposal.price.toLocaleString('en-IN') %></div>
+                                    <p class="proposal-description"><%= app.proposal.description %></p>
+                                    <a href="/customer/accept-company-proposal/<%= app._id %>" class="btn-accept-pay">Accept & Pay</a>
+                                </div>
+                            <% } else { %>
+                                <p>Waiting for the company to submit a proposal.</p>
+                            <% } %>
                         </div>
                     <% }); %>
                 </div>

@@ -438,74 +438,29 @@
         <% if (customerBids && customerBids.length > 0) { %> <%
         customerBids.forEach(bid => { %>
         <div id="bids-<%= bid._id %>" class="bids-container hidden">
-          <% if (bid.companyBids && bid.companyBids.length > 0) { %> <%
-          bid.companyBids.forEach(companyBid => { %>
-          <div class="company-bid">
-            <div class="bid-company">
-              <div class="company-logo">
-                <%= companyBid.companyName.substring(0, 2).toUpperCase() %>
-              </div>
+              <% if (bid.companyBids && bid.companyBids.length > 0) { %> 
+                <% bid.companyBids.forEach(companyBid => { %>
+                  <div class="company-bid">
+                    <div class="bid-actions">
+                      <% if (bid.winningBidId && bid.winningBidId.toString() === companyBid._id.toString()) { %>
+                        <button class="btn btn-awarded" disabled>Project Awarded</button>
+                      <% } else if (bid.status === 'awarded') { %>
+                        <button class="btn btn-already-awarded" disabled>Already Awarded</button>
+                      <% } else if (companyBid.status === 'rejected') { %>
+                        <button class="btn btn-declined-status" disabled>Declined</button>
+                      <% } else if (bid.status === 'open') { %>
+                        
+                        <a href="/customer/accept-bid/<%= bid._id %>/<%= companyBid._id %>" class="btn btn-accept">Accept & Pay</a>
+                        
+                        <button class="btn btn-deny" onclick="declineBid('<%= bid._id %>', '<%= companyBid._id %>')">Decline</button>
 
-              <div>
-                <div class="company-name">
-                  <strong><%= companyBid.companyName %></strong>
-                </div>
-                <div class="rating">★★★★☆ (4.8/5)</div>
-              </div>
+                      <% } %>
+                    </div>
+                  </div>
+                <% }); %> 
+              <% } else { %>
+                <% } %>
             </div>
-
-            <div class="bid-header">
-              <div class="bid-title">Proposed Bid Amount:</div>
-              <div class="bid-price">
-                ₹<%= companyBid.bidPrice.toLocaleString('en-IN') %>
-              </div>
-            </div>
-
-            <div class="bid-date">
-              Bid received: <%= new
-              Date(companyBid.bidDate).toLocaleDateString('en-IN', { year:
-              'numeric', month: 'long', day: 'numeric' }) %>
-            </div>
-
-            <div class="bid-actions">
-              <% if (bid.winningBidId && bid.winningBidId.toString() ===
-              companyBid._id.toString()) { %>
-              <button class="btn btn-awarded">
-                Project Awarded to This Bid
-              </button>
-              <% } else if (bid.status === 'awarded') { %>
-              <button class="btn btn-already-awarded" disabled>
-                Project Already Awarded
-              </button>
-              <% } else if (companyBid.status === 'rejected') { %>
-              <button class="btn btn-declined-status" disabled>
-                Declined
-              </button>
-              <% } else if (bid.status === 'open') { %>
-              <button
-                class="btn btn-accept"
-                onclick="acceptBid('<%= bid._id %>', '<%= companyBid._id %>')"
-              >
-                Accept Bid
-              </button>
-
-              <button
-                class="btn btn-deny"
-                onclick="declineBid('<%= bid._id %>', '<%= companyBid._id %>')"
-              >
-                Decline
-              </button>
-              <% } %>
-            </div>
-          </div>
-          <% }); %> <% } else { %>
-          <div class="no-bids">
-            <p class="no-bids-text">
-              No company bids received yet for this project.
-            </p>
-          </div>
-          <% } %>
-        </div>
         <% }); %> <% } %>
       </div>
     </div>
@@ -618,37 +573,6 @@
         }
 
         return html;
-      }
-
-      // Function to accept a company bid
-      function acceptBid(bidId, companyBidId) {
-        if (confirm('Are you sure you want to accept this bid? This will close the bidding for this project and start the contract process. Proceed?')) {
-          fetch('/customer/accept-bid', { // Use the protected route
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ bidId, companyBidId }),
-            credentials: 'same-origin'
-          })
-          .then(response => {
-              if (!response.ok) {
-                  // Attempt to parse error message from JSON body
-                  return response.json().catch(() => ({ error: 'Unknown Server Error' })).then(err => Promise.reject(err));
-              }
-              return response.json();
-          })
-          .then(data => {
-            if (data.success) {
-              alert('Bid accepted successfully! The project status has been updated.');
-              window.location.reload();
-            } else {
-              alert('Error: ' + (data.error || 'Server rejected the request.'));
-            }
-          })
-          .catch(error => {
-            console.error('Error:', error);
-            alert('An unexpected error occurred: ' + (error.error || error.message || 'Check console for details.'));
-          });
-        }
       }
 
       // Function to decline a company bid
