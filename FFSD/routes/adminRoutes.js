@@ -6,6 +6,6 @@ const {
 const auth = require('../middlewares/auth'); // Import authentication middleware
 
 // Admin dashboard route (protected)
-router.get('/admindashboard', auth, getAdminDashboard);
+router.get('/admindashboard', getAdminDashboard);
 
 module.exports = router;
