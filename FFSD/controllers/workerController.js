@@ -522,6 +522,51 @@ const markProjectAsCompleted = async (req, res) => {
     res.status(500).send('Server Error');
   }
 };
+const submitProposal = async (req, res) => {
+  try {
+    const { projectId, projectType, price, description } = req.body;
+    const workerId = req.user.user_id;
+
+    if (!projectId || !projectType || !price || !description) {
+      return res.status(400).send('Missing required proposal fields.');
+    }
+
+    let project;
+    
+    if (projectType === 'architect') {
+      project = await ArchitectHiring.findById(projectId);
+      // Security check to ensure the project is assigned to this worker
+      if (!project || (project.worker && project.worker.toString() !== workerId)) {
+        return res.status(404).send('Project not found or you are not authorized.');
+      }
+      project.status = 'Proposal Sent';
+    } else if (projectType === 'interior') {
+      project = await DesignRequest.findById(projectId);
+      if (!project || (project.workerId && project.workerId.toString() !== workerId)) {
+        return res.status(404).send('Project not found or you are not authorized.');
+      }
+      project.status = 'proposal_sent';
+    } else {
+      return res.status(400).send('Invalid project type.');
+    }
+
+    // Add the proposal details to the project
+    project.proposal = {
+      price: parseFloat(price),
+      description: description,
+      sentAt: new Date()
+    };
+
+    await project.save();
+
+    // Redirect the worker back to their jobs page after submitting
+    res.redirect('/workerjobs');
+
+  } catch (error) {
+    console.error('Error submitting proposal:', error);
+    res.status(500).send('Server Error');
+  }
+};
 module.exports = { getJobs, getJoinCompany, getSettings, getEditProfile, getDashboard, getWorkerById, deleteWorkerRequest,
   createWorkerRequest , updateWorkerProfile,updateAvailability,acceptOffer,declineOffer, updateJobStatus ,
-  getOngoingProjects,postProjectUpdate,markProjectAsCompleted };
+  getOngoingProjects,postProjectUpdate,markProjectAsCompleted,submitProposal };

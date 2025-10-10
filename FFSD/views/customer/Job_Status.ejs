@@ -232,6 +232,22 @@
         img {
             max-width: 200px;
         }
+        .status-badge { padding: 6px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; text-transform: uppercase; }
+        .status-pending { background-color: rgba(251, 191, 36, 0.1); color: #FBBF24; }
+        .status-proposalsent, .status-proposal_sent { background-color: rgba(52, 152, 219, 0.1); color: var(--secondary-color); }
+        
+        .proposal-section { background-color: #f9fafb; border-radius: 8px; padding: 1.5rem; margin-top: 1rem; }
+        .proposal-price { font-size: 1.75rem; font-weight: 700; color: var(--primary-color); margin-bottom: 0.5rem; }
+        .proposal-description { color: var(--text-light); margin-bottom: 1.5rem; }
+        .btn-accept-pay {
+            background-color: var(--success-color);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            display: inline-block;
+        }
     </style>
 </head>
 <body>
@@ -312,6 +328,15 @@
                                     <p><strong>Reference Images:</strong> <%= app.additionalDetails.referenceImages.length %> image(s) uploaded</p>
                                 <% } %>
                             </div>
+                            <% if (app.status === 'Proposal Sent' && app.proposal) { %>
+                            <div class="proposal-section">
+                                <div class="proposal-price">₹<%= app.proposal.price.toLocaleString('en-IN') %></div>
+                                <p class="proposal-description"><%= app.proposal.description %></p>
+                                <a href="/customer/accept-proposal/architect/<%= app._id %>" class="btn-accept-pay">Accept & Pay</a>
+                            </div>
+                            <% } else { %>
+                                <p>Waiting for the architect to submit a proposal.</p>
+                            <% } %>
                         </div>
                     </div>
                 <% }); %>
@@ -361,6 +386,15 @@
                                 <% }); %>
                             <% } %>
                         </div>
+                        <% if (app.status === 'proposal_sent' && app.proposal) { %>-------------
+                            <div class="proposal-section">
+                                <div class="proposal-price">₹<%= app.proposal.price.toLocaleString('en-IN') %></div>
+                                <p class="proposal-description"><%= app.proposal.description %></p>
+                                <a href="/customer/accept-proposal/interior/<%= app._id %>" class="btn-accept-pay">Accept & Pay</a>
+                            </div>
+                        <% } else { %>
+                             <p>Waiting for the designer to submit a proposal.</p>
+                        <% } %>
                     </div>
                 <% }); %>
             <% } else { %>

@@ -471,7 +471,41 @@ const removeFavoriteDesign = async (req, res) => {
         res.status(500).json({ message: 'Failed to remove favorite.' });
     }
 };
+const acceptProposal = async (req, res) => {
+    try {
+        const { type, id } = req.params;
+        const customerId = req.user.user_id;
 
+        let project;
+
+        if (type === 'architect') {
+            project = await ArchitectHiring.findOne({ _id: id, customer: customerId });
+            if (!project) return res.status(404).send('Project not found or you are not authorized.');
+            project.status = 'Accepted';
+        } else if (type === 'interior') {
+            // Find the project and ensure it belongs to the customer
+            const projectToUpdate = await DesignRequest.findOne({ _id: id });
+            // Note: The schema uses customerId for interior designers. Let's make sure the check is correct.
+            // Assuming your DesignRequest schema has a customerId field referencing the Customer model.
+            if (!projectToUpdate || projectToUpdate.customerId.toString() !== customerId) {
+                 return res.status(404).send('Project not found or you are not authorized.');
+            }
+            project = projectToUpdate;
+            project.status = 'accepted';
+        } else {
+            return res.status(400).send('Invalid project type.');
+        }
+
+        await project.save();
+        
+        // CORRECTED REDIRECT: Go back to the Job Status page
+        res.redirect('/job_status');
+
+    } catch (error) {
+        console.error('Error accepting proposal:', error);
+        res.status(500).send('Server Error');
+    }
+};
 // ====================================================================
 
 module.exports = {
@@ -493,5 +527,6 @@ module.exports = {
   // EXPORT NEW FAVORITES FUNCTIONS
   getFavorites,
   saveFavoriteDesign,
-  removeFavoriteDesign
+  removeFavoriteDesign,
+  acceptProposal,
 };

@@ -439,6 +439,16 @@
                 display: none;
             }
         }
+        
+        .modal { display: none; position: fixed; z-index: 1001; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); backdrop-filter: blur(5px); align-items: center; justify-content: center; }
+        .modal.active { display: flex; }
+        .modal-content { background-color: var(--card-bg); border-radius: 12px; width: 90%; max-width: 600px; box-shadow: 0 5px 20px rgba(0,0,0,0.2); position: relative; }
+        .modal-header { padding: 1.5rem; border-bottom: 1px solid var(--border-color); }
+        .modal-body { padding: 1.5rem; }
+        .close-modal { position: absolute; top: 15px; right: 20px; font-size: 28px; color: var(--text-light); cursor: pointer; }
+        .form-group { margin-bottom: 1rem; }
+        .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 500; }
+        .form-group input, .form-group textarea { width: 100%; padding: 0.75rem; border-radius: 6px; border: 1px solid var(--border-color); font-size: 1rem; }
     </style>
 </head>
 <body>
@@ -545,10 +555,10 @@
                             <% } %>
                             <% if (job.status !== 'accepted' && job.status !== 'rejected') { %>
                                 <div class="job-action-buttons">
-                                    <button class="job-action-button accept-button" data-type="interior" data-id="<%= job._id %>">
-                                        <i class="fas fa-check"></i> Accept Job
+                                    <button class="job-action-button accept-button create-proposal-btn" data-id="<%= job._id %>">
+                                        <i class="fas fa-file-signature"></i> Create Proposal
                                     </button>
-                                    <button class="job-action-button deny-button" data-type="interior" data-id="<%= job._id %>">
+                                    <button class="job-action-button deny-button" data-id="<%= job._id %>">
                                         <i class="fas fa-times"></i> Deny Job
                                     </button>
                                 </div>
@@ -559,7 +569,27 @@
             </section>
         </div>
     </main>
-
+    <div class="modal" id="proposalModal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div class="modal-header"><h2>Create Proposal</h2></div>
+            <div class="modal-body">
+                <form action="/worker/submit-proposal" method="POST">
+                    <input type="hidden" name="projectId" id="proposalProjectId">
+                    <input type="hidden" name="projectType" value="interior">
+                    <div class="form-group">
+                        <label for="proposalPrice">Project Price (₹)</label>
+                        <input type="number" name="price" id="proposalPrice" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="proposalDescription">Description of Services</label>
+                        <textarea name="description" id="proposalDescription" rows="4" required placeholder="e.g., Full interior design concept for one living room, including mood board and furniture selection."></textarea>
+                    </div>
+                    <button type="submit" class="job-action-button accept-button">Submit Proposal</button>
+                </form>
+            </div>
+        </div>
+    </div>
     <script>
     document.addEventListener('DOMContentLoaded', () => {
         const jobListContainer = document.getElementById('jobList');
@@ -579,6 +609,38 @@
                 selectedJob.classList.add('active');
             }
         }
+
+        // Modal functionality
+        const proposalModal = document.getElementById('proposalModal');
+            const closeModalBtn = proposalModal.querySelector('.close-modal');
+            const proposalProjectIdInput = document.getElementById('proposalProjectId');
+
+            // Open proposal modal
+            document.querySelectorAll('.create-proposal-btn').forEach(button => {
+                button.addEventListener('click', function(event) {
+                    event.stopPropagation();
+                    const jobId = this.dataset.id;
+                    proposalProjectIdInput.value = jobId;
+                    proposalModal.classList.add('active');
+                });
+            });
+
+            // Close modal
+            closeModalBtn.addEventListener('click', () => proposalModal.classList.remove('active'));
+            window.addEventListener('click', (e) => {
+                if (e.target === proposalModal) proposalModal.classList.remove('active');
+            });
+            
+            // Deny job functionality
+            document.querySelectorAll('.deny-button').forEach(button => {
+                button.addEventListener('click', function(event) {
+                    event.stopPropagation();
+                    const jobId = this.dataset.id;
+                    if (confirm(`Are you sure you want to deny this job?`)) {
+                        updateJobStatus(jobId, 'Rejected');
+                    }
+                });
+            });
 
         // Add click event listeners to job cards
         document.querySelectorAll('.job-card').forEach(card => {
@@ -626,18 +688,6 @@
                 alert('An error occurred: ' + error.message);
             }
         }
-
-        // Add event listeners to all accept/deny buttons
-        document.querySelectorAll('.accept-button, .deny-button').forEach(button => {
-            button.addEventListener('click', function(event) {
-                event.stopPropagation(); // Prevents the card click event
-                const jobId = this.dataset.id;
-                const status = this.classList.contains('accept-button') ? 'Accepted' : 'Rejected';
-                 if (confirm(`Are you sure you want to ${status.toLowerCase()} this job?`)) {
-                    updateJobStatus(jobId, status);
-                }
-            });
-        });
     });
 </script>
 </body>
