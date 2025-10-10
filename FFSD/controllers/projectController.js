@@ -55,7 +55,7 @@ const submitArchitect = async (req, res) => {
     const referenceImages =
       req.files && req.files.length > 0
         ? req.files.map((file) => ({
-            url: `/Uploads/${file.filename}`,
+            url: file.path,
             originalName: file.originalname,
             mimeType: file.mimetype,
             size: file.size,
@@ -133,10 +133,10 @@ const submitDesignRequest = async (req, res) => {
 
     const currentRoomImages = req.files
       .filter((file) => file.fieldname === "currentRoomImages")
-      .map((file) => `/uploads/${file.filename}`);
+      .map((file) => file.path);
     const inspirationImages = req.files
       .filter((file) => file.fieldname === "inspirationImages")
-      .map((file) => `/uploads/${file.filename}`);
+      .map((file) => file.path);
 
     const designRequest = new DesignRequest({
       projectName,

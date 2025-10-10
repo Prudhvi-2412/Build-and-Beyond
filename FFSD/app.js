@@ -21,7 +21,7 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.static('Final Pages'));
 app.use(cors({ origin: true, credentials: true }));
-app.use('/uploads', express.static(path.join(__dirname, 'Uploads')));
+/* app.use('/uploads', express.static(path.join(__dirname, 'Uploads'))); */
 
 // View engine
 app.set('view engine', 'ejs');
