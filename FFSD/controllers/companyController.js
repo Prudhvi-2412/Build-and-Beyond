@@ -193,6 +193,67 @@ const handleBidActionController = async (req, res) => {
   }
 };
 
+// ===== ADD THIS NEW FUNCTION =====
+const customerAcceptsBidController = async (req, res) => {
+  try {
+    const { bidId, companyBidId } = req.body;
+    
+    const bid = await Bid.findById(bidId);
+    if (!bid) {
+      return res.status(404).json({ success: false, message: 'Bid not found' });
+    }
+
+    const acceptedCompanyBid = bid.companyBids.id(companyBidId);
+    if (!acceptedCompanyBid) {
+      return res.status(404).json({ success: false, message: 'Company bid not found' });
+    }
+
+    if (bid.status === 'awarded') {
+      return res.status(400).json({ success: false, message: 'Project already awarded' });
+    }
+
+    bid.status = 'awarded';
+    bid.winningBidId = companyBidId;
+    await bid.save();
+
+    const newProject = new ConstructionProjectSchema({
+      projectName: `${bid.buildingType} Project - ${bid.totalFloors} Floors`,
+      status: 'accepted',
+      customerId: bid.customerId,
+      companyId: acceptedCompanyBid.companyId,
+      customerName: bid.customerName,
+      customerEmail: bid.customerEmail,
+      customerPhone: bid.customerPhone,
+      projectAddress: bid.projectAddress,
+      projectLocationPincode: bid.projectLocation,
+      totalArea: bid.totalArea,
+      buildingType: bid.buildingType,
+      estimatedBudget: acceptedCompanyBid.bidPrice,
+      projectTimeline: bid.projectTimeline,
+      totalFloors: bid.totalFloors,
+      floors: bid.floors,
+      specialRequirements: bid.specialRequirements,
+      accessibilityNeeds: bid.accessibilityNeeds,
+      energyEfficiency: bid.energyEfficiency,
+      siteFilepaths: bid.siteFiles,
+      completionPercentage: 0,
+      currentPhase: 'Foundation'
+    });
+
+    await newProject.save();
+
+    res.status(200).json({
+      success: true,
+      message: 'Bid accepted and project created!',
+      project: newProject
+    });
+
+  } catch (error) {
+    console.error('Error accepting bid:', error);
+    res.status(500).json({ success: false, message: 'Error accepting bid', error: error.message });
+  }
+};
+
 const submitBidController = async (req, res) => {
     // 1. Get the data from the form submission
     const { bidId, bidPrice, companyName, companyId } = req.body;
@@ -234,6 +295,8 @@ const submitBidController = async (req, res) => {
         res.redirect('/companybids?error=server_error');
     }
 };
+
+
 
 
 const getCompanyRevenue = async (req, res) => {
@@ -499,4 +562,4 @@ const updateCompanyProfile = async (req, res) => {
 };
 // Add other company controllers like revenue, etc., if needed
 
-module.exports = { getDashboard, getOngoingProjects, getProjectRequests, updateProjectStatusController, handleBidActionController, getHiring, getSettings, getBids , getCompanyRevenue, createHireRequest,  updateCompanyProfile, handleWorkerRequest, submitBidController};
+module.exports = { getDashboard, getOngoingProjects, getProjectRequests, updateProjectStatusController, handleBidActionController, getHiring, getSettings, getBids , getCompanyRevenue, createHireRequest,  updateCompanyProfile, handleWorkerRequest, submitBidController, customerAcceptsBidController};
