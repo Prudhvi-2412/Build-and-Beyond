@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bid Details - Admin</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container { max-width: 1100px; margin: 0 auto; }
+        .header {
+            background: white;
+            padding: 20px 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header h1 { color: #2d3748; font-size: 24px; }
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s;
+        }
+        .btn-back { background: #6b7280; color: white; }
+        .btn-back:hover { background: #4b5563; transform: translateY(-2px); }
+        .btn-delete { background: #ef4444; color: white; margin-left: 10px; }
+        .btn-delete:hover { background: #dc2626; transform: translateY(-2px); }
+        .detail-card {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        .detail-header {
+            border-bottom: 3px solid #6366f1;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        .detail-header h2 { color: #1f2937; font-size: 28px; margin-bottom: 5px; }
+        .detail-header .subtitle { color: #6b7280; font-size: 14px; }
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+        }
+        .detail-item {
+            padding: 15px;
+            background: #f9fafb;
+            border-radius: 10px;
+            border-left: 4px solid #6366f1;
+        }
+        .detail-item label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+        .detail-item .value { font-size: 16px; color: #1f2937; font-weight: 500; }
+        .section-title {
+            font-size: 20px;
+            color: #1f2937;
+            margin: 40px 0 20px 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+        .badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+        }
+        .badge.open { background: #dbeafe; color: #1e40af; }
+        .badge.closed { background: #e5e7eb; color: #374151; }
+        .badge.awarded { background: #d1fae5; color: #065f46; }
+        .badge.cancelled { background: #fee2e2; color: #991b1b; }
+        .badge.pending { background: #fef3c7; color: #92400e; }
+        .badge.accepted { background: #d1fae5; color: #065f46; }
+        .badge.rejected { background: #fee2e2; color: #991b1b; }
+        .full-width { grid-column: 1 / -1; }
+        .bid-card {
+            background: #f9fafb;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border-left: 4px solid #6366f1;
+        }
+        .bid-card h4 {
+            color: #1f2937;
+            margin-bottom: 10px;
+        }
+        .bid-card p {
+            color: #6b7280;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+        .floor-card {
+            background: #f3f4f6;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💰 Bid Details</h1>
+            <div>
+                <a href="/admindashboard" class="btn btn-back">← Back to Dashboard</a>
+                <button class="btn btn-delete" onclick="deleteBid('<%= bid._id %>')">🗑️ Delete</button>
+            </div>
+        </div>
+
+        <div class="detail-card">
+            <div class="detail-header">
+                <h2>Construction Bid</h2>
+                <p class="subtitle">Bid ID: <%= bid._id %></p>
+            </div>
+
+            <h3 class="section-title">Bid Status</h3>
+            <div class="detail-grid">
+                <div class="detail-item">
+                    <label>Status</label>
+                    <div class="value"><span class="badge <%= bid.status %>"><%= bid.status %></span></div>
+                </div>
+                <div class="detail-item">
+                    <label>Total Bids Received</label>
+                    <div class="value"><%= bid.companyBids.length %> companies</div>
+                </div>
+                <div class="detail-item">
+                    <label>Created Date</label>
+                    <div class="value"><%= new Date(bid.createdAt).toLocaleDateString() %></div>
+                </div>
+                <div class="detail-item">
+                    <label>Last Updated</label>
+                    <div class="value"><%= new Date(bid.updatedAt).toLocaleDateString() %></div>
+                </div>
+            </div>
+
+            <h3 class="section-title">Customer Information</h3>
+            <div class="detail-grid">
+                <div class="detail-item">
+                    <label>Customer Name</label>
+                    <div class="value"><%= bid.customerName %></div>
+                </div>
+                <div class="detail-item">
+                    <label>Email</label>
+                    <div class="value"><%= bid.customerEmail %></div>
+                </div>
+                <div class="detail-item">
+                    <label>Phone</label>
+                    <div class="value"><%= bid.customerPhone %></div>
+                </div>
+                <div class="detail-item full-width">
+                    <label>Project Address</label>
+                    <div class="value"><%= bid.projectAddress %></div>
+                </div>
+                <div class="detail-item">
+                    <label>Project Location</label>
+                    <div class="value"><%= bid.projectLocation %></div>
+                </div>
+            </div>
+
+            <h3 class="section-title">Project Details</h3>
+            <div class="detail-grid">
+                <div class="detail-item">
+                    <label>Building Type</label>
+                    <div class="value"><%= bid.buildingType %></div>
+                </div>
+                <div class="detail-item">
+                    <label>Total Area</label>
+                    <div class="value"><%= bid.totalArea %> sq ft</div>
+                </div>
+                <div class="detail-item">
+                    <label>Total Floors</label>
+                    <div class="value"><%= bid.totalFloors %></div>
+                </div>
+                <div class="detail-item">
+                    <label>Estimated Budget</label>
+                    <div class="value">₹<%= bid.estimatedBudget?.toLocaleString() || 'Not specified' %></div>
+                </div>
+                <div class="detail-item">
+                    <label>Project Timeline</label>
+                    <div class="value"><%= bid.projectTimeline || 'Not specified' %> months</div>
+                </div>
+                <div class="detail-item">
+                    <label>Accessibility Needs</label>
+                    <div class="value"><%= bid.accessibilityNeeds || 'None' %></div>
+                </div>
+                <div class="detail-item">
+                    <label>Energy Efficiency</label>
+                    <div class="value"><%= bid.energyEfficiency || 'Standard' %></div>
+                </div>
+                <% if (bid.specialRequirements) { %>
+                <div class="detail-item full-width">
+                    <label>Special Requirements</label>
+                    <div class="value"><%= bid.specialRequirements %></div>
+                </div>
+                <% } %>
+            </div>
+
+            <% if (bid.floors && bid.floors.length > 0) { %>
+            <h3 class="section-title">Floor Details (<%= bid.floors.length %>)</h3>
+            <% bid.floors.forEach(floor => { %>
+                <div class="floor-card">
+                    <strong>Floor <%= floor.floorNumber %>:</strong> 
+                    <%= floor.floorType %> | 
+                    <%= floor.floorArea %> sq ft
+                    <% if (floor.floorDescription) { %>
+                        <br><small><%= floor.floorDescription %></small>
+                    <% } %>
+                </div>
+            <% }) %>
+            <% } %>
+
+            <% if (bid.companyBids && bid.companyBids.length > 0) { %>
+            <h3 class="section-title">Company Bids (<%= bid.companyBids.length %>)</h3>
+            <% bid.companyBids.forEach((companyBid, index) => { %>
+                <div class="bid-card">
+                    <h4><%= index + 1 %>. <%= companyBid.companyName %></h4>
+                    <p><strong>Bid Price:</strong> ₹<%= companyBid.bidPrice.toLocaleString() %></p>
+                    <p><strong>Status:</strong> <span class="badge <%= companyBid.status %>"><%= companyBid.status %></span></p>
+                    <p><strong>Bid Date:</strong> <%= new Date(companyBid.bidDate).toLocaleDateString() %></p>
+                </div>
+            <% }) %>
+            <% } else { %>
+            <h3 class="section-title">Company Bids</h3>
+            <p style="color: #6b7280; padding: 20px;">No bids received yet.</p>
+            <% } %>
+
+            <h3 class="section-title">Timestamps</h3>
+            <div class="detail-grid">
+                <div class="detail-item">
+                    <label>Created At</label>
+                    <div class="value"><%= new Date(bid.createdAt).toLocaleString() %></div>
+                </div>
+                <div class="detail-item">
+                    <label>Last Updated</label>
+                    <div class="value"><%= new Date(bid.updatedAt).toLocaleString() %></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function deleteBid(id) {
+            if (confirm('Are you sure you want to delete this bid?')) {
+                fetch(`/admin/delete-bid/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json' }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Bid deleted successfully');
+                        window.location.href = '/admindashboard';
+                    } else {
+                        alert('Error: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error deleting bid');
+                });
+            }
+        }
+    </script>
+</body>
+</html>
