@@ -4,26 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Design Application Tracker</title>
-      <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        *{
+        * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: "Inter", sans-serif;
-            scrollbar-width: none; 
+            scrollbar-width: none;
         }
-
         body {
             background-color: #f8fafc;
             color: #1e293b;
             line-height: 1.6;
             scroll-behavior: smooth;
         }
-
         .container {
             max-width: 1280px;
             margin: 0 auto;
@@ -32,32 +30,26 @@
             border-radius: 16px;
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
         }
-
         h2 {
             color: #1e293b;
             padding-left: 10px;
             margin-top: 30px;
             font-weight: 700;
         }
-
         .architect-heading {
             border-left: 4px solid #00c4b4;
         }
-
         .interior-heading {
             border-left: 4px solid #ff6200;
         }
-
         .company-heading {
             border-left: 4px solid #8e44ad;
         }
-
         .tab-container {
             display: flex;
             margin-bottom: 20px;
             border-bottom: 2px solid #e2e8f0;
         }
-
         .tab {
             padding: 10px 20px;
             cursor: pointer;
@@ -66,17 +58,14 @@
             font-weight: 500;
             color: #64748b;
         }
-
         .tab:hover {
             color: #1e293b;
         }
-
         .tab.active {
             border-bottom: 3px solid #facc15;
             font-weight: 600;
             color: #1e293b;
         }
-
         .application {
             background: #fff;
             border-radius: 12px;
@@ -86,13 +75,13 @@
             transition: all 0.4s ease;
             position: relative;
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
         }
-
         .application:hover {
             transform: translateY(-5px);
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
         }
-
         .application::before {
             content: '';
             position: absolute;
@@ -102,27 +91,27 @@
             height: 0;
             transition: height 0.4s ease;
         }
-
         .application:hover::before {
             height: 100%;
         }
-
         .architect-app::before {
             background: #00c4b4;
         }
-
         .interior-app::before {
             background: #ff6200;
         }
-
         .company-app::before {
             background: #8e44ad;
         }
-
-        .status {
+        .status-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
             position: absolute;
             top: 20px;
             right: 20px;
+        }
+        .status {
             padding: 5px 12px;
             border-radius: 50px;
             font-size: 0.8rem;
@@ -130,30 +119,57 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
-
         .architect-status {
             background-color: #e0f7fa;
             color: #00838f;
             border: 1px solid #00838f;
         }
-
         .interior-status {
             background-color: #fff3e0;
             color: #ff6200;
             border: 1px solid #ff6200;
         }
-
         .company-status {
             background-color: #f5eef8;
             color: #8e44ad;
             border: 1px solid #8e44ad;
         }
-
+        .chat-button {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 15px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 10px;
+            transition: background-color 0.3s;
+            gap: 8px;
+        }
+        .architect-chat {
+            background: #00c4b4;
+            color: white;
+        }
+        .architect-chat:hover {
+            background: #00838f;
+        }
+        .interior-chat {
+            background: #ff6200;
+            color: white;
+        }
+        .interior-chat:hover {
+            background: #c74d00;
+        }
+        .company-chat {
+            background: #8e44ad;
+            color: white;
+        }
+        .company-chat:hover {
+            background: #7a3a94;
+        }
         .project-name {
             font-weight: 600;
             color: #1e293b;
         }
-
         .section-title {
             font-size: 1.1rem;
             font-weight: 600;
@@ -163,7 +179,6 @@
             position: relative;
             padding-bottom: 8px;
         }
-
         .section-title::after {
             content: '';
             position: absolute;
@@ -174,61 +189,47 @@
             background: #facc15;
             border-radius: 2px;
         }
-
         p {
             margin: 5px 0;
             color: #64748b;
         }
-
         .no-applications {
             text-align: center;
             padding: 20px;
             color: #777;
         }
-
         .date-info {
             font-size: 12px;
             color: #777;
             margin-top: 5px;
         }
-        
         .content-section {
             display: none;
         }
         .content-section.active {
             display: block;
         }
-        
         .company-app-container {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 20px;
         }
-
         .application.company-app {
             margin-bottom: 0;
         }
-
         @media (max-width: 768px) {
             .company-app-container {
                 grid-template-columns: 1fr;
             }
+            .application-data {
+                width: 100%; /* Full width on mobile */
+            }
         }
-        .application{
-            display: flex;
-            flex-direction: column;
-        }
-        .appliaction-data-section{
-            display: flex;
-            flex-wrap: wrap;
-            flex-direction: row;
-            justify-content: space-between;
-        }
-        .application-data{
+        .application-data {
             width: 20vw;
             padding: 0px 10px;
         }
-        img{
+        img {
             max-width: 200px;
         }
     </style>
@@ -241,33 +242,36 @@
             <div class="tab" data-target="interior-section">Interior Designer Applications</div>
             <div class="tab" data-target="company-section">Construction Company Applications</div>
         </div>
-        
-        
         <div id="architect-section" class="content-section active">
             <h2 class="architect-heading">Architects You Requested to Join</h2>
             <p>Track the status of your applications to join architects</p>
-
             <% if (architectApplications && architectApplications.length > 0) { %>
                 <% architectApplications.forEach(function(app) { %>
                     <div class="application architect-app">
                         <div class="application-heading-section">
-                            <div class="status architect-status"><%= app.status %></div>
+                            <div class="status-container">
+                                <div class="status architect-status"><%= app.status %></div>
+                                <% if (app.status && app.status.toLowerCase() === 'accepted' && app.chatId) { %>
+                                    <a href="/chat/<%= app.chatId %>" class="chat-button architect-chat">
+                                        <i class="fas fa-comment-dots"></i> Chat
+                                    </a>
+                                <% } %>
+                            </div>
                             <h3>
                                 <span class="project-name"><%= app.projectName %></span>
                                 <% if (app.worker && app.worker.name) { %>
                                     with <span><%= app.worker.name %></span>
                                 <% } %>
                             </h3>
-                            <div class="date-info">Submitted: <%= new Date(app.createdAt).toLocaleDateString() %></div>    
+                            <div class="date-info">Submitted: <%= new Date(app.createdAt).toLocaleDateString() %></div>
                         </div>
-                        <div class="appliaction-data-section">
+                        <div class="application-data-section">
                             <div class="application-data">
                                 <div class="section-title">Customer Details</div>
                                 <p><strong>Name:</strong> <%= app.customerDetails.fullName %></p>
                                 <p><strong>Email:</strong> <%= app.customerDetails.email %></p>
                                 <p><strong>Contact:</strong> <%= app.customerDetails.contactNumber %></p>
                             </div>
-    
                             <div class="application-data">
                                 <div class="section-title">Customer Address</div>
                                 <p><strong>Street:</strong> <%= app.customerAddress.streetAddress %></p>
@@ -281,7 +285,6 @@
                                 <p><strong>Plot Size:</strong> <%= app.plotInformation.plotSize %></p>
                                 <p><strong>Plot Orientation:</strong> <%= app.plotInformation.plotOrientation %></p>
                             </div>
-    
                             <div class="application-data">
                                 <div class="section-title">Design Requirements</div>
                                 <p><strong>Type of Design:</strong> <%= app.designRequirements.designType %></p>
@@ -305,7 +308,6 @@
                                 <% } else { %>
                                     <p><strong>Preferred Completion Date:</strong> Not specified</p>
                                 <% } %>
-                                
                                 <% if (app.additionalDetails.referenceImages && app.additionalDetails.referenceImages.length > 0) { %>
                                     <p><strong>Reference Images:</strong> <%= app.additionalDetails.referenceImages.length %> image(s) uploaded</p>
                                 <% } %>
@@ -319,42 +321,45 @@
                 </div>
             <% } %>
         </div>
-        
         <div id="interior-section" class="content-section">
             <h2 class="interior-heading">Interior Designers You Requested to Join</h2>
             <p>Track the status of your applications to join interior designers</p>
-
             <% if (interiorApplications && interiorApplications.length > 0) { %>
                 <% interiorApplications.forEach(function(app) { %>
                     <div class="application interior-app">
-                        <div class="status interior-status"><%= app.status %></div>
+                        <div class="status-container">
+                            <div class="status interior-status"><%= app.status %></div>
+                            <% if (app.status && app.status.toLowerCase() === 'accepted' && app.chatId) { %>
+                                <a href="/chat/<%= app.chatId %>" class="chat-button interior-chat">
+                                    <i class="fas fa-comment-dots"></i> Chat
+                                </a>
+                            <% } %>
+                        </div>
                         <h3>
                             <span class="project-name"><%= app.projectName %></span>
                         </h3>
                         <p><strong>Email:</strong> <%= app.email %></p>
-                        
                         <div class="section-title">Room Details</div>
                         <p><strong>Room Type:</strong> <%= app.roomType %></p>
                         <p><strong>Room Size:</strong> <%= app.roomSize.length %>X<%= app.roomSize.width %><%= app.roomSize.unit %></p>
-                        <p><strong>Ceiling Height:</strong> <%= app.ceilingHeight.height%><%= app.ceilingHeight.unit%></p>
-                        <p><strong>Design Preference:</strong> <%= app.designPreference%></p>
+                        <p><strong>Ceiling Height:</strong> <%= app.ceilingHeight.height %><%= app.ceilingHeight.unit %></p>
+                        <p><strong>Design Preference:</strong> <%= app.designPreference %></p>
                         <p><strong>Project Description:</strong> <%= app.projectDescription %></p>
-
                         <div class="current-room-images">
-                            <% if(app.currentRoomImages && app.currentRoomImages.length>0){ %>
+                            <% if (app.currentRoomImages && app.currentRoomImages.length > 0) { %>
                                 <h2 style="color: gray;">Current-room-images</h2>
-                                    <% app.currentRoomImages.forEach((img)=>{ %>
-                                        <img src=<%=img%> alt="<%= img %>">
-                                    <% }) %>
-                            <% }else{''}%>
+                                <% app.currentRoomImages.forEach((img) => { %>
+                                    <img src="<%= img %>" alt="<%= img %>">
+                                <% }); %>
+                            <% } %>
                         </div>
                         <div class="inspiration-room-images">
-                            <% if(app.inspirationImages && app.inspirationImages.length>0){ %>
+                            <% if (app.inspirationImages && app.inspirationImages.length > 0) { %>
                                 <h2 style="color: gray;">Inspiration room images</h2>
-                                    <% app.inspirationImages.forEach((img)=>{ %>
-                                        <img src=<%=img%> alt="<%= img %>">
-                                    <% }) %>
-                            <% }else{''}%>
+                                <% app.inspirationImages.forEach((img) => { %>
+                                    <img src="<%= img %>" alt="<%= img %>">
+                                <% }); %>
+                            <% } %>
                         </div>
                     </div>
                 <% }); %>
@@ -364,32 +369,35 @@
                 </div>
             <% } %>
         </div>
-        
         <div id="company-section" class="content-section">
             <h2 class="company-heading">Construction Companies You Requested to Join</h2>
             <p>Track the status of your applications to join construction companies</p>
-
             <% if (companyApplications && companyApplications.length > 0) { %>
                 <div class="company-app-container">
                     <% companyApplications.forEach(function(app) { %>
                         <div class="application company-app">
-                            <div class="status company-status"><%= app.status %></div>
+                            <div class="status-container">
+                                <div class="status company-status"><%= app.status %></div>
+                                <% if (app.status && app.status.toLowerCase() === 'accepted' && app.chatId) { %>
+                                    <a href="/chat/<%= app.chatId %>" class="chat-button company-chat">
+                                        <i class="fas fa-comment-dots"></i> Chat
+                                    </a>
+                                <% } %>
+                            </div>
                             <h3>
                                 <span class="project-name"><%= app.projectName %></span>
-                                <% if (app.company && app.company.name) { %>
-                                    with <span><%= app.company.name %></span>
+                                <% if (app.companyId && app.companyId.name) { %>
+                                    with <span><%= app.companyId.name %></span>
                                 <% } %>
                             </h3>
                             <div class="date-info">Submitted: <%= new Date(app.createdAt).toLocaleDateString() %></div>
-                            
                             <div class="section-title">Customer Information</div>
                             <p><strong>Name:</strong> <%= app.customerName %></p>
                             <p><strong>Email:</strong> <%= app.customerEmail %></p>
                             <p><strong>Phone:</strong> <%= app.customerPhone %></p>
-                            
                             <div class="section-title">Project Details</div>
                             <p><strong>Address:</strong> <%= app.projectAddress %></p>
-                            <p><strong>Location Pincode:</strong> <%= app.projectLocation %></p>
+                            <p><strong>Location Pincode:</strong> <%= app.projectLocationPincode || 'Not specified' %></p>
                             <p><strong>Total Area:</strong> <%= app.totalArea %> sq.meters</p>
                             <p><strong>Building Type:</strong> <%= app.buildingType %></p>
                             <% if (app.estimatedBudget) { %>
@@ -398,15 +406,12 @@
                             <% if (app.projectTimeline) { %>
                                 <p><strong>Project Timeline:</strong> <%= app.projectTimeline %> months</p>
                             <% } %>
-                            
                             <div class="section-title">Building Details</div>
                             <p><strong>Total Floors:</strong> <%= app.totalFloors %></p>
-                            
                             <div class="section-title">Additional Requirements</div>
                             <p><strong>Special Requirements:</strong> <%= app.specialRequirements || 'None specified' %></p>
                             <p><strong>Accessibility Needs:</strong> <%= app.accessibilityNeeds || 'None specified' %></p>
                             <p><strong>Energy Efficiency:</strong> <%= app.energyEfficiency || 'Standard' %></p>
-                            
                             <% if (app.siteFiles && app.siteFiles.length > 0) { %>
                                 <p><strong>Attached Files:</strong> <%= app.siteFiles.length %> file(s) uploaded</p>
                             <% } %>
@@ -422,20 +427,16 @@
     </div>
     <%- include('customer_footer') %>
     <script>
-        // Tab switching functionality
         document.addEventListener('DOMContentLoaded', function() {
             const tabs = document.querySelectorAll('.tab');
             tabs.forEach(tab => {
                 tab.addEventListener('click', () => {
-                    // Remove active class from all tabs and sections
                     tabs.forEach(t => t.classList.remove('active'));
                     document.querySelectorAll('.content-section').forEach(section => {
                         section.classList.remove('active');
                     });
-                    
-                    // Add active class to clicked tab and corresponding section
                     tab.classList.add('active');
-                    const targetId = tab.getAttribute('data-target');
+                    const targetId = tab.dataset.target;
                     document.getElementById(targetId).classList.add('active');
                 });
             });
