@@ -70,6 +70,7 @@ const companySchema = new mongoose.Schema(
     description: { type: String },
     aboutCompany: { type: String },
     aboutForCustomers: { type: String },
+    aboutForCustomers: { type: String },
     whyJoinUs: { type: String },
     currentOpenings: [{ type: String }],
     specialization: [{ type: String }],
@@ -512,7 +513,7 @@ const jobApplicationSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-
+const ChatRoom = require('./chatModel');
 // Models
 module.exports = {
   Customer: mongoose.model('Customer', customerSchema),
@@ -526,4 +527,5 @@ module.exports = {
   CompanytoWorker: mongoose.model('CompanytoWorker', companyToWorkerSchema),
   // EXPORT THE NEW FAVORITE DESIGN MODEL
   FavoriteDesign: mongoose.model('FavoriteDesign', favoriteDesignSchema),
+  ChatRoom: ChatRoom,
 };
