@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const multer = require('multer');
-const { getDashboard, getOngoingProjects, getProjectRequests, updateProjectStatusController, handleBidActionController, getHiring, getSettings, getBids, getCompanyRevenue, createHireRequest, updateCompanyProfile, handleWorkerRequest, submitBidController} = require('../controllers/companyController');
+const { getDashboard, getOngoingProjects, getProjectRequests, updateProjectStatusController, handleBidActionController, getHiring, getSettings, getBids, getCompanyRevenue, createHireRequest, updateCompanyProfile, handleWorkerRequest, submitBidController, customerAcceptsBidController} = require('../controllers/companyController');
 const isAuthenticated = require('../middlewares/auth'); // Assuming 'auth' is the middleware name
 const upload = multer();
 // Company dashboard and main pages
@@ -36,6 +36,9 @@ router.post(
     updateCompanyProfile
 );
 
+// Customer accepts a company's bid
+// Customer accepts company bid - creates ongoing project
+router.post('/api/customer/accept-bid', isAuthenticated, customerAcceptsBidController);
 router.post('/submit-bid', isAuthenticated, submitBidController);
 
 // Add more routes as per companyController functions or requirements
