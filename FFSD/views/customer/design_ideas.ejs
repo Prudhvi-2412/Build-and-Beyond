@@ -35,7 +35,6 @@
         .page-header {
             text-align: center;
             margin-bottom: 50px;
-            animation: fadeInDown 0.8s ease;
         }
 
         .page-header h1 {
@@ -68,7 +67,6 @@
             align-items: center;
             flex-wrap: wrap;
             gap: 20px;
-            animation: slideInUp 0.8s ease;
         }
 
         .dropdown {
@@ -117,7 +115,6 @@
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
             z-index: 1000;
             overflow: hidden;
-            animation: dropdownOpen 0.3s ease;
         }
 
         .dropdown-content.show {
@@ -203,7 +200,6 @@
         /* Section */
         .section {
             margin-bottom: 60px;
-            animation: fadeIn 1s ease;
         }
 
         .section-heading {
@@ -249,7 +245,6 @@
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             position: relative;
             animation: cardAppear 0.6s ease forwards;
-            animation-delay: calc(0.1s * var(--order));
             opacity: 0;
         }
 
@@ -306,7 +301,6 @@
 
         .favorite-btn.active i {
             color: #ef4444;
-            animation: heartBeat 0.5s ease;
         }
 
         .card-overlay {
@@ -360,7 +354,6 @@
             background: linear-gradient(135deg, #10b981 0%, #059669 100%);
             border-radius: 50%;
             position: relative;
-            animation: pulse 2s infinite;
         }
 
         .status-text {
@@ -381,7 +374,6 @@
             z-index: 2000;
             align-items: center;
             justify-content: center;
-            animation: fadeIn 0.3s ease;
         }
 
         .favorites-modal.show {
@@ -396,7 +388,6 @@
             max-height: 85vh;
             overflow-y: auto;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            animation: modalSlideIn 0.4s ease;
         }
 
         .favorites-header {
@@ -500,32 +491,6 @@
         }
 
         /* Animations */
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        @keyframes fadeInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes slideInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
 
         @keyframes cardAppear {
             from {
@@ -538,45 +503,6 @@
             }
         }
 
-        @keyframes dropdownOpen {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes heartBeat {
-            0%, 100% { transform: scale(1); }
-            25% { transform: scale(1.3); }
-            50% { transform: scale(1.1); }
-            75% { transform: scale(1.2); }
-        }
-
-        @keyframes pulse {
-            0%, 100% {
-                opacity: 1;
-                transform: scale(1);
-            }
-            50% {
-                opacity: 0.7;
-                transform: scale(1.1);
-            }
-        }
-
-        @keyframes modalSlideIn {
-            from {
-                opacity: 0;
-                transform: translateY(-50px) scale(0.9);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-        }
 
         /* Responsive */
         @media (max-width: 768px) {

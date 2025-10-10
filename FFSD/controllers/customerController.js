@@ -42,27 +42,98 @@ const getArchitectForm = (req, res) => {
   res.render('customer/architect_form', { workerId });
 };
 
+// // Function to generate a target date (You must define this function)
+// const getTargetDate = (createdAt, projectTimeline) => {
+//     // This is a placeholder. You need a proper date calculation logic.
+//     // Assuming projectTimeline is in months.
+//     if (!createdAt || !projectTimeline) {
+//         return 'TBD';
+//     }
+//     const date = new Date(createdAt);
+//     date.setMonth(date.getMonth() + projectTimeline);
+//     return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+// };
+
 const getOngoingProjects = async (req, res) => {
-  try {
-    const customerId = req.user.user_id;
-    if (!customerId) return res.redirect('/login');
-    const projects = await ConstructionProjectSchema.find({ customerId, status: 'accepted' }).lean();
-    const totalActiveProjects = projects.length;
-    const metrics = { totalActiveProjects, monthlyRevenue: '4.8', customerSatisfaction: '4.7', projectsOnSchedule: '85' };
-    const enhancedProjects = projects.map(project => {
-      const projectObj = project;
-      projectObj.completion = 0;
-      projectObj.targetDate = getTargetDate(project.createdAt, project.projectTimeline);
-      projectObj.currentPhase = 'Update current';
-      projectObj.siteFilepaths = projectObj.siteFilepaths || [];
-      projectObj.floors = projectObj.floors || [];
-      return projectObj;
-    });
-    res.render('customer/ongoing_projects', { projects: enhancedProjects, metrics });
-  } catch (error) {
-    console.error('Error fetching projects:', error);
-    res.status(500).send('Server error');
-  }
+    try {
+        const customerId = req.user.user_id;
+        if (!customerId) return res.redirect("/login");
+
+        const projects = await ConstructionProjectSchema.find({
+            customerId,
+            status: "accepted",
+        })
+            .populate("companyId", "companyName") // Populate company name
+            .lean();
+
+        const totalActiveProjects = projects.length;
+        const metrics = {
+            totalActiveProjects,
+            monthlyRevenue: "4.8",
+            customerSatisfaction: "4.7",
+            projectsOnSchedule: "85",
+        };
+
+        const enhancedProjects = projects.map((project) => {
+            // Calculate completion percentage based on current phase
+            let completion = 0;
+            let currentPhase = "Planning";
+
+            if (project.currentPhase) {
+                const phases = [
+                    "Foundation",
+                    "Structure",
+                    "Interior work",
+                    "Finishing",
+                ];
+                const phaseIndex = phases.indexOf(project.currentPhase);
+                completion = phaseIndex >= 0 ? (phaseIndex + 1) * 25 : 0;
+                currentPhase = project.currentPhase;
+            }
+
+            // Use completionPercentage if available, otherwise calculate
+            completion = project.completionPercentage || completion;
+
+            // Format target date
+            let targetDate = "Not specified";
+            if (project.targetCompletionDate) {
+                targetDate = new Date(
+                    project.targetCompletionDate
+                ).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }); // Formatting for readability
+            } else if (project.projectTimeline && project.createdAt) {
+                targetDate = getTargetDate(project.createdAt, project.projectTimeline);
+            }
+
+            return {
+                ...project,
+                completion: completion,
+                targetDate: targetDate,
+                currentPhase: currentPhase,
+                // Map recentUpdates to the structure the EJS expects (update.image, update.description)
+                updates: (project.recentUpdates || []).map(update => ({
+                    description: update.updateText || 'No description',
+                    image: update.updateImagePath || '/images/update-default.jpg',
+                })),
+                siteFilepaths: project.siteFilepaths || (project.mainImagePath ? [project.mainImagePath] : []),
+                floors: project.floors || [],
+                // Ensure all fields have proper fallbacks
+                specialRequirements: project.specialRequirements || "None specified",
+                accessibilityNeeds: project.accessibilityNeeds || "none",
+                energyEfficiency: project.energyEfficiency || "standard",
+                companyName: project.companyId
+                    ? project.companyId.companyName
+                    : "Not assigned",
+            };
+        });
+
+        res.render("customer/ongoing_projects", {
+            projects: enhancedProjects,
+            metrics,
+        });
+    } catch (error) {
+        console.error("Error fetching projects:", error);
+        res.status(500).send("Server error");
+    }
 };
 
 const getDesignIdeas = (req, res) => res.render('customer/design_ideas');

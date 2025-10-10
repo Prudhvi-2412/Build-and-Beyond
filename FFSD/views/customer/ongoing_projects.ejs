@@ -9,18 +9,26 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --primary-green: #3B8F7C;
-      --secondary-green: #4DAF97;
-      --light-green: #A3C5BB;
-      --accent-green: #E5F4EF;
-      --dark-grey: #2C3333;
-      --medium-grey: #5A5A5A;
-      --light-grey: #F0F2F2;
-      --white: #FFFFFF;
-      --black: #000000;
-      --shadow: 0 4px 15px rgba(0,0,0,0.08);
-      --transition: all 0.3s ease;
-    }
+    --primary-color: #1a237e; 
+    --secondary-color: #e67e22; 
+    --light-color: #f9f9f9;
+    --dark-color: #333;
+    --border-color: #ddd;
+    --success-color: #27ae60;
+    --danger-color: #e74c3c;
+
+    --primary-green: var(--primary-color);  
+    --secondary-green: var(--secondary-color);
+    --light-green: var(--light-color);    
+    --accent-green: #c5cae9;                
+    --dark-grey: var(--dark-color);         
+    --medium-grey: #5A5A5A;                  
+    --light-grey: var(--light-color);     
+    --white: #FFFFFF;                     
+    --black: #000000;                        
+    --shadow: 0 4px 15px rgba(0,0,0,0.08);
+    --transition: all 0.3s ease;
+}
 
     * {
       margin: 0;
@@ -152,6 +160,7 @@
       border-radius: 12px;
       box-shadow: var(--shadow);
       overflow: hidden;
+      margin:20px 0px;
     }
 
     .project-display {
@@ -578,34 +587,14 @@
     <div class="header">
       <h1>Ongoing Projects</h1>
     </div>
-    
-    <!-- <div class="dashboard-metrics">
-      <div class="metric-card">
-        <div class="metric-title">Total Active Projects</div>
-        <div class="metric-value"><= metrics.totalActiveProjects %></div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-title">Monthly Revenue</div>
-        <div class="metric-value">₹<= metrics.monthlyRevenue %> Cr</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-title">Customer Satisfaction</div>
-        <div class="metric-value"><= metrics.customerSatisfaction %>/5</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-title">Projects On Schedule</div>
-        <div class="metric-value"><= metrics.projectsOnSchedule %>%</div>
-      </div>
-    </div>
-     -->
     <div class="content-wrapper">
       <div class="left-section">
         <% if (projects && projects.length > 0) { %>
           <% projects.forEach(function(project, index) { %>
             <div class="project-display">
               <div class="project-image">
-                <% if (project.siteFilepaths && project.siteFilepaths.length > 0) { %>
-                  <img src="<%= project.siteFilepaths[0] %>" alt="<%= project.projectName %> Image">
+                <% if (project.mainImagePath) { %>
+                  <img src="<%= project.mainImagePath %>" alt="<%= project.projectName %> Image">
                 <% } else { %>
                   <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSqjSRsiV4Q22mOElSnkcct2oZmd-1iVrNOcQ&s" alt="Default Project Image">
                 <% } %>
@@ -621,16 +610,15 @@
                   <% } else { %>
                     <span class="project-tag">Other</span>
                   <% } %>
-                  <span class="status-tag">Under Construction</span>
                 </div>
                 
                 <div class="progress-container">
                   <div class="progress-bar">
-                    <div class="progress-fill" style="width: <%= project.completion %>%"></div>
+                    <div class="progress-fill" style="width: <%= project.completionPercentage %>%"></div>
                   </div>
                   <div class="progress-text">
-                    <span>Project Completion: <span class="progress-percentage"><%= project.completion %>%</span></span>
-                    <span>Target: <%= project.targetDate %></span>
+                    <span>Project Completion: <span class="progress-percentage"><%= project.completionPercentage %>%</span></span>
+                    <span>Target: <%= project.targetCompletionDate %></span>
                   </div>
                 </div>
                 
@@ -643,14 +631,12 @@
             <div class="view-details" id="details-<%= project._id %>">
               <h3>All Images</h3>
               <div class="images">
-                <% if (project.siteFilepaths && project.siteFilepaths.length > 0) { %>
-                  <% project.siteFilepaths.forEach(function(imgPath) { %>
+                <% if (project.additionalImagePaths && project.additionalImagePaths.length > 0) { %>
+                  <% project.additionalImagePaths.forEach(function(imgPath) { %>
                     <img src="<%= imgPath %>" alt="Project Image">
                   <% }); %>
                 <% } else { %>
-                  <img src="/images/default-1.jpg" alt="Default Project Image">
-                  <img src="/images/default-2.jpg" alt="Default Project Image">
-                  <img src="/images/default-3.jpg" alt="Default Project Image">
+                  <p>No images uploaded yet</p>
                 <% } %>
               </div>
               <h3>Recent Updates</h3>
