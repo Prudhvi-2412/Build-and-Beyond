@@ -409,6 +409,7 @@ const BidSchema = new mongoose.Schema({
     ref: "Customer",
     required: true,
   },
+  projectName: { type: String, required: true, trim: true },
   customerName: { type: String, required: true, trim: true },
   customerEmail: {
     type: String,
@@ -443,8 +444,16 @@ const BidSchema = new mongoose.Schema({
   companyBids: [companyBidSchema],
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
-  winningBidId: { type: mongoose.Schema.Types.ObjectId, ref: "companyBids", default: null },
-  status: { type: String, enum: ["open", "closed", "awarded", "cancelled"], default: "open" },
+  winningBidId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "companyBids",
+    default: null,
+  },
+  status: {
+    type: String,
+    enum: ["open", "closed", "awarded", "cancelled"],
+    default: "open",
+  },
 });
 
 BidSchema.pre("save", function (next) {

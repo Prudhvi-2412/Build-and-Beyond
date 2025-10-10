@@ -322,6 +322,12 @@
         border: 1px solid #ccc;
         display: block;
       }
+      .project-details-container{
+        overflow-y: scroll;
+        scrollbar-width: thin;
+        max-height: 60vh;
+      }
+      
     </style>
   </head>
   <body>
@@ -352,7 +358,7 @@
             onclick="selectBid('<%= bid._id %>')"
             data-bid-id="<%= bid._id %>"
           >
-            <div class="project-name">Project Name Here</div>
+            <div class="project-name"><%= bid.projectName %></div>
 
             <div class="bid-header">
               <div class="bid-title">
@@ -409,8 +415,9 @@
           <h2 class="section-title" id="dynamic-project-title">
             Project Details
           </h2>
-
-          <div id="dynamic-project-details"></div>
+          <div class="project-details-container">
+            <div id="dynamic-project-details"></div>
+          </div>
 
           <h2
             class="section-title"
@@ -560,6 +567,13 @@
         };
 
         let html = `
+          <div class="detail-group">
+            <h3>Customer Details</h3>
+            <div class="detail-row"><span class="detail-label">Customer Name:</span> <span class="detail-value">${bid.customerName || 'N/A'}</span></div>
+            <div class="detail-row"><span class="detail-label">Customer Email:</span> <span class="detail-value">${bid.customerEmail}</span></div>
+            <div class="detail-row"><span class="detail-label">Customer Phone:</span> <span class="detail-value">${bid.customerPhone}</span></div>
+            <div class="detail-row"><span class="detail-label">Project Address:</span> <span class="detail-value">${bid.projectAddress}</span></div>
+          </div>
           <div class="detail-group">
             <h3>Project Overview</h3>
             <div class="detail-row"><span class="detail-label">Building Type:</span> <span class="detail-value">${toDisplayString(bid.buildingType)}</span></div>
