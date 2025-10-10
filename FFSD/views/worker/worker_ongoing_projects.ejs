@@ -11,14 +11,16 @@
     <style>
         :root {
             --primary-color: #2c3e50;
-            --secondary-color: #3498db;
+            --secondary-color: #3498db; /* Blue for accent/buttons */
             --accent-color: #1abc9c;
+            --chat-color: #2ecc71; /* Green for chat button */
             --background-color: #f5f7fa;
             --card-bg: #ffffff;
             --text-color: #333333;
             --text-light: #7f8c8d;
             --border-color: #e0e0e0;
             --shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            --success-color: #27ae60; /* Defined success color */
         }
         * {
             padding: 0;
@@ -59,8 +61,12 @@
             color: var(--primary-color);
             border-bottom-color: var(--secondary-color);
         }
-        .tab-pane { display: none; }
-        .tab-pane.active { display: block; }
+        .tab-pane {
+            display: none;
+        }
+        .tab-pane.active {
+            display: block;
+        }
         .project-card {
             background-color: var(--card-bg);
             border-radius: 12px;
@@ -71,12 +77,18 @@
         .project-header {
             padding: 1rem 1.5rem;
             display: flex;
+            flex-wrap: wrap; /* Added for responsiveness */
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid var(--border-color);
+            gap: 10px; /* Space between items in header */
         }
-        .project-header h3 { font-size: 1.5rem; color: var(--primary-color); }
-        .project-body { padding: 1.5rem; }
+        .project-header h3 {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
+        .project-body {
+            padding: 1.5rem;
+        }
         .section-title {
             font-size: 1.25rem;
             font-weight: 600;
@@ -91,19 +103,41 @@
             min-height: 100px;
             margin-bottom: 0.75rem;
         }
-        .update-form .form-actions { display: flex; justify-content: space-between; align-items: center; }
-        .btn { padding: 0.7rem 1.4rem; border-radius: 8px; border: none; cursor: pointer; font-weight: 500; }
-        .btn-primary { background-color: var(--accent-color); color: white; }
-        .btn-outline { background-color: transparent; border: 1px solid var(--border-color); color: var(--text-color); }
-        .empty-state { text-align: center; padding: 3rem; }
-        .project-footer {
-            padding: 1rem 1.5rem;
-            background-color: #f9fafb;
-            border-top: 1px solid var(--border-color);
-            text-align: right;
+        .update-form .form-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .btn {
+            padding: 0.7rem 1.4rem;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.3s;
+        }
+        .btn-primary {
+            background-color: var(--accent-color);
+            color: white;
+        }
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+        }
+        .btn-chat {
+            background-color: var(--chat-color);
+            color: white;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            text-decoration: none;
+        }
+        .btn-chat:hover {
+            background-color: #27ad60;
         }
         .btn-complete {
-            background-color: var(--success-color, #27ae60);
+            background-color: var(--success-color);
             color: white;
             padding: 0.7rem 1.4rem;
             border-radius: 8px;
@@ -114,30 +148,108 @@
             align-items: center;
             gap: 0.5rem;
         }
-        
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+        }
+        .project-footer {
+            padding: 1rem 1.5rem;
+            background-color: #f9fafb;
+            border-top: 1px solid var(--border-color);
+            text-align: right;
+        }
+
         /* Modal Styles */
-        .modal { display: none; position: fixed; z-index: 1001; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); backdrop-filter: blur(5px); }
-        .modal.active { display: flex; align-items: center; justify-content: center; }
-        .modal-content { background-color: var(--card-bg); border-radius: 12px; width: 90%; max-width: 800px; max-height: 90vh; overflow-y: auto; box-shadow: var(--shadow); position: relative; }
-        .modal-header { padding: 1.5rem; border-bottom: 1px solid var(--border-color); }
-        .modal-body { padding: 1.5rem; }
-        .close-modal { position: absolute; top: 15px; right: 20px; font-size: 28px; color: var(--text-light); cursor: pointer; }
-        .detail-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; }
-        .modal-section { margin-bottom: 1.5rem; }
-        .modal-section-title { font-size: 1.1rem; font-weight: 600; color: var(--primary-color); margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem; }
-        .modal-detail-item { margin-bottom: 0.5rem; }
-        .modal-detail-item strong { color: var(--text-light); }
-        .update-history { max-height: 200px; overflow-y: auto; }
-        .update-item { padding: 0.75rem; border-bottom: 1px solid #eee; }
-        .inspiration-images { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; }
-        .inspiration-images img { width: 100%; height: 100px; object-fit: cover; border-radius: 8px; }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1001;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.6);
+            backdrop-filter: blur(5px);
+        }
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-content {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow);
+            position: relative;
+        }
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .modal-body {
+            padding: 1.5rem;
+        }
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 28px;
+            color: var(--text-light);
+            cursor: pointer;
+        }
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+        .modal-section {
+            margin-bottom: 1.5rem;
+        }
+        .modal-section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+        .modal-detail-item {
+            margin-bottom: 0.5rem;
+        }
+        .modal-detail-item strong {
+            color: var(--text-light);
+        }
+        .update-history {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .update-item {
+            padding: 0.75rem;
+            border-bottom: 1px solid #eee;
+        }
+        .inspiration-images {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 10px;
+        }
+        .inspiration-images img {
+            width: 100%;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
     </style>
 </head>
 <body>
     <%- include('worker_navbar') %>
     <div class="container">
-        <div class="page-header"><h1>My Projects</h1></div>
-
+        <div class="page-header">
+            <h1>My Projects</h1>
+        </div>
         <ul class="nav-tabs">
             <li class="nav-link active" data-tab="accepted">Accepted</li>
             <li class="nav-link" data-tab="completed">Completed</li>
@@ -146,19 +258,26 @@
 
         <div class="tab-content">
             <div id="accepted" class="tab-pane active">
-                <% const acceptedProjects = projects.filter(p => p.status.toLowerCase() === 'accepted'); %>
+                <% const acceptedProjects = (projects || []).filter(p => p.status && p.status.toLowerCase() === 'accepted'); %>
                 <% if (acceptedProjects.length > 0) { %>
                     <% acceptedProjects.forEach(project => { %>
                         <div class="project-card">
                             <div class="project-header">
                                 <h3><%= project.projectName %></h3>
-                                <button class="btn btn-outline view-details" data-project-id="<%= project._id %>">View Details</button>
+                                <div>
+                                    <button class="btn btn-outline view-details" data-project-id="<%= project._id %>">View Details</button>
+                                    <% if (project.status && project.status.toLowerCase() === 'accepted' && project.chatId) { %>
+                                        <a href="/chat/<%= project.chatId %>" class="btn btn-chat">
+                                            <i class="fas fa-comment-dots"></i> Chat
+                                        </a>
+                                    <% } %>
+                                </div>
                             </div>
                             <div class="project-body">
                                 <h4 class="section-title">Post a New Update</h4>
                                 <form action="/worker/project-update" method="POST" enctype="multipart/form-data" class="update-form">
                                     <input type="hidden" name="projectId" value="<%= project._id %>">
-                                    <input type="hidden" name="projectType" value="<%= user.isArchitect ? 'architect' : 'interior' %>">
+                                    <input type="hidden" name="projectType" value="<%= user && user.isArchitect ? 'architect' : 'interior' %>">
                                     <textarea name="updateText" placeholder="Share a new update with the customer..." required></textarea>
                                     <div class="form-actions">
                                         <input type="file" name="updateImage" accept="image/*">
@@ -169,7 +288,7 @@
                             <div class="project-footer">
                                 <form action="/worker/project-complete" method="POST" onsubmit="return confirm('Are you sure you want to mark this project as completed?');">
                                     <input type="hidden" name="projectId" value="<%= project._id %>">
-                                    <input type="hidden" name="projectType" value="<%= user.isArchitect ? 'architect' : 'interior' %>">
+                                    <input type="hidden" name="projectType" value="<%= user && user.isArchitect ? 'architect' : 'interior' %>">
                                     <button type="submit" class="btn btn-complete">
                                         <i class="fas fa-check-circle"></i> Mark as Completed
                                     </button>
@@ -184,10 +303,10 @@
 
             <% ['completed', 'rejected'].forEach(status => { %>
                 <div id="<%= status %>" class="tab-pane">
-                    <% const filteredProjects = projects.filter(p => p.status.toLowerCase() === status); %>
+                    <% const filteredProjects = (projects || []).filter(p => p.status && p.status.toLowerCase() === status); %>
                     <% if (filteredProjects.length > 0) { %>
                         <% filteredProjects.forEach(project => { %>
-                             <div class="project-card">
+                            <div class="project-card">
                                 <div class="project-header">
                                     <h3><%= project.projectName %></h3>
                                     <button class="btn btn-outline view-details" data-project-id="<%= project._id %>">View Details</button>
@@ -216,8 +335,9 @@
             const tabPanes = document.querySelectorAll('.tab-pane');
             const detailsModal = document.getElementById('detailsModal');
             const closeModal = detailsModal.querySelector('.close-modal');
-            const projectsData = <%- JSON.stringify(projects) %>;
-            const isArchitect = <%- JSON.stringify(user.isArchitect) %>;
+            // Ensure projectsData is available and safe to parse
+            const projectsData = <%- JSON.stringify(projects || []) %>;
+            const isArchitect = <%- JSON.stringify((user && user.isArchitect) || false) %>;
 
             tabs.forEach(tab => {
                 tab.addEventListener('click', function() {
@@ -231,49 +351,51 @@
             document.querySelectorAll('.view-details').forEach(button => {
                 button.addEventListener('click', function() {
                     const projectId = this.dataset.projectId;
-                    const project = projectsData.find(p => p._id === projectId);
+                    const project = projectsData.find(p => p._id && p._id.toString() === projectId);
                     if (!project) return;
-                    
+
                     const modalTitle = detailsModal.querySelector('#modalTitle');
                     const modalBody = detailsModal.querySelector('#modalBody');
-                    modalTitle.textContent = project.projectName;
+                    modalTitle.textContent = project.projectName || 'Project Details';
 
                     let detailsHtml = '';
 
                     if (isArchitect) {
                         detailsHtml = `
                             <div class="modal-section"><div class="modal-section-title">Customer Details</div><div class="detail-grid">
-                                <div class="modal-detail-item"><strong>Name:</strong> ${project.customerDetails.fullName}</div>
-                                <div class="modal-detail-item"><strong>Contact:</strong> ${project.customerDetails.contactNumber}</div>
+                                <div class="modal-detail-item"><strong>Name:</strong> ${project.customerDetails?.fullName || 'N/A'}</div>
+                                <div class="modal-detail-item"><strong>Contact:</strong> ${project.customerDetails?.contactNumber || 'N/A'}</div>
                             </div></div>
                             <div class="modal-section"><div class="modal-section-title">Plot Information</div><div class="detail-grid">
-                                <div class="modal-detail-item"><strong>Location:</strong> ${project.plotInformation.plotLocation}</div>
-                                <div class="modal-detail-item"><strong>Size:</strong> ${project.plotInformation.plotSize}</div>
+                                <div class="modal-detail-item"><strong>Location:</strong> ${project.plotInformation?.plotLocation || 'N/A'}</div>
+                                <div class="modal-detail-item"><strong>Size:</strong> ${project.plotInformation?.plotSize || 'N/A'}</div>
                             </div></div>
-                            <div class="modal-section"><div class="modal-section-title">Special Features</div><p>${project.designRequirements.specialFeatures || 'None'}</p></div>
+                            <div class="modal-section"><div class="modal-section-title">Special Features</div><p>${project.designRequirements?.specialFeatures || 'None'}</p></div>
                         `;
                     } else {
                         detailsHtml = `
                             <div class="modal-section"><div class="modal-section-title">Customer Details</div><div class="detail-grid">
-                                <div class="modal-detail-item"><strong>Name:</strong> ${project.fullName}</div>
-                                <div class="modal-detail-item"><strong>Contact:</strong> ${project.phone}</div>
-                                <div class="modal-detail-item"><strong>Email:</strong> ${project.email}</div>
-                                <div class="modal-detail-item"><strong>Address:</strong> ${project.address}</div>
+                                <div class="modal-detail-item"><strong>Name:</strong> ${project.fullName || 'N/A'}</div>
+                                <div class="modal-detail-item"><strong>Contact:</strong> ${project.phone || 'N/A'}</div>
+                                <div class="modal-detail-item"><strong>Email:</strong> ${project.email || 'N/A'}</div>
+                                <div class="modal-detail-item"><strong>Address:</strong> ${project.address || 'N/A'}</div>
                             </div></div>
                             <div class="modal-section"><div class="modal-section-title">Room Information</div><div class="detail-grid">
-                                <div class="modal-detail-item"><strong>Room Type:</strong> ${project.roomType}</div>
-                                <div class="modal-detail-item"><strong>Size:</strong> ${project.roomSize.length}x${project.roomSize.width} ${project.roomSize.unit}</div>
+                                <div class="modal-detail-item"><strong>Room Type:</strong> ${project.roomType || 'N/A'}</div>
+                                <div class="modal-detail-item"><strong>Size:</strong> ${project.roomSize?.length || 0}x${project.roomSize?.width || 0} ${project.roomSize?.unit || ''}</div>
                             </div></div>
-                             <div class="modal-section"><div class="modal-section-title">Special Features</div><p>${project.projectDescription || 'None'}</p></div>
+                            <div class="modal-section"><div class="modal-section-title">Special Features</div><p>${project.projectDescription || 'None'}</p></div>
                         `;
                     }
 
-                    const images = isArchitect ? project.additionalDetails.referenceImages : project.inspirationImages;
-                    if (images && images.length > 0) {
+                    const images = isArchitect ? project.additionalDetails?.referenceImages || [] : project.inspirationImages || [];
+                    if (images.length > 0) {
                         detailsHtml += `<div class="modal-section"><div class="modal-section-title">Inspiration Images</div><div class="inspiration-images">`;
                         images.forEach(img => {
-                            const imgUrl = typeof img === 'string' ? img : img.url;
-                            detailsHtml += `<div><img src="${imgUrl}" alt="Inspiration"></div>`;
+                            const imgUrl = typeof img === 'string' ? img : (img.url || '');
+                            if (imgUrl) {
+                                detailsHtml += `<div><img src="${imgUrl}" alt="Inspiration" onerror="this.style.display='none';"></div>`;
+                            }
                         });
                         detailsHtml += `</div></div>`;
                     }
@@ -281,13 +403,13 @@
                     detailsHtml += `<div class="modal-section"><div class="modal-section-title">Update History</div><div class="update-history">`;
                     if (project.projectUpdates && project.projectUpdates.length > 0) {
                         project.projectUpdates.forEach(update => {
-                            detailsHtml += `<div class="update-item"><p>${update.updateText}</p><small>${new Date(update.createdAt).toLocaleString()}</small></div>`;
+                            detailsHtml += `<div class="update-item"><p>${update.updateText || 'No text'}</p><small>${new Date(update.createdAt || Date.now()).toLocaleString()}</small></div>`;
                         });
                     } else {
                         detailsHtml += '<p>No updates for this project.</p>';
                     }
                     detailsHtml += `</div></div>`;
-                    
+
                     modalBody.innerHTML = detailsHtml;
                     detailsModal.classList.add('active');
                 });
