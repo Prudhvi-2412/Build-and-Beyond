@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Company Details - Admin</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            padding: 20px 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            color: #2d3748;
+            font-size: 24px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s;
+        }
+
+        .btn-back {
+            background: #6b7280;
+            color: white;
+        }
+
+        .btn-back:hover {
+            background: #4b5563;
+            transform: translateY(-2px);
+        }
+
+        .btn-delete {
+            background: #ef4444;
+            color: white;
+            margin-left: 10px;
+        }
+
+        .btn-delete:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
+        }
+
+        .detail-card {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .detail-header {
+            border-bottom: 3px solid #8b5cf6;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        .detail-header h2 {
+            color: #1f2937;
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        .detail-header .subtitle {
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+        }
+
+        .detail-item {
+            padding: 15px;
+            background: #f9fafb;
+            border-radius: 10px;
+            border-left: 4px solid #8b5cf6;
+        }
+
+        .detail-item label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .detail-item .value {
+            font-size: 16px;
+            color: #1f2937;
+            font-weight: 500;
+        }
+
+        .section-title {
+            font-size: 20px;
+            color: #1f2937;
+            margin: 40px 0 20px 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .alert {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .alert-info {
+            background: #dbeafe;
+            color: #1e40af;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        .list-item {
+            background: #f3f4f6;
+            padding: 10px 15px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🏢 Company Details</h1>
+            <div>
+                <a href="/admindashboard" class="btn btn-back">← Back to Dashboard</a>
+                <button class="btn btn-delete" onclick="deleteCompany('<%= company._id %>')">🗑️ Delete Company</button>
+            </div>
+        </div>
+
+        <!-- Detail Card -->
+        <div class="detail-card">
+            <div class="detail-header">
+                <h2><%= company.companyName %></h2>
+                <p class="subtitle">Company ID: <%= company._id %></p>
+            </div>
+
+            <div class="alert alert-info">
+                <strong>ℹ️ Company Information</strong><br>
+                This company registered on <%= new Date(company.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) %>
+            </div>
+
+            <h3 class="section-title">Basic Information</h3>
+            <div class="detail-grid">
+                <div class="detail-item">
+                    <label>Company Name</label>
+                    <div class="value"><%= company.companyName %></div>
+                </div>
+
+                <div class="detail-item">
+                    <label>Contact Person</label>
+                    <div class="value"><%= company.contactPerson %></div>
+                </div>
+
+                <div class="detail-item">
+                    <label>Email Address</label>
+                    <div class="value"><%= company.email %></div>
+                </div>
+
+                <div class="detail-item">
+                    <label>Phone Number</label>
+                    <div class="value"><%= company.phone %></div>
+                </div>
+
+                <div class="detail-item">
+                    <label>Company Size</label>
+                    <div class="value"><%= company.size || 'Not specified' %></div>
+                </div>
+
+                <div class="detail-item">
+                    <label>Projects Completed</label>
+                    <div class="value"><%= company.projectsCompleted || '0' %></div>
+                </div>
+
+                <div class="detail-item">
+                    <label>Years in Business</label>
+                    <div class="value"><%= company.yearsInBusiness || 'Not specified' %></div>
+                </div>
+
+                <div class="detail-item">
+                    <label>Profile Type</label>
+                    <div class="value"><%= company.profileType || 'worker' %></div>
+                </div>
+            </div>
+
+            <h3 class="section-title">Location</h3>
+            <div class="detail-grid">
+                <div class="detail-item">
+                    <label>Address</label>
+                    <div class="value"><%= company.location?.address || 'Not provided' %></div>
+                </div>
+
+                <div class="detail-item">
+                    <label>City</label>
+                    <div class="value"><%= company.location?.city || 'Not specified' %></div>
+                </div>
+
+                <div class="detail-item">
+                    <label>State</label>
+                    <div class="value"><%= company.location?.state || 'Not specified' %></div>
+                </div>
+
+                <div class="detail-item">
+                    <label>Country</label>
+                    <div class="value"><%= company.location?.country || 'Not specified' %></div>
+                </div>
+
+                <div class="detail-item">
+                    <label>Postal Code</label>
+                    <div class="value"><%= company.location?.postalCode || 'Not specified' %></div>
+                </div>
+            </div>
+
+            <% if (company.description || company.aboutCompany) { %>
+            <h3 class="section-title">Company Description</h3>
+            <div class="detail-grid">
+                <% if (company.description) { %>
+                <div class="detail-item full-width">
+                    <label>Description</label>
+                    <div class="value"><%= company.description %></div>
+                </div>
+                <% } %>
+
+                <% if (company.aboutCompany) { %>
+                <div class="detail-item full-width">
+                    <label>About Company</label>
+                    <div class="value"><%= company.aboutCompany %></div>
+                </div>
+                <% } %>
+
+                <% if (company.aboutForCustomers) { %>
+                <div class="detail-item full-width">
+                    <label>About for Customers</label>
+                    <div class="value"><%= company.aboutForCustomers %></div>
+                </div>
+                <% } %>
+
+                <% if (company.whyJoinUs) { %>
+                <div class="detail-item full-width">
+                    <label>Why Join Us</label>
+                    <div class="value"><%= company.whyJoinUs %></div>
+                </div>
+                <% } %>
+
+                <% if (company.didYouKnow) { %>
+                <div class="detail-item full-width">
+                    <label>Did You Know</label>
+                    <div class="value"><%= company.didYouKnow %></div>
+                </div>
+                <% } %>
+            </div>
+            <% } %>
+
+            <% if (company.specialization && company.specialization.length > 0) { %>
+            <h3 class="section-title">Specializations</h3>
+            <div style="margin-bottom: 20px;">
+                <% company.specialization.forEach(spec => { %>
+                    <div class="list-item">• <%= spec %></div>
+                <% }) %>
+            </div>
+            <% } %>
+
+            <% if (company.currentOpenings && company.currentOpenings.length > 0) { %>
+            <h3 class="section-title">Current Openings</h3>
+            <div style="margin-bottom: 20px;">
+                <% company.currentOpenings.forEach(opening => { %>
+                    <div class="list-item">• <%= opening %></div>
+                <% }) %>
+            </div>
+            <% } %>
+
+            <h3 class="section-title">Account Timestamps</h3>
+            <div class="detail-grid">
+                <div class="detail-item">
+                    <label>Created At</label>
+                    <div class="value">
+                        <%= new Date(company.createdAt).toLocaleString('en-US', { 
+                            year: 'numeric', 
+                            month: 'short', 
+                            day: 'numeric', 
+                            hour: '2-digit', 
+                            minute: '2-digit' 
+                        }) %>
+                    </div>
+                </div>
+
+                <div class="detail-item">
+                    <label>Last Updated</label>
+                    <div class="value">
+                        <%= new Date(company.updatedAt).toLocaleString('en-US', { 
+                            year: 'numeric', 
+                            month: 'short', 
+                            day: 'numeric', 
+                            hour: '2-digit', 
+                            minute: '2-digit' 
+                        }) %>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function deleteCompany(id) {
+            if (confirm('Are you sure you want to delete this company? This action cannot be undone.')) {
+                fetch(`/admin/delete-company/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Company deleted successfully');
+                        window.location.href = '/admindashboard';
+                    } else {
+                        alert('Error deleting company: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error deleting company');
+                });
+            }
+        }
+    </script>
+</body>
+</html>
