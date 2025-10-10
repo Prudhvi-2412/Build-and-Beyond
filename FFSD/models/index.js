@@ -370,7 +370,7 @@ const designRequestSchema = new mongoose.Schema({
   projectDescription: { type: String },
   currentRoomImages: [{ type: String }],
   inspirationImages: [{ type: String }],
-  customerId: { type: mongoose.Schema.Types.ObjectId, ref: 'Customer', required: false },
+  customerId: { type: mongoose.Schema.Types.ObjectId, ref: 'Customer', required: true },
   workerId: { type: mongoose.Schema.Types.ObjectId, ref: 'Worker' },
   createdAt: { type: Date, default: Date.now },
   status: { type: String, enum: ["pending", "accepted", "rejected","completed"], default: "pending" },

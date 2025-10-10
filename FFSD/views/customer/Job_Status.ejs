@@ -222,6 +222,7 @@
             display: flex;
             flex-wrap: wrap;
             flex-direction: row;
+            justify-content: space-between;
         }
         .application-data{
             width: 20vw;
@@ -335,6 +336,23 @@
                         <p><strong>Ceiling Height:</strong> <%= app.ceilingHeight.height%><%= app.ceilingHeight.unit%></p>
                         <p><strong>Design Preference:</strong> <%= app.designPreference%></p>
                         <p><strong>Project Description:</strong> <%= app.projectDescription %></p>
+
+                        <div class="current-room-images">
+                            <% if(app.currentRoomImages && app.currentRoomImages.length>0){ %>
+                                <h2 style="color: gray;">Current-room-images</h2>
+                                    <% app.currentRoomImages.forEach((img)=>{ %>
+                                        <img src=<%=img%> alt="<%= img %>">
+                                    <% }) %>
+                            <% }else{''}%>
+                        </div>
+                        <div class="inspiration-room-images">
+                            <% if(app.inspirationImages && app.inspirationImages.length>0){ %>
+                                <h2 style="color: gray;">Inspiration room images</h2>
+                                    <% app.inspirationImages.forEach((img)=>{ %>
+                                        <img src=<%=img%> alt="<%= img %>">
+                                    <% }) %>
+                            <% }else{''}%>
+                        </div>
                     </div>
                 <% }); %>
             <% } else { %>
