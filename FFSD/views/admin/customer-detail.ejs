@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Details - Admin</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            padding: 20px 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            color: #2d3748;
+            font-size: 24px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s;
+        }
+
+        .btn-back {
+            background: #6b7280;
+            color: white;
+        }
+
+        .btn-back:hover {
+            background: #4b5563;
+            transform: translateY(-2px);
+        }
+
+        .btn-delete {
+            background: #ef4444;
+            color: white;
+            margin-left: 10px;
+        }
+
+        .btn-delete:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
+        }
+
+        .detail-card {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .detail-header {
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        .detail-header h2 {
+            color: #1f2937;
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        .detail-header .subtitle {
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+        }
+
+        .detail-item {
+            padding: 15px;
+            background: #f9fafb;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .detail-item label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .detail-item .value {
+            font-size: 16px;
+            color: #1f2937;
+            font-weight: 500;
+        }
+
+        .section-title {
+            font-size: 20px;
+            color: #1f2937;
+            margin: 40px 0 20px 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .alert {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .alert-info {
+            background: #dbeafe;
+            color: #1e40af;
+            border-left: 4px solid #3b82f6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>📋 Customer Details</h1>
+            <div>
+                <a href="/admindashboard" class="btn btn-back">← Back to Dashboard</a>
+                <button class="btn btn-delete" onclick="deleteCustomer('<%= customer._id %>')">🗑️ Delete Customer</button>
+            </div>
+        </div>
+
+        <!-- Detail Card -->
+        <div class="detail-card">
+            <div class="detail-header">
+                <h2><%= customer.name %></h2>
+                <p class="subtitle">Customer ID: <%= customer._id %></p>
+            </div>
+
+            <div class="alert alert-info">
+                <strong>ℹ️ Account Information</strong><br>
+                This customer account was created on <%= new Date(customer.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) %>
+            </div>
+
+            <h3 class="section-title">Personal Information</h3>
+            <div class="detail-grid">
+                <div class="detail-item">
+                    <label>Full Name</label>
+                    <div class="value"><%= customer.name %></div>
+                </div>
+
+                <div class="detail-item">
+                    <label>Email Address</label>
+                    <div class="value"><%= customer.email %></div>
+                </div>
+
+                <div class="detail-item">
+                    <label>Phone Number</label>
+                    <div class="value"><%= customer.phone %></div>
+                </div>
+
+                <div class="detail-item">
+                    <label>Date of Birth</label>
+                    <div class="value"><%= new Date(customer.dob).toLocaleDateString() %></div>
+                </div>
+
+                <div class="detail-item">
+                    <label>Role</label>
+                    <div class="value"><%= customer.role %></div>
+                </div>
+
+                <div class="detail-item">
+                    <label>Member Since</label>
+                    <div class="value"><%= new Date(customer.createdAt).toLocaleDateString() %></div>
+                </div>
+            </div>
+
+            <h3 class="section-title">Account Timestamps</h3>
+            <div class="detail-grid">
+                <div class="detail-item">
+                    <label>Created At</label>
+                    <div class="value">
+                        <%= new Date(customer.createdAt).toLocaleString('en-US', { 
+                            year: 'numeric', 
+                            month: 'short', 
+                            day: 'numeric', 
+                            hour: '2-digit', 
+                            minute: '2-digit' 
+                        }) %>
+                    </div>
+                </div>
+
+                <div class="detail-item">
+                    <label>Last Updated</label>
+                    <div class="value">
+                        <%= new Date(customer.updatedAt).toLocaleString('en-US', { 
+                            year: 'numeric', 
+                            month: 'short', 
+                            day: 'numeric', 
+                            hour: '2-digit', 
+                            minute: '2-digit' 
+                        }) %>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function deleteCustomer(id) {
+            if (confirm('Are you sure you want to delete this customer? This action cannot be undone.')) {
+                fetch(`/admin/delete-customer/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Customer deleted successfully');
+                        window.location.href = '/admindashboard';
+                    } else {
+                        alert('Error deleting customer: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error deleting customer');
+                });
+            }
+        }
+    </script>
+</body>
+</html>
