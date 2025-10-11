@@ -19,7 +19,8 @@ const {
     getOngoingProjects,
     postProjectUpdate,
     markProjectAsCompleted,
-    submitProposal
+    submitProposal,
+    updatePassword
 } = require('../controllers/workerController');
 
 const isAuthenticated = require('../middlewares/auth');
@@ -56,4 +57,5 @@ router.get('/worker/ongoing-projects', isAuthenticated, getOngoingProjects);
 router.post('/worker/project-update', isAuthenticated, upload.single('updateImage'), postProjectUpdate);
 router.post('/worker/project-complete', isAuthenticated, markProjectAsCompleted);
 router.post('/worker/submit-proposal', isAuthenticated, submitProposal);
+router.post('/worker/password/update', isAuthenticated, updatePassword);
 module.exports = router;

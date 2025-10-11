@@ -1,7 +1,7 @@
 const { Worker, ArchitectHiring, DesignRequest, Company, CompanytoWorker, WorkerToCompany } = require('../models');
 const mongoose = require("mongoose");
 const { findOrCreateChatRoom } = require('./chatController'); // NEW: Import the chat utility
-
+const bcrypt = require('bcrypt');
 // controllers/workerController.js
 
 const getJobs = async (req, res) => {
@@ -567,6 +567,37 @@ const submitProposal = async (req, res) => {
     res.status(500).send('Server Error');
   }
 };
+const updatePassword = async (req, res) => {
+  try {
+    const workerId = req.user.user_id;
+    const { currentPassword, newPassword } = req.body;
+
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({ message: 'Both current and new passwords are required.' });
+    }
+
+    const worker = await Worker.findById(workerId);
+    if (!worker) {
+      return res.status(404).json({ message: 'Worker not found.' });
+    }
+
+    // Compare the provided current password with the one in the database
+    const isMatch = await bcrypt.compare(currentPassword, worker.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: 'Incorrect current password.' });
+    }
+
+    // Set the new password. The pre-save hook in your schema will automatically hash it.
+    worker.password = newPassword;
+    await worker.save();
+
+    res.status(200).json({ message: 'Password updated successfully.' });
+
+  } catch (error) {
+    console.error('Error updating password:', error);
+    res.status(500).json({ message: 'Server error while updating password.' });
+  }
+};
 module.exports = { getJobs, getJoinCompany, getSettings, getEditProfile, getDashboard, getWorkerById, deleteWorkerRequest,
   createWorkerRequest , updateWorkerProfile,updateAvailability,acceptOffer,declineOffer, updateJobStatus ,
-  getOngoingProjects,postProjectUpdate,markProjectAsCompleted,submitProposal };
+  getOngoingProjects,postProjectUpdate,markProjectAsCompleted,submitProposal, updatePassword };

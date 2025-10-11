@@ -246,7 +246,7 @@
                     </div>
                     
                     <div class="action-buttons">
-                        <a style="text-decoration: none;"href="/worker_edit" class="btn">Edit Full Profile</a>
+                        <a style="text-decoration: none;" href="/worker_edit?id=<%= user._id %>" class="btn">Edit Full Profile</a>
                     </div>
                 </div>
 
@@ -358,6 +358,40 @@
                             alert('Availability updated successfully!');
                         } else {
                             alert(data.message || 'Failed to update availability.');
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
+                        alert('An error occurred. Please try again.');
+                    }
+                });
+            }
+             const updatePasswordForm = document.getElementById('updatePasswordForm');
+            if (updatePasswordForm) {
+                updatePasswordForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const currentPassword = document.getElementById('currentPassword').value;
+                    const newPassword = document.getElementById('newPassword').value;
+                    const confirmPassword = document.getElementById('confirmPassword').value;
+
+                    if (newPassword !== confirmPassword) {
+                        alert('New password and confirmation do not match.');
+                        return;
+                    }
+
+                    try {
+                        const response = await fetch('/worker/password/update', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ currentPassword, newPassword })
+                        });
+
+                        const data = await response.json();
+
+                        if (response.ok) {
+                            alert('Password updated successfully!');
+                            updatePasswordForm.reset(); // Clear the form fields
+                        } else {
+                            alert(data.message || 'Failed to update password.');
                         }
                     } catch (error) {
                         console.error('Error:', error);
