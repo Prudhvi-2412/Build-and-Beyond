@@ -683,8 +683,8 @@
                         <p><strong>Floor Type:</strong> <% if (floor.floorType && typeof floor.floorType === 'string') { %><%= floor.floorType.charAt(0).toUpperCase() + floor.floorType.slice(1) %><% } else { %>Other<% } %></p>
                         <p><strong>Floor Area:</strong> <%= floor.floorArea || 'None specified' %> sq meters</p>
                         <p><strong>Floor Description:</strong> <%= floor.floorDescription || 'None specified' %></p>
-                        <% if (floor.floorImage) { %>
-                          <img src="<%= floor.floorImage %>" alt="Floor <%= floor.floorNumber || 'Unknown' %> Plan">
+                        <% if (floor.floorImagePath) { %>
+                          <img src="<%= floor.floorImagePath %>" alt="Floor <%= floor.floorNumber || 'Unknown' %> Plan">
                         <% } else { %>
                           <img src="/images/floor-default.jpg" alt="Default Floor Plan">
                         <% } %>

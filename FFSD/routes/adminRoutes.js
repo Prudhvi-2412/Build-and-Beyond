@@ -22,7 +22,7 @@ const {
 const auth = require('../middlewares/auth');
 
 // Admin dashboard route (protected)
-router.get('/admindashboard', auth, getAdminDashboard);
+router.get('/admindashboard', getAdminDashboard);
 
 // Delete routes
 router.delete('/admin/delete-customer/:id', auth, deleteCustomer);
