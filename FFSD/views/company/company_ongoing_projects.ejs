@@ -1,25 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ongoing Projects</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ongoing Projects</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+    /* --- CORPORATE/ESTABLISHED COLOR PALETTE --- */
     :root {
-        /* --- "Deep Dive" Light Theme Palette (keeps teal accent) --- */
-        --primary-accent: #4D7A70; /* Vibrant Teal - kept as requested */
-        --primary-accent-darker: #14B8A6; /* Slightly darker teal */
-        /* NOTE: variable names kept identical to avoid changing HTML */
-        --background-dark: #f5f7fa; /* used as page background in light mode */
-        --content-dark: #ffffff; /* used as card/background (was content-dark) */
-        --border-dark: #e6e9ee; /* light border */
-        --text-primary: #111827; /* dark text for headings / main text */
-        --text-secondary: #6b7280; /* medium gray for secondary text */
-        --text-dark: #0b1220; /* for button text where used */
-        --shadow: 0 6px 18px rgba(16,24,40,0.06); /* softer shadow for light mode */
+        --primary-accent: #004D7A;       /* Deep Navy Blue for Authority/Trust */
+        --primary-accent-hover: #003355; /* Darker Navy for interaction */
+        --background-light: #F8F9FA;     /* Very light, soft grey background */
+        --content-light: #FFFFFF;        /* Pure white for cards */
+        --text-primary: #212529;         /* Dark charcoal for main text */
+        --text-secondary: #6C757D;       /* Medium grey for labels */
+        --highlight-color: #A06700;      /* Muted Gold/Amber for emphasis/pending */
+        --border-light: #D1D5DB;         /* Clean, soft border */
+        
+        /* ESTABLISHED DESIGN: Structural Styles */
+        --card-radius: 8px;
+        --soft-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        --button-secondary-bg: #E9ECEF;  /* Light grey for secondary buttons */
+
+        /* Status Colors */
+        --status-success-bg: #D4EDDA;    
+        --status-success-text: #155724;  
+        --status-warning-bg: #FFF3CD;    
+        --status-warning-text: #856404;  
+        
+        /* Mapping original variables */
+        --background-dark: var(--background-light);
+        --content-dark: var(--content-light);
+        --border-dark: var(--border-light);
+        --text-dark: var(--text-primary);
+        --shadow: var(--soft-shadow);
         --transition: all 0.3s ease;
     }
 
@@ -40,73 +56,27 @@
         -webkit-font-smoothing: antialiased;
     }
 
-    /* Full-width layout is preserved */
     .container {
         width: 100%;
         margin: 0;
-        padding: 2.5rem 3rem;
+        padding: 3rem; 
         flex: 1;
     }
 
-    .header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 2.5rem;
-    }
-
-    .header h1 {
-        font-size: 2rem;
-        font-weight: 700;
-        color: var(--text-primary);
-        position: relative;
-    }
-
-    .header h1:after {
-        content: '';
-        position: absolute;
-        bottom: -8px;
-        left: 0;
-        width: 60px;
-        height: 4px;
-        background-color: var(--primary-accent);
-        border-radius: 2px;
-    }
-
-    .add-project-btn {
-        background-color: var(--primary-accent);
-        color: #ffffff;
-        border: none;
-        padding: 0.75rem 1.5rem;
-        border-radius: 8px;
-        font-size: 1rem;
-        font-weight: 600;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        text-decoration: none;
-        transition: var(--transition);
-        box-shadow: 0 6px 18px rgba(45, 212, 191, 0.18);
-    }
-
-    .add-project-btn:hover {
-        background-color: var(--primary-accent-darker);
-        transform: translateY(-2px);
-        box-shadow: 0 8px 26px rgba(45, 212, 191, 0.22);
-    }
+    /* --- DASHBOARD METRICS --- */
 
     .dashboard-metrics {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 1.5rem;
-        margin-bottom: 2.5rem;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 2rem; 
+        margin-bottom: 3rem;
     }
 
     .metric-card {
         background-color: var(--content-dark);
         border: 1px solid var(--border-dark);
-        border-radius: 12px;
-        padding: 1.8rem;
+        border-radius: var(--card-radius);
+        padding: 2rem; 
         box-shadow: var(--shadow);
         transition: var(--transition);
         position: relative;
@@ -117,32 +87,37 @@
     }
 
     .metric-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 14px 40px rgba(16,24,40,0.08);
+        transform: translateY(-4px); 
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
     }
-
+    
     .metric-card:after {
         content: '';
         position: absolute;
-        bottom: 0;
+        top: 0; 
         left: 0;
         width: 100%;
-        height: 4px;
+        height: 5px; 
         background-color: var(--primary-accent);
+        z-index: 2;
     }
 
     .metric-title {
         color: var(--text-secondary);
-        font-size: 1rem;
-        font-weight: 500;
+        font-size: 0.9rem;
+        font-weight: 600; 
         margin-bottom: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
     }
 
     .metric-value {
-        font-size: 2.2rem;
-        font-weight: 700;
-        color: var(--primary-accent);
+        font-size: 2.8rem; 
+        font-weight: 800; 
+        color: var(--text-primary); 
     }
+
+    /* --- MAIN CONTENT & FILTER LAYOUT --- */
 
     .content-wrapper {
         display: flex;
@@ -150,329 +125,36 @@
         margin-top: 2rem;
     }
 
-    /* Keep selectors identical: left-section and right-section .filter-properties rule preserved */
-    .left-section, .right-section .filter-properties {
-        background-color: var(--content-dark);
-        border: 1px solid var(--border-dark);
-        border-radius: 12px;
-        box-shadow: var(--shadow);
+    .left-section { 
+        width: 75%; 
+        overflow: visible; 
     }
-    .left-section { width: 75%; overflow: hidden; }
-    .right-section { width: 25%; }
+    .right-section { 
+        width: 25%; 
+    }
 
+    /* Project List Items - Card Styling */
     .project-display {
         display: flex;
-        border-bottom: 1px solid var(--border-dark);
-    }
-
-    .project-image img:hover { transform: scale(1.05); }
-
-    .project-details {
-        width: 60%;
-        padding: 2rem;
-    }
-
-    .project-details h2 {
-        color: var(--text-primary);
-        margin-bottom: 1rem;
-        font-size: 1.7rem;
-        font-weight: 600;
-    }
-
-    .project-details p, .project-details .location {
-        color: var(--text-secondary);
-        margin-bottom: 1rem;
-        line-height: 1.6;
-    }
-
-    .location-icon {
-        color: var(--primary-accent);
-        font-size: 1.2rem;
-    }
-
-    /* tags: convert to pill with teal fill and white text for light theme */
-    .project-tag, .status-tag {
-        background-color: rgba(45, 212, 191, 0.12);
-        color: var(--primary-accent);
-        border: 1px solid rgba(45, 212, 191, 0.18);
-        padding: 0.35rem 0.9rem;
-        border-radius: 20px;
-        display: inline-block;
-        font-weight: 500;
-        font-size: 0.85rem;
-    }
-    .project-tag:hover {
-        background-color: rgba(45, 212, 191, 0.18);
-    }
-
-    /* Progress area: use light track and teal fill */
-    .progress-bar {
-        background-color: #eef2f6;
-        border-radius: 6px;
-    }
-
-    .progress-fill {
-        background: linear-gradient(90deg, var(--primary-accent-darker), var(--primary-accent));
-        height: 100%;
-        border-radius: 6px;
-    }
-
-    .progress-text {
-        color: var(--text-secondary);
-        margin-top: 0.6rem;
-        font-weight: 500;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-    .progress-percentage {
-        color: var(--primary-accent);
-        font-weight: 700;
-    }
-
-    .view-details-btn, .project-updates-btn {
-        background-color: var(--primary-accent);
-        color: #ffffff;
-        box-shadow: 0 6px 18px rgba(45, 212, 191, 0.12);
-        padding: 0.7rem 1.2rem;
-        border-radius: 8px;
-        border: none;
-        cursor: pointer;
-        font-weight: 600;
+        background-color: var(--content-dark);
+        border: 1px solid var(--border-dark);
+        border-radius: var(--card-radius);
+        box-shadow: var(--shadow);
+        margin-bottom: 2rem; 
         transition: var(--transition);
     }
-
-    .view-details-btn:hover, .project-updates-btn:hover {
-        background-color: var(--primary-accent-darker);
-        transform: translateY(-2px);
-        box-shadow: 0 10px 26px rgba(45, 212, 191, 0.16);
+    .project-display:hover {
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+        border-color: var(--primary-accent-hover);
     }
 
-    .edit-btn {
-        background-color: #f7fafc;
-        color: var(--text-secondary);
-        border: 1px solid var(--border-dark);
-        padding: 0.7rem 1.5rem;
-        border-radius: 8px;
-        cursor: pointer;
-    }
-
-    .edit-btn:hover {
-        background-color: #ffffff;
-        color: var(--primary-accent);
-        box-shadow: 0 4px 12px rgba(16,24,40,0.04);
-    }
-
-    .view-details, .project-updates {
-        padding: 2rem;
-        border-top: 1px solid var(--border-dark);
-        background-color: var(--content-dark);
-    }
-
-    .view-details h3, .view-details .section h4, .filter-properties h2, .project-updates h3 {
-        color: var(--text-primary);
-        position: relative;
-        display: inline-block;
-    }
-    .view-details h3:after, .view-details .section h4:after, .filter-properties h2:after, .project-updates h3:after {
-        content: '';
-        position: absolute;
-        bottom: -5px;
-        left: 0;
-        width: 40px;
-        height: 3px;
-        background-color: var(--primary-accent);
-        border-radius: 2px;
-    }
-
-    .project-updates h3 {
-      margin-bottom: 2rem;
-    }
-
-    .view-details .images img {
-        box-shadow: 0 6px 20px rgba(16,24,40,0.06);
-        border-radius: 8px;
-    }
-
-    /* Maintain structure but use light surfaces for updates, floor plans, etc. */
-    .view-details .update, .view-details .project-submission-details .section, .view-details .project-submission-details .floor-plan, .update-item {
-        background-color: var(--content-dark);
-        border: 1px solid var(--border-dark);
-        box-shadow: var(--shadow);
-        border-radius: 8px;
-        padding: 1rem;
-    }
-
-    .view-details .update:hover, .floor-plan:hover, .update-item:hover {
-        transform: translateY(-3px);
-        border-color: var(--primary-accent);
-        box-shadow: 0 10px 26px rgba(16,24,40,0.06);
-    }
-
-    /* STYLES for Project Updates section */
-    .progress-details-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 2rem;
-      margin-bottom: 2.5rem;
-      padding-bottom: 2rem;
-      border-bottom: 1px solid var(--border-dark);
-    }
-
-    .progress-status h4,
-    .project-images-section h4 {
-      font-size: 1.2rem;
-      font-weight: 600;
-      color: var(--text-primary);
-      margin-bottom: 1.5rem;
-      border-bottom: 2px solid var(--primary-accent);
-      padding-bottom: 0.5rem;
-      display: inline-block;
-    }
-
-    .status-item {
-      display: flex;
-      justify-content: space-between;
-      padding: 1rem 0;
-      border-bottom: 1px solid var(--border-dark);
-    }
-    .status-item:last-child {
-      border-bottom: none;
-    }
-    .status-item strong {
-      color: var(--text-secondary);
-    }
-    .status-item span {
-      color: var(--text-primary);
-      font-weight: 500;
-    }
-
-    .project-updates .progress-container {
-      margin-top: 0;
-      margin-bottom: 1rem;
-    }
-    .project-updates .progress-text {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 0.5rem;
-      color: var(--text-secondary);
-    }
-
-    .image-item {
-      margin-bottom: 1.5rem;
-    }
-    .image-item strong {
-      display: block;
-      margin-bottom: 1rem;
-      color: var(--text-secondary);
-    }
-    .main-update-image, .additional-image {
-      width: 100%;
-      border-radius: 8px;
-      object-fit: cover;
-      display: block;
-    }
-    .additional-images-container {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-      gap: 10px;
-    }
-    .additional-image {
-      height: 100px;
-      object-fit: cover;
-    }
-
-    .updates-subtitle {
-      font-size: 1.2rem;
-      color: var(--text-primary);
-      margin-bottom: 1.5rem;
-    }
-
-    .update-item {
-      padding: 1.5rem;
-      border-radius: 8px;
-      margin-bottom: 1.5rem;
-      transition: var(--transition);
-      display: flex;
-      flex-direction: row;
-      gap: 10px;
-      align-items: flex-start;
-      background-color: var(--content-dark);
-    }
-    .update-item img {
-      width: 50%;
-      height: auto;
-      border-radius: 6px;
-      margin-bottom: 1rem;
-      object-fit: cover;
-    }
-    .update-meta {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1rem;
-      color: var(--text-secondary);
-      font-size: 0.9rem;
-      width: fit-content;
-    }
-.Updates-left-section{
-  width: 50%;
-}
-    .update-meta-date {
-      font-weight: 500;
-      width: fit-content;
-    }
-    .update-item p {
-      line-height: 1.6;
-      color: var(--text-primary);
-    }
-
-    .view-details .update p, .view-details .project-submission-details .section p {
-        color: var(--text-secondary);
-    }
-    .section p strong {
-        color: var(--text-primary);
-    }
-
-    .filter-properties {
-        padding: 1.8rem;
-    }
-
-    .filter-button.active {
-        background-color: var(--primary-accent);
-        color: #ffffff;
-        box-shadow: 0 6px 18px rgba(45, 212, 191, 0.12);
-        padding: 0.7rem;
-        border-radius: 8px;
-        border: none;
-    }
-
-    .filter-button.inactive {
-        background-color: transparent;
-        color: var(--text-secondary);
-        border: 1px solid var(--border-dark);
-        padding: 0.7rem;
-        border-radius: 8px;
-    }
-
-    .filter-button.inactive:hover {
-        background-color: #fbfdfe;
-        color: var(--text-primary);
-    }
-
-    .no-projects, .no-updates {
-        padding: 3rem;
-        text-align: center;
-        color: var(--text-secondary);
-    }
-
-    /* Unchanged from original layout rules but restyled for light theme */
     .project-image {
-        width: 40%;
+        width: 35%; 
         position: relative;
         overflow: hidden;
         height: auto;
-        border-radius: 8px 0 0 8px;
+        border-radius: var(--card-radius) 0 0 var(--card-radius);
+        border-right: 1px solid var(--border-dark);
     }
     .project-image img {
         width: 100%;
@@ -481,54 +163,163 @@
         display: block;
         transition: var(--transition);
     }
+    .project-image img:hover { 
+        transform: scale(1.05); 
+    }
 
+    .project-details {
+        width: 65%;
+        padding: 2rem;
+    }
+
+    .project-details h2 {
+        color: var(--primary-accent);
+        margin-bottom: 0.75rem;
+        font-size: 1.8rem;
+        font-weight: 700;
+        border-bottom: 2px solid var(--border-dark);
+        padding-bottom: 0.5rem;
+    }
+
+    .location {
+        color: var(--text-secondary);
+        margin-bottom: 1rem;
+        font-size: 0.95rem;
+    }
+
+    .location-icon {
+        color: var(--highlight-color); 
+        font-size: 1.1rem;
+        margin-right: 5px;
+    }
+
+    /* Tags */
     .tags-container {
         display: flex;
         flex-wrap: wrap;
-        gap: 0.5rem;
+        gap: 0.75rem;
         margin-bottom: 1.5rem;
     }
     .project-tag, .status-tag {
-        display: inline-block;
+        background-color: var(--primary-accent);
+        color: var(--content-light); 
         padding: 0.4rem 1rem;
-        border-radius: 20px;
+        border-radius: 4px; 
+        font-weight: 600;
         font-size: 0.85rem;
-        font-weight: 500;
-        transition: var(--transition);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .project-tag:hover, .status-tag:hover {
+        background-color: var(--primary-accent-hover);
+    }
+    .status-tag {
+        background-color: var(--status-success-text); 
     }
 
+    /* Progress Bar */
     .progress-container {
         margin-top: 1.2rem;
         margin-bottom: 1.5rem;
     }
     .progress-bar {
+        background-color: var(--border-light);
         height: 10px;
         border-radius: 5px;
-        overflow: hidden;
-        background-color: #eef2f6;
-    }
-    .progress-fill {
-        height: 100%;
-        border-radius: 5px;
-        transition: width 1s ease-in-out;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2); 
+        overflow: hidden; /* Added overflow hidden */
     }
 
+    .progress-fill {
+        background: linear-gradient(90deg, var(--primary-accent-hover), var(--primary-accent)); 
+        height: 100%; /* Ensure it fills the height */
+        border-radius: 5px;
+        box-shadow: none;
+        transition: width 1s ease-in-out; /* Keep animation for smooth update */
+    }
+
+    .progress-text {
+        color: var(--text-secondary);
+        margin-top: 0.6rem;
+        font-weight: 500;
+        font-size: 0.9rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .progress-percentage {
+        color: var(--text-primary);
+        font-weight: 700;
+    }
+
+    .project-details p {
+        color: var(--text-primary);
+        font-weight: 600;
+        margin-top: 1rem;
+    }
+    .project-details p span {
+        color: var(--text-secondary);
+        font-weight: 400;
+    }
+
+    /* Action Buttons */
     .action-buttons {
         display: flex;
         gap: 1rem;
         margin-top: 1.8rem;
     }
-    .view-details-btn, .edit-btn, .project-updates-btn {
-        padding: 0.7rem 1.5rem;
-        border: none;
-        border-radius: 8px;
-        font-size: 0.95rem;
-        font-weight: 500;
+    .view-details-btn, .project-updates-btn {
+        background-color: var(--primary-accent);
+        color: #ffffff;
+        box-shadow: 0 4px 10px rgba(0, 77, 122, 0.2);
+        padding: 0.8rem 1.6rem;
+        border-radius: 6px;
+        font-weight: 700;
+        border: none; 
         cursor: pointer;
-        transition: var(--transition);
     }
-    .view-details, .project-updates { display: none; }
-    .view-details.active, .project-updates.active { display: block; }
+    .view-details-btn:hover, .project-updates-btn:hover {
+        background-color: var(--primary-accent-hover);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(0, 77, 122, 0.3);
+    }
+
+    .edit-btn {
+        background-color: var(--content-light);
+        color: var(--text-primary);
+        border: 1px solid var(--border-dark);
+        padding: 0.8rem 1.6rem;
+        border-radius: 6px;
+        font-weight: 600;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        cursor: pointer;
+    }
+
+    .edit-btn:hover {
+        background-color: var(--button-secondary-bg);
+        border-color: var(--primary-accent);
+        color: var(--primary-accent);
+    }
+    
+    /* --- FILTER SECTION --- */
+
+    .filter-properties {
+        background-color: var(--content-dark);
+        border: 1px solid var(--border-dark);
+        border-radius: var(--card-radius);
+        box-shadow: var(--shadow);
+        padding: 2rem;
+        position: sticky;
+        top: 2rem;
+    }
+    .filter-properties h2 {
+        font-size: 1.4rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        border-bottom: 2px solid var(--border-light);
+        padding-bottom: 0.5rem;
+    }
 
     .filter-button {
         display: block;
@@ -536,336 +327,471 @@
         padding: 0.8rem;
         margin-bottom: 0.8rem;
         text-align: center;
-        border-radius: 8px;
-        border: none;
+        border-radius: 6px;
         font-size: 0.95rem;
-        font-weight: 500;
+        font-weight: 600;
         cursor: pointer;
-        transition: var(--transition);
     }
 
-    /* --- TWO-COLUMN DETAILS LAYOUT (kept identical) --- */
+    .filter-button.active {
+        background-color: var(--primary-accent);
+        color: #ffffff;
+        box-shadow: 0 4px 8px rgba(0, 77, 122, 0.3);
+        border: none;
+    }
+
+    .filter-button.inactive {
+        background-color: var(--button-secondary-bg);
+        color: var(--text-secondary);
+        border: 1px solid #C0C0C0;
+    }
+
+    .filter-button.inactive:hover {
+        background-color: #D1D5DB;
+        color: var(--text-primary);
+    }
+
+    /* --- DETAILS AND UPDATES SECTIONS (Expanded Views) --- */
+
+    .view-details, .project-updates {
+        background-color: var(--content-dark);
+        border: 1px solid var(--border-dark);
+        border-radius: var(--card-radius);
+        box-shadow: var(--shadow);
+        padding: 2.5rem;
+        margin-top: 2rem;
+        margin-bottom: 2rem; /* Add margin bottom to expanded sections */
+    }
+    .view-details.active, .project-updates.active { 
+        display: block; 
+    }
+    .view-details, .project-updates {
+        display: none; /* Start hidden */
+    }
+
+    .view-details h3, .project-updates h3 {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--primary-accent);
+        border-bottom: 2px solid var(--border-light);
+        padding-bottom: 0.5rem;
+        margin-bottom: 2rem;
+        display: block; 
+    }
+
+    .view-details .section h4 {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 1.5rem;
+        border-left: 5px solid var(--highlight-color); 
+        padding-left: 10px;
+    }
+
+    /* Two-column layout for submission details */
     .details-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 1rem 2rem; /* 1rem space between rows, 2rem between columns */
-      margin-top: 1rem;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1rem 2rem;
+        margin-top: 0.5rem;
     }
     .details-grid p {
-      margin: 0;
-      padding: 0.5rem 0;
-      background-color: transparent;
-      border-bottom: 1px solid var(--border-dark);
-      color: var(--text-secondary);
+        padding: 0.6rem 0;
+        border-bottom: 1px solid #E0E0E0;
+        color: var(--text-secondary);
+        font-size: 0.95rem;
     }
-    .details-grid p strong { color: var(--text-primary); }
+    .details-grid p strong {
+        color: var(--text-primary);
+        font-weight: 600;
+        margin-right: 5px;
+    }
+
+    /* Floor Plan details */
+    .floor-plan {
+        background-color: #F8F9FA; 
+        border: 1px solid #E0E0E0;
+        border-radius: 6px;
+        padding: 1.5rem;
+        margin-top: 1.5rem;
+        transition: var(--transition);
+    }
+    .floor-plan p {
+        margin: 0.5rem 0;
+        color: var(--text-secondary);
+    }
+    .floor-plan p strong {
+        color: var(--primary-accent);
+    }
+    .floor-plan img {
+        margin-top: 1rem;
+        border-radius: 4px;
+        max-width: 100%;
+        height: auto;
+    }
+
+    /* Updates Section */
+    .updates-subtitle {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 1.5rem;
+        border-bottom: 1px dashed var(--border-dark);
+        padding-bottom: 0.5rem;
+    }
+
+    .update-item {
+        padding: 1.5rem;
+        border-radius: var(--card-radius);
+        margin-bottom: 1.5rem;
+        border: 1px solid var(--border-light);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        display: flex;
+        flex-direction: row;
+        gap: 1.5rem;
+        align-items: flex-start;
+    }
+    .update-item:hover {
+        border-color: var(--highlight-color); 
+        transform: translateY(-2px);
+    }
+
+    .Updates-left-section {
+        flex: 1; 
+    }
+    .update-item > div:last-child {
+        flex: 2;
+    }
+    .update-item img {
+        width: 100%;
+        max-height: 200px;
+        object-fit: cover;
+        border-radius: 6px;
+        margin-bottom: 1rem;
+    }
+    .update-meta-date {
+        font-weight: 600;
+        color: var(--text-secondary);
+        font-size: 0.85rem;
+        margin-bottom: 10px;
+    }
+    .update-item h4 {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--primary-accent);
+        margin-bottom: 0.5rem;
+    }
+    .update-item p {
+        line-height: 1.6;
+        color: var(--text-primary);
+        font-size: 0.95rem;
+    }
+
+    /* No Projects */
+    .no-projects {
+        padding: 3rem;
+        text-align: center;
+        color: var(--text-secondary);
+        border: 1px dashed var(--border-light);
+        background-color: var(--content-light);
+        border-radius: var(--card-radius);
+        box-shadow: var(--shadow);
+    }
 
     /* Responsive Adjustments */
     @media (max-width: 1024px) {
         .content-wrapper { flex-direction: column; }
         .left-section, .right-section { width: 100%; }
-        .progress-details-grid { grid-template-columns: 1fr; }
+        .project-display { flex-direction: row; }
+        .project-image { width: 35%; height: auto; border-radius: 8px 0 0 8px; }
+        .project-details { width: 65%; }
+        .filter-properties { position: static; }
     }
 
     @media (max-width: 768px) {
+        .container { padding: 1.5rem; }
+        .dashboard-metrics { gap: 1rem; }
+        .metric-card { padding: 1.5rem; }
+        .metric-value { font-size: 2.2rem; }
+
         .project-display { flex-direction: column; }
         .project-image, .project-details { width: 100%; }
-        .project-image { height: 250px; border-radius: 8px 8px 0 0; }
-        .project-details { padding: 1.5rem; }
+        .project-image { height: 200px; border-radius: 8px 8px 0 0; }
+        
+        .update-item { flex-direction: column; }
+        .Updates-left-section { width: 100%; }
+        .update-item > div:last-child { width: 100%; }
+        
         .details-grid { grid-template-columns: 1fr; gap: 0.5rem; }
-        .details-grid p { border-bottom: 1px solid var(--border-dark); }
+        .details-grid p { border-bottom: 1px solid #E0E0E0; }
         .details-grid p:last-child { border-bottom: none; }
     }
 </style>
 
 </head>
 <body>
-  <%- include('navbar_company') %>
-  <div class="container">
-    <div class="dashboard-metrics">
-      <div class="metric-card">
-        <div class="metric-title">Total Active Projects</div>
-        <div class="metric-value"><%= metrics.totalActiveProjects %></div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-title">Monthly 
-Revenue</div>
-        <div class="metric-value">₹<%= metrics.monthlyRevenue %> Cr</div>
-      </div>
-      <div class="metric-card">
-       
- <div class="metric-title">Customer Satisfaction</div>
-        <div class="metric-value"><%= metrics.customerSatisfaction %>/5</div>
-      </div>
-      <div class="metric-card">
-        <div class="metric-title">Projects On Schedule</div>
-        <div class="metric-value"><%= metrics.projectsOnSchedule %>%</div>
-      </div>
-    </div>
-    
-    <div 
-class="content-wrapper">
-      <div class="left-section">
-        <% if (projects && projects.length > 0) { %>
-         
- <% projects.forEach(function(project, index) { %>
-            <div class="project-display">
-              <div class="project-image">
-                <% if (project.mainImagePath) { %>
-           
-       <img src="<%= project.mainImagePath %>" alt="<%= project.projectName %> Image">
-                <% } else { %>
-  
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANdGcSqjSRsiV4Q22mOElSnkcct2oZmd-1iVrNOcQ&s" alt="Default Project Image">
-                <% } %>
-              </div>
-            
-  <div class="project-details">
-                <h2><%= project.projectName %></h2>
-               
- <div class="location">
-                  <span><svg class="location-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> <%= project.projectAddress %></span>
-               
- </div>
-                <div class="tags-container">
-                  
-<% if (project.buildingType && typeof project.buildingType === 'string') { %>
-                    <span class="project-tag"><%= project.buildingType.charAt(0).toUpperCase() + project.buildingType.slice(1) %></span>
-                  <% } else { %>
-        
-            <span class="project-tag">Other</span>
-                  <% } %>
-   
-               <span class="status-tag">Under Construction</span>
-                </div>
-                
-               
- <div class="progress-container">
-                  <div class="progress-bar">
-               
-     <div class="progress-fill" style="width: <%= project.completionPercentage %>%"></div>
-                  </div>
-                  <div class="progress-text">
-                 
-   <span>Project Completion: <span class="progress-percentage"><%= project.completionPercentage %>%</span></span>
-                    <% if(project.targetCompletionDate) { %>
-     
-                 <span>Target: <%= new Date(project.targetCompletionDate).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) %></span>
-                    <% } %>
-                  </div>
-                </div>
-               
- 
-                <p>Current phase: <%= 
-project.currentPhase %></p>
-                <div class="action-buttons">
-                  <button class="view-details-btn" data-project-id="<%= project._id %>">View Details</button>
-                  <button class="project-updates-btn" data-project-id="<%= project._id %>">Progress & Updates</button>
-               
-   <a href="/edit-project/<%= project._id %>" style="text-decoration: none;">
-                    <button class="edit-btn">Edit Project</button>
-              
-    </a>
-                </div>
-              </div>
+    <%- include('navbar_company') %>
+    <div class="container">
+        <div class="dashboard-metrics">
+            <div class="metric-card">
+                <div class="metric-title">Total Active Projects</div>
+                <div class="metric-value"><%= metrics.totalActiveProjects %></div>
             </div>
-
-          
-  <div class="project-updates" id="updates-<%= project._id %>">
-              <h3>Project Progress & Updates</h3>
-              <h4 class="updates-subtitle">Recent Activity</h4>
-              <% if (project.recentUpdates && project.recentUpdates.length > 0) { %>
-                <% project.recentUpdates.forEach(function(update) { %>
-                  <div class="update-item">
-                      <div class="Updates-left-section">
-                        <% if (update.updateImagePath) { %>
-                            <img src="<%= update.updateImagePath %>" alt="Update Image">
-                          <% } %>
-                          <div class="update-meta">
-                            <div class="update-meta-date"><%= new Date(update.createdAt).toLocaleDateString('en-IN',{ day: 'numeric', month: 'long', year: 'numeric' }) %></div>
-                          </div>
-                    </div>
-                    <div>
-                      <h4>Description:</h4>
-                      <p><%= update.updateText %></p>
-                    </div>
-                  </div>
-                <% });%>
-              <% } else { %>
-                <div class="no-updates">
-                  <p>No recent updates for this project.</p>
-                </div>
-              <% } %>
-          
-  </div>
-
-            <div class="view-details" id="details-<%= project._id %>">
-
-              <div class="project-submission-details">
-                <h3>Project Submission Details</h3>
-     
-                <div class="section">
-                  <h4>Customer Information</h4>
-                  <div class="details-grid">      <p><strong>Full Name:</strong> <%= project.customerName %></p>
-                    <p><strong>Email Address:</strong> <%= project.customerEmail %></p>
-                    <p><strong>Phone Number:</strong> <%= project.customerPhone %></p>
-                  </div>
-                </div>
-
-                <div class="section">
-    <h4>Project Details</h4>
-                  <div class="details-grid"> <p><strong>Project Address:</strong> <%= project.projectAddress %></p>
-                    <p><strong>Project Location:</strong> <%= project.projectLocation %></p>
-                    <p><strong>Total Building Area:</strong> <%= project.totalArea %> sq meters</p>
-                    <p><strong>Building Type:</strong> <% if (project.buildingType && typeof project.buildingType 
-=== 'string') { %><%= project.buildingType.charAt(0).toUpperCase() + project.buildingType.slice(1) %><% } else { %>Other<% } %></p>
-                    <p><strong>Estimated Budget:</strong> <% if (project.estimatedBudget) { %>$<%= project.estimatedBudget.toLocaleString() %><% } else { %>None specified<% } %></p>
-                    <p><strong>Expected Timeline:</strong> <% if (project.projectTimeline) { %><%= project.projectTimeline %> months<% } else { %>None specified<% } %></p>
-                  </div>
-                </div>
-    
-            <div class="section">
-                  <h4>Floor Plans</h4>
-                  <p><strong>Total Floors:</strong> <%= project.totalFloors %></p>
-  
-                <% if (project.floors && project.floors.length > 0) { %>
-                    
-<% project.floors.forEach(function(floor) { %>
-                      <div class="floor-plan">
-                        <p><strong>Floor <%= floor.floorNumber ||
-'Unknown' %></strong></p>
-                        <p><strong>Floor Type:</strong> <% if (floor.floorType && typeof floor.floorType === 'string') { %><%= floor.floorType.charAt(0).toUpperCase() + floor.floorType.slice(1) %><% } else { %>Other<% } %></p>
-                        <p><strong>Floor Area:</strong> <%= floor.floorArea ||
-'None specified' %> sq meters</p>
-                        <p><strong>Floor Description:</strong> <%= floor.floorDescription ||
-'None specified' %></p>
-                        <% if (floor.floorImage) { %>
-                          <img src="<%= floor.floorImage %>" alt="Floor <%= floor.floorNumber || 'Unknown' %> Plan">
-                        <% } else { %>
-      
-
-                    <img src="/images/floor-default.jpg" alt="Default Floor Plan">
-                        <% } %>
-                      </div>
-                    <% });
-%>
-                  <% } else { %>
-                    <div class="floor-plan">
-                      <p><strong>Floor plans not yet available</strong></p>
-                    </div>
-           
-
-       <% } %>
-                </div>
-                <div class="section">
-                  <h4>Additional Requirements</h4>
-                  <div class="details-grid"> <p><strong>Special Requirements:</strong> <%= project.specialRequirements ||
-"None specified" %></p>
-                    <p><strong>Accessibility Needs:</strong> <% if (project.accessibilityNeeds && typeof project.accessibilityNeeds === 'string') { %><%= project.accessibilityNeeds.charAt(0).toUpperCase() + project.accessibilityNeeds.slice(1) %><% } else { %>None specified<% } %></p>
-                    <p><strong>Energy Efficiency Goals:</strong> <% if (project.energyEfficiency && typeof project.energyEfficiency === 'string') { %><%= project.energyEfficiency.charAt(0).toUpperCase() + project.energyEfficiency.slice(1) %><% } else { %>Standard<% } %></p>
-                  </div>
-                </div>
-  
-
+            <div class="metric-card">
+                <div class="metric-title">Monthly Revenue</div>
+                <div class="metric-value">₹<%= metrics.monthlyRevenue %> Cr</div>
             </div>
+            <div class="metric-card">
+                <div class="metric-title">Customer Satisfaction</div>
+                <div class="metric-value"><%= metrics.customerSatisfaction %>/5</div>
             </div>
-          <% });
-%>
-        <% } else { %>
-          <div class="no-projects">
-            <p>No ongoing projects found.
-All accepted projects will appear here.</p>
-          </div>
-        <% } %>
-      </div>
-      <div class="right-section">
-        <div class="filter-properties">
-          <h2>Filter Properties</h2>
-          <button class="filter-button active" data-filter="all">All Properties</button>
-          <button class="filter-button inactive" data-filter="residential">Residential</button>
-          <button class="filter-button inactive" data-filter="commercial">Commercial</button>
-  
-
-        <button class="filter-button inactive" data-filter="industrial">Industrial</button>
+            <div class="metric-card">
+                <div class="metric-title">Projects On Schedule</div>
+                <div class="metric-value"><%= metrics.projectsOnSchedule %>%</div>
+            </div>
         </div>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      // View details functionality for each project
-      const viewDetailsBtns = document.querySelectorAll('.view-details-btn');
-      
-      viewDetailsBtns.forEach(btn => {
-        btn.addEventListener('click', function() {
-          const projectId = this.getAttribute('data-project-id');
-const viewDetailsSection = document.getElementById(`details-${projectId}`);
-          
-          viewDetailsSection.classList.toggle('active');
-          this.textContent = viewDetailsSection.classList.contains('active') ? 'Hide Details' : 'View Details';
-        });
-      });
-// Project Updates button functionality
-      const projectUpdatesBtns = document.querySelectorAll('.project-updates-btn');
-projectUpdatesBtns.forEach(btn => {
-        btn.addEventListener('click', function() {
-          const projectId = this.getAttribute('data-project-id');
-          const updatesSection = document.getElementById(`updates-${projectId}`);
-          
-          updatesSection.classList.toggle('active');
-          this.textContent = updatesSection.classList.contains('active') ? 'Hide Updates' : 'Progress & Updates';
-        });
-      });
-// Add hover effect to metric cards
-      const metricCards = document.querySelectorAll('.metric-card');
-metricCards.forEach(card => {
-        card.addEventListener('mouseenter', function() {
-          this.style.transform = 'translateY(-5px)';
-        });
-        card.addEventListener('mouseleave', function() {
-          this.style.transform = 'translateY(0)';
-        });
-      });
-// Initialize filter buttons
-      const filterButtons = document.querySelectorAll('.filter-button');
-      const projectDisplays = document.querySelectorAll('.project-display');
-filterButtons.forEach(button => {
-        button.addEventListener('click', function() {
-          const filter = this.getAttribute('data-filter');
-          
-          // Update button styles
-          filterButtons.forEach(btn => {
-            btn.classList.remove('active');
-            btn.classList.add('inactive');
-          });
-      
-
-    this.classList.remove('inactive');
-          this.classList.add('active');
-          
-          // Filter projects
-          if (filter === 'all') {
-            projectDisplays.forEach(project => {
-              project.style.display = 'flex';
-            });
         
+        <div class="content-wrapper">
+            <div class="left-section">
+                <% if (projects && projects.length > 0) { %>
+                    <% projects.forEach(function(project, index) { %>
+                        <div class="project-display" data-project-id="<%= project._id %>">
+                            <div class="project-image">
+                                <% if (project.mainImagePath) { %>
+                                    <img src="<%= project.mainImagePath %>" alt="<%= project.projectName %> Image">
+                                <% } else { %>
+                                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANdGcSqjSRsiV4Q22mOElSnkcct2oZmd-1iVrNOcQ&s" alt="Default Project Image">
+                                <% } %>
+                            </div>
+                            
+                            <div class="project-details">
+                                <h2><%= project.projectName %></h2>
+                                
+                                <div class="location">
+                                    <span><svg class="location-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> <%= project.projectAddress %></span>
+                                </div>
+                                <div class="tags-container">
+                                    <% if (project.buildingType && typeof project.buildingType === 'string') { %>
+                                        <span class="project-tag"><%= project.buildingType.charAt(0).toUpperCase() + project.buildingType.slice(1) %></span>
+                                    <% } else { %>
+                                        <span class="project-tag">Other</span>
+                                    <% } %>
+                                    <span class="status-tag">Under Construction</span>
+                                </div>
+                                
+                                <div class="progress-container">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: <%= project.completionPercentage || 0 %>%;"></div>
+                                    </div>
+                                    <div class="progress-text">
+                                        <span>Project Completion: <span class="progress-percentage"><%= project.completionPercentage || 0 %> %</span></span>
+                                        <% if(project.targetCompletionDate) { %>
+                                            <span>Target: <%= new Date(project.targetCompletionDate).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) %></span>
+                                        <% } %>
+                                    </div>
+                                </div>
+                                
+                                <p>Current phase: <span><%= project.currentPhase %></span></p>
+                                <div class="action-buttons">
+                                    <button class="view-details-btn" data-project-id="<%= project._id %>" data-target-id="details-<%= project._id %>">View Details</button>
+                                    <button class="project-updates-btn" data-project-id="<%= project._id %>" data-target-id="updates-<%= project._id %>">Progress & Updates</button>
+                                    <a href="/edit-project/<%= project._id %>" style="text-decoration: none;">
+                                        <button class="edit-btn">Edit Project</button>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
 
-  } else {
-            projectDisplays.forEach(project => {
-              const buildingType = project.querySelector('.project-tag');
-              if (buildingType && buildingType.textContent.toLowerCase() === filter) {
-                project.style.display = 'flex';
-              } else {
-           
+                        <div class="project-updates" id="updates-<%= project._id %>">
+                            <h3>Project Progress & Updates</h3>
+                            <h4 class="updates-subtitle">Recent Activity</h4>
+                            <% if (project.recentUpdates && project.recentUpdates.length > 0) { %>
+                                <% project.recentUpdates.forEach(function(update) { %>
+                                    <div class="update-item">
+                                        <div class="Updates-left-section">
+                                            <% if (update.updateImagePath) { %>
+                                                <img src="<%= update.updateImagePath %>" alt="Update Image">
+                                            <% } %>
+                                            <div class="update-meta-date"><%= new Date(update.createdAt).toLocaleDateString('en-IN',{ day: 'numeric', month: 'long', year: 'numeric' }) %></div>
+                                        </div>
+                                        <div>
+                                            <h4>Description:</h4>
+                                            <p><%= update.updateText %></p>
+                                        </div>
+                                    </div>
+                                <% });%>
+                            <% } else { %>
+                                <div class="no-updates">
+                                    <p>No recent updates for this project.</p>
+                                </div>
+                            <% } %>
+                        </div>
 
-     project.style.display = 'none';
-              }
+                        <div class="view-details" id="details-<%= project._id %>">
+
+                            <div class="project-submission-details">
+                                <h3>Project Submission Details</h3>
+                    
+                                <div class="section">
+                                    <h4>Customer Information</h4>
+                                    <div class="details-grid"> 
+                                        <p><strong>Full Name:</strong> <%= project.customerName %></p>
+                                        <p><strong>Email Address:</strong> <%= project.customerEmail %></p>
+                                        <p><strong>Phone Number:</strong> <%= project.customerPhone %></p>
+                                    </div>
+                                </div>
+
+                                <div class="section">
+                                    <h4>Project Details</h4>
+                                    <div class="details-grid"> 
+                                        <p><strong>Project Address:</strong> <%= project.projectAddress %></p>
+                                        <p><strong>Project Location:</strong> <%= project.projectLocation %></p>
+                                        <p><strong>Total Building Area:</strong> <%= project.totalArea %> sq meters</p>
+                                        <p><strong>Building Type:</strong> <% if (project.buildingType && typeof project.buildingType === 'string') { %><%= project.buildingType.charAt(0).toUpperCase() + project.buildingType.slice(1) %><% } else { %>Other<% } %></p>
+                                        <p><strong>Estimated Budget:</strong> <% if (project.estimatedBudget) { %>$<%= project.estimatedBudget.toLocaleString() %><% } else { %>None specified<% } %></p>
+                                        <p><strong>Expected Timeline:</strong> <% if (project.projectTimeline) { %><%= project.projectTimeline %> months<% } else { %>None specified<% } %></p>
+                                    </div>
+                                </div>
+                    
+                                <div class="section">
+                                    <h4>Floor Plans</h4>
+                                    <p><strong>Total Floors:</strong> <%= project.totalFloors %></p>
+                    
+                                    <% if (project.floors && project.floors.length > 0) { %>
+                                        <% project.floors.forEach(function(floor) { %>
+                                            <div class="floor-plan">
+                                                <p><strong>Floor <%= floor.floorNumber || 'Unknown' %></strong></p>
+                                                <p><strong>Floor Type:</strong> <% if (floor.floorType && typeof floor.floorType === 'string') { %><%= floor.floorType.charAt(0).toUpperCase() + floor.floorType.slice(1) %><% } else { %>Other<% } %></p>
+                                                <p><strong>Floor Area:</strong> <%= floor.floorArea || 'None specified' %> sq meters</p>
+                                                <p><strong>Floor Description:</strong> <%= floor.floorDescription || 'None specified' %></p>
+                                                <% if (floor.floorImage) { %>
+                                                    <img src="<%= floor.floorImage %>" alt="Floor <%= floor.floorNumber || 'Unknown' %> Plan">
+                                                <% } else { %>
+                                                    <img src="/images/floor-default.jpg" alt="Default Floor Plan">
+                                                <% } %>
+                                            </div>
+                                        <% }); %>
+                                    <% } else { %>
+                                        <div class="floor-plan">
+                                            <p><strong>Floor plans not yet available</strong></p>
+                                        </div>
+                                    <% } %>
+                                </div>
+                                <div class="section">
+                                    <h4>Additional Requirements</h4>
+                                    <div class="details-grid"> 
+                                        <p><strong>Special Requirements:</strong> <%= project.specialRequirements || "None specified" %></p>
+                                        <p><strong>Accessibility Needs:</strong> <% if (project.accessibilityNeeds && typeof project.accessibilityNeeds === 'string') { %><%= project.accessibilityNeeds.charAt(0).toUpperCase() + project.accessibilityNeeds.slice(1) %><% } else { %>None specified<% } %></p>
+                                        <p><strong>Energy Efficiency Goals:</strong> <% if (project.energyEfficiency && typeof project.energyEfficiency === 'string') { %><%= project.energyEfficiency.charAt(0).toUpperCase() + project.energyEfficiency.slice(1) %><% } else { %>Standard<% } %></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <% }); %>
+                <% } else { %>
+                    <div class="no-projects">
+                        <p>No ongoing projects found. All accepted projects will appear here.</p>
+                    </div>
+                <% } %>
+            </div>
+            <div class="right-section">
+                <div class="filter-properties">
+                    <h2>Filter Properties</h2>
+                    <button class="filter-button active" data-filter="all">All Properties</button>
+                    <button class="filter-button inactive" data-filter="residential">Residential</button>
+                    <button class="filter-button inactive" data-filter="commercial">Commercial</button>
+                    <button class="filter-button inactive" data-filter="industrial">Industrial</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+
+            // Get all buttons and sections
+            const viewDetailsBtns = document.querySelectorAll('.view-details-btn');
+            const projectUpdatesBtns = document.querySelectorAll('.project-updates-btn');
+            const projectDisplays = document.querySelectorAll('.project-display');
+
+            // --- Toggle Functionality ---
+            function setupToggleListeners(buttonList, targetSectionIdPrefix, oppositeButtonIdPrefix) {
+                buttonList.forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const targetId = this.getAttribute('data-target-id');
+                        const targetSection = document.getElementById(targetId);
+                        const projectId = this.getAttribute('data-project-id');
+                        
+                        if (!targetSection) return;
+
+                        // 1. Handle opposite section (details/updates)
+                        const oppositeSectionId = oppositeButtonIdPrefix + '-' + projectId;
+                        const oppositeSection = document.getElementById(oppositeSectionId);
+                        const oppositeButton = document.querySelector(`[data-target-id="${oppositeSectionId}"]`);
+                        
+                        if (oppositeSection && oppositeSection.classList.contains('active')) {
+                            oppositeSection.classList.remove('active');
+                            if (oppositeButton) {
+                                oppositeButton.textContent = oppositeButton.textContent.replace('Hide', oppositeButtonIdPrefix.includes('details') ? 'View' : 'Progress &');
+                            }
+                        }
+
+                        // 2. Toggle the current section
+                        targetSection.classList.toggle('active');
+                        
+                        // 3. Update button text
+                        if (targetSection.classList.contains('active')) {
+                            this.textContent = 'Hide ' + (targetSectionIdPrefix === 'details' ? 'Details' : 'Updates');
+                        } else {
+                            this.textContent = targetSectionIdPrefix === 'details' ? 'View Details' : 'Progress & Updates';
+                        }
+                    });
+                });
+            }
+
+            // Set up listeners using the target IDs
+            setupToggleListeners(viewDetailsBtns, 'details', 'updates');
+            setupToggleListeners(projectUpdatesBtns, 'updates', 'details');
+
+
+            // --- Filter Buttons Functionality ---
+            const filterButtons = document.querySelectorAll('.filter-button');
+            
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const filter = this.getAttribute('data-filter');
+                    
+                    // Update button styles
+                    filterButtons.forEach(btn => {
+                        btn.classList.remove('active');
+                        btn.classList.add('inactive');
+                    });
+                    this.classList.remove('inactive');
+                    this.classList.add('active');
+                    
+                    // Filter projects
+                    projectDisplays.forEach(project => {
+                        const buildingTypeElement = project.querySelector('.project-tag');
+                        const buildingType = buildingTypeElement ? buildingTypeElement.textContent.toLowerCase().trim() : 'other';
+                        
+                        if (filter === 'all' || buildingType === filter) {
+                            project.style.display = 'flex';
+                            // Also check for hidden details/updates sections and hide them if the card becomes visible
+                            // This ensures clean state when filtering
+                            const projectId = project.getAttribute('data-project-id');
+                            document.getElementById(`details-${projectId}`).classList.remove('active');
+                            document.getElementById(`updates-${projectId}`).classList.remove('active');
+                            
+                            // Reset buttons visually
+                            document.querySelector(`[data-target-id="details-${projectId}"]`).textContent = 'View Details';
+                            document.querySelector(`[data-target-id="updates-${projectId}"]`).textContent = 'Progress & Updates';
+                        } else {
+                            project.style.display = 'none';
+                        }
+                    });
+                });
             });
-}
         });
-      });
-    });
-  </script>
+    </script>
 </body>
 </html>

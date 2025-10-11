@@ -7,23 +7,42 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
     <style>
+    /* --- CORPORATE/ESTABLISHED COLOR PALETTE --- */
     :root {
-        --primary-teal: #4A9B8E;
-        --primary-teal-light: #6BB5A1;
-        --primary-teal-dark: #3A7B6E;
-        --orange: #F59E0B;
-        --background-light: #F3F4F6;
-        --background-white: #FFFFFF;
-        --text-dark: #1F2937;
-        --text-medium: #6B7280;
-        --text-light: #9CA3AF;
-        --border-light: #E5E7EB;
-        --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
-        --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07);
+        --primary-accent: #004D7A;       /* Deep Navy Blue for Authority/Trust */
+        --primary-accent-hover: #003355; /* Darker Navy for interaction */
+        --background-light: #F8F9FA;     /* Very light, soft grey background */
+        --content-light: #FFFFFF;        /* Pure white for cards */
+        --text-primary: #212529;         /* Dark charcoal for main text */
+        --text-secondary: #6C757D;       /* Medium grey for labels */
+        --text-on-accent: #FFFFFF;       /* White text on accent colors */
+        --button-secondary-bg: #E9ECEF;  /* Light grey for secondary buttons */
+        --highlight-color: #A06700;      /* Muted Gold/Amber for emphasis/pending */
+        
+        /* Status Colors - Sophisticated Tones */
+        --status-success-bg: #D4EDDA;    
+        --status-success-text: #155724;  
+        --status-warning-bg: #FFF3CD;    
+        --status-warning-text: #856404;  
+        --status-danger-bg: #F8D7DA;     
+        --status-danger-text: #721C24;   
+        
+        /* ESTABLISHED DESIGN: Structural Styles */
+        --card-radius: 8px; /* Slightly less round for professionalism */
+        --soft-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        --input-focus-shadow: 0 0 0 3px rgba(0, 77, 122, 0.1); 
+
+        --primary-teal: var(--primary-accent); /* Mapping old variables */
+        --primary-teal-light: #0077B6; 
+        --primary-teal-dark: var(--primary-accent-hover);
+        --orange: var(--highlight-color);
+        --text-dark: var(--text-primary);
+        --text-medium: var(--text-secondary);
+        --border-light: #D1D5DB;
     }
 
     * {
@@ -54,291 +73,196 @@
     .nav-menu {
         display: flex;
         margin-bottom: 2.5rem;
-        background-color: transparent;
+        background-color: var(--content-light);
+        border-radius: var(--card-radius);
+        overflow: hidden;
+        border: 1px solid var(--border-light);
+        box-shadow: var(--soft-shadow);
         gap: 0;
+        width: fit-content;
     }
 
     .nav-item {
-        padding: 1rem 1.5rem;
+        padding: 1rem 2rem;
         cursor: pointer;
         transition: all 0.3s ease;
-        font-weight: 500;
-        font-size: 1rem;
-        color: var(--text-medium);
+        font-weight: 600;
+        font-size: 1.05rem;
+        color: var(--text-secondary);
         border-bottom: 3px solid transparent;
         background-color: transparent;
+        border-right: 1px solid #E0E0E0; 
+    }
+    .nav-item:last-child {
+        border-right: none;
     }
 
     .nav-item:hover {
         color: var(--text-dark);
+        background-color: var(--button-secondary-bg);
     }
 
     .nav-item.active {
-        color: var(--primary-teal);
-        border-bottom-color: var(--primary-teal);
+        color: var(--primary-accent);
+        background-color: #E6F0F8; 
+        box-shadow: inset 0 -3px 0 0 var(--primary-accent);
     }
 
     /* Main Content */
     .main-content {
         position: relative;
     }
-
     .content-section {
         display: none;
     }
-
     .content-section.active {
         display: block;
     }
-
     .section-container {
         display: grid;
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: 1.5fr 2.5fr; 
         gap: 2rem;
+        align-items: flex-start;
     }
 
-    /* Sections */
-    .left-section, .right-section {
-        flex: 1;
-    }
-
+    /* Titles */
     .left-section h2, .right-section h2 {
-        font-size: 1.25rem;
-        font-weight: 600;
-        color: var(--text-dark);
+        font-size: 1.6rem;
+        font-weight: 700;
+        color: var(--text-primary);
         margin-bottom: 1.5rem;
+        border-bottom: 2px solid var(--border-light);
+        padding-bottom: 0.5rem;
     }
 
-    /* Bid Items - Card Style */
+    /* Bid Items - Card Style (Project List) */
     .bid-item {
-        background-color: var(--background-white);
-        border-radius: 12px;
+        background-color: var(--content-light);
+        border-radius: var(--card-radius);
         padding: 1.5rem;
-        margin-bottom: 1rem;
+        margin-bottom: 1.5rem;
         cursor: pointer;
         transition: all 0.3s ease;
         border: 1px solid var(--border-light);
-        box-shadow: var(--shadow-sm);
+        box-shadow: var(--soft-shadow);
     }
 
     .bid-item:hover {
         transform: translateY(-2px);
-        box-shadow: var(--shadow-md);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
         border-color: var(--primary-teal-light);
     }
 
     .bid-item.active {
-        border-color: var(--primary-teal);
-        background-color: #F0F9F7;
+        border: 3px solid var(--primary-accent);
+        background-color: #E6F0F8;
+        transform: translateY(0);
+        box-shadow: 0 0 0 1px var(--primary-accent); 
     }
-
-    .bid-title {
-        font-weight: 600;
-        color: var(--text-dark);
-        font-size: 1rem;
-        margin-bottom: 0.75rem;
-    }
-
-    .bid-price {
-        color: var(--primary-teal);
-        font-weight: 600;
+    
+    /* Project Name in Card (Primary Focus) */
+    .project-name-title {
+        font-weight: 700;
+        color: var(--primary-accent);
+        font-size: 1.25rem;
         margin-bottom: 0.5rem;
+    }
+
+    /* Secondary Detail - Minimalist appearance */
+    .bid-title {
+        font-weight: 500;
+        color: var(--text-primary);
         font-size: 0.95rem;
+        margin-bottom: 0.5rem; /* Reduced margin */
+        padding-bottom: 0;
+        border-bottom: none; /* Removed separator */
     }
 
-    .bid-description {
-        color: var(--text-medium);
-        margin-bottom: 0.75rem;
-        line-height: 1.5;
-        font-size: 0.9rem;
-    }
-
-    .bid-date {
-        color: var(--text-light);
-        font-size: 0.85rem;
-    }
-
-    /* Details Grid */
-    .bid-details-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 1rem;
-        margin-top: 1.25rem;
-        padding-top: 1.25rem;
-        border-top: 1px solid var(--border-light);
-    }
-
-    .detail-item {
-        display: flex;
-        flex-direction: column;
-    }
-
-    .detail-label {
-        color: var(--text-light);
-        font-size: 0.75rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        font-weight: 500;
-        margin-bottom: 0.35rem;
-    }
-
-    .detail-value {
-        color: var(--text-dark);
-        font-size: 0.9rem;
-        font-weight: 500;
-    }
-
-    /* Customer Info */
-    .customer-info-section {
-        margin-top: 1.5rem;
-        padding-top: 1.5rem;
-        border-top: 1px solid var(--border-light);
-    }
-
-    .customer-info-title {
-        color: var(--text-light);
-        font-size: 0.8rem;
-        font-weight: 600;
+    /* Key metric - Budget */
+    .bid-price {
+        color: var(--highlight-color);
+        font-weight: 700;
         margin-bottom: 1rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
+        font-size: 1.1rem;
     }
 
-    .customer-info-grid {
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
+    /* Removed or hidden details for a cleaner list view */
+    .bid-description, .bid-date, 
+    .bid-details-grid, .customer-info-section, 
+    .floor-section, .customer-info-grid {
+        display: none !important; /* Hide elements entirely */
     }
 
-    .customer-info-item {
-        display: flex;
-        color: var(--text-medium);
-        font-size: 0.9rem;
+    /* --- RIGHT SECTION STYLES (Kept for completeness and consistency) --- */
+    
+    /* Right Section - Sticky Details & Form */
+    .right-section {
+        position: sticky; 
+        top: 2rem; 
     }
 
-    .customer-info-item strong {
-        color: var(--text-dark);
-        margin-right: 0.5rem;
-        min-width: 70px;
-    }
-
-    /* Floor Section */
-    .floor-section {
-        margin-top: 1.5rem;
-        padding-top: 1.5rem;
-        border-top: 1px solid var(--border-light);
-    }
-
-    .floor-title {
-        color: var(--text-light);
-        font-size: 0.8rem;
-        font-weight: 600;
-        margin-bottom: 1rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-
-    .floor-list {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.5rem;
-    }
-
-    .floor-badge {
-        background-color: var(--background-light);
+    .bid-details-content {
+        background-color: var(--content-light);
+        border-radius: var(--card-radius);
+        padding: 2rem;
         border: 1px solid var(--border-light);
-        padding: 0.5rem 0.75rem;
-        border-radius: 6px;
-        font-size: 0.8rem;
-        color: var(--text-medium);
-        font-weight: 500;
+        box-shadow: var(--soft-shadow);
     }
 
-    .expand-toggle {
-        background: none;
-        border: none;
-        color: var(--primary-teal);
-        cursor: pointer;
-        font-size: 0.85rem;
-        padding: 0.5rem 0;
-        margin-top: 0.75rem;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        font-weight: 500;
-        transition: color 0.2s;
-    }
-
-    .expand-toggle:hover {
-        color: var(--primary-teal-dark);
-    }
-
-    .expandable-content {
-        max-height: 0;
-        overflow: hidden;
-        transition: max-height 0.3s ease;
-    }
-
-    .expandable-content.expanded {
-        max-height: 1000px;
-    }
-
-    /* Right Section - Details & Form */
     .bid-details-placeholder {
         height: 100%;
         display: flex;
+        flex-direction: column;
         align-items: center;
         justify-content: center;
-        color: var(--text-light);
+        color: var(--text-secondary);
         font-style: italic;
         border: 2px dashed var(--border-light);
-        border-radius: 12px;
-        background-color: var(--background-white);
-        min-height: 400px;
+        border-radius: var(--card-radius);
+        background-color: var(--content-light);
+        min-height: 500px;
     }
 
-    .bid-details-content h2 {
-        color: var(--text-dark);
+    .bid-details-content > h2 {
+        color: var(--primary-accent);
+        font-weight: 800;
+        font-size: 2rem;
+        border-bottom: 3px solid var(--border-light);
         margin-bottom: 1rem;
-        font-size: 1.25rem;
+        padding-bottom: 0.5rem;
     }
 
     .detail-price {
-        color: var(--primary-teal);
-        font-weight: 600;
-        font-size: 1.25rem;
-        margin-bottom: 1rem;
-    }
-
-    .detail-description, .detail-date {
-        color: var(--text-medium);
-        line-height: 1.6;
+        color: var(--highlight-color);
+        font-weight: 700;
+        font-size: 1.6rem;
         margin-bottom: 1.5rem;
-        font-size: 0.95rem;
     }
-
-    /* Cards & Forms */
+    
+    /* Additional Info (Sub-cards within main card) */
     .additional-info, .bid-form {
-        background-color: var(--background-white);
-        border-radius: 12px;
+        background-color: #F8F8F8; 
+        border-radius: 6px;
         padding: 1.5rem;
+        margin-top: 1.5rem;
         margin-bottom: 1.5rem;
-        border: 1px solid var(--border-light);
-        box-shadow: var(--shadow-sm);
+        border: 1px solid #E0E0E0;
     }
 
     .additional-info h3, .bid-form h3 {
-        color: var(--text-dark);
-        margin-bottom: 1.25rem;
-        font-size: 1rem;
-        font-weight: 600;
+        color: var(--text-primary);
+        font-size: 1.1rem;
+        font-weight: 700;
+        border-bottom: 1px solid #E0E0E0;
+        padding-bottom: 0.5rem;
+        margin-bottom: 1rem;
     }
 
     .info-item {
         padding: 0.75rem 0;
-        color: var(--text-medium);
-        border-bottom: 1px solid var(--border-light);
-        font-size: 0.9rem;
+        color: var(--text-secondary);
+        border-bottom: 1px solid #F0F0F0;
+        font-size: 0.95rem;
     }
 
     .info-item:last-child {
@@ -346,232 +270,133 @@
     }
 
     .info-item strong {
-        color: var(--text-dark);
+        color: var(--primary-accent);
         margin-right: 0.75rem;
-        font-weight: 500;
+        font-weight: 600;
+        min-width: 150px;
+        display: inline-block;
     }
 
     /* Forms */
-    .form-group {
-        margin-bottom: 1.5rem;
-    }
-
     .form-group label {
-        display: block;
-        margin-bottom: 0.5rem;
-        color: var(--text-medium);
-        font-size: 0.9rem;
-        font-weight: 500;
+        color: var(--text-primary);
+        font-weight: 600;
+        font-size: 1rem;
     }
 
     .form-group input, .form-group textarea {
-        width: 100%;
-        padding: 0.75rem;
+        padding: 1rem;
+        border-radius: 6px;
+        font-size: 1rem;
+        background-color: var(--content-light);
         border: 1px solid var(--border-light);
-        border-radius: 8px;
-        font-size: 0.95rem;
-        background-color: var(--background-white);
-        color: var(--text-dark);
-        transition: all 0.2s;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05); 
     }
 
     .form-group input:focus, .form-group textarea:focus {
-        outline: none;
-        border-color: var(--primary-teal);
-        box-shadow: 0 0 0 3px rgba(74, 155, 142, 0.1);
+        border-color: var(--primary-accent);
+        box-shadow: var(--input-focus-shadow);
     }
 
     /* Buttons */
     .btn-primary {
-        background-color: var(--primary-teal);
-        color: white;
-        border: none;
-        padding: 0.875rem 2rem;
-        border-radius: 8px;
-        cursor: pointer;
-        font-size: 0.95rem;
-        font-weight: 600;
-        transition: all 0.3s ease;
+        background-color: var(--primary-accent);
+        color: var(--text-on-accent);
+        padding: 1rem 2.5rem;
+        border-radius: 6px;
+        font-weight: 700;
+        box-shadow: 0 4px 10px rgba(0, 77, 122, 0.2);
     }
 
     .btn-primary:hover {
-        background-color: var(--primary-teal-dark);
+        background-color: var(--primary-accent-hover);
         transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(74, 155, 142, 0.3);
+        box-shadow: 0 6px 15px rgba(0, 77, 122, 0.3);
     }
-
+    
     /* Status Section */
-    .bid-status-container {
-        display: flex;
-        flex-direction: column;
-        gap: 1.5rem;
-    }
-
     .status-item {
-        background-color: var(--background-white);
+        background-color: var(--content-light);
         border: 1px solid var(--border-light);
-        border-radius: 12px;
+        border-radius: var(--card-radius);
         padding: 2rem;
-        box-shadow: var(--shadow-sm);
-        transition: all 0.3s ease;
-    }
-
-    .status-item:hover {
-        box-shadow: var(--shadow-md);
+        box-shadow: var(--soft-shadow);
     }
 
     .status-item-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        margin-bottom: 1.5rem;
-        gap: 1.5rem;
-    }
-
-    .status-info {
-        flex: 1;
+        border-bottom: 1px dashed var(--border-light);
+        padding-bottom: 1rem;
     }
 
     .status-title {
-        color: var(--text-dark);
-        font-weight: 600;
-        font-size: 1.05rem;
-        margin-bottom: 0.5rem;
+        color: var(--text-primary);
+        font-weight: 700;
+        font-size: 1.35rem;
     }
 
     .status-price {
-        color: var(--primary-teal);
-        font-weight: 600;
-        font-size: 1rem;
-        margin-bottom: 0.75rem;
-    }
-
-    .status-description {
-        color: var(--text-medium);
-        margin-bottom: 0.75rem;
-        line-height: 1.6;
-        font-size: 0.9rem;
-    }
-
-    .status-date {
-        color: var(--text-light);
-        font-size: 0.85rem;
+        color: var(--primary-accent);
+        font-weight: 700;
+        font-size: 1.15rem;
     }
 
     .your-bid {
-        color: var(--primary-teal);
-        font-weight: 600;
-        padding: 0.5rem 0.75rem;
-        background-color: #F0F9F7;
-        border-radius: 6px;
-        display: inline-block;
-        margin-top: 0.75rem;
-        font-size: 0.9rem;
+        color: var(--status-warning-text);
+        font-weight: 700;
+        padding: 0.6rem 1rem;
+        background-color: var(--status-warning-bg);
+        border-radius: 4px;
+        font-size: 0.95rem;
+        border: 1px solid var(--status-warning-text);
     }
 
     .status-badge {
-        padding: 0.5rem 1.25rem;
-        border-radius: 20px;
-        font-weight: 600;
-        min-width: 110px;
-        text-align: center;
-        font-size: 0.8rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-
-    .status-badge.pending {
-        background-color: #FEF3C7;
-        color: #B45309;
-    }
-
-    .status-badge.accepted {
-        background-color: #D1FAE5;
-        color: #065F46;
-    }
-
-    .status-badge.rejected {
-        background-color: #FEE2E2;
-        color: #991B1B;
+        padding: 0.6rem 1.5rem;
+        border-radius: 4px;
+        font-weight: 700;
+        min-width: 120px;
+        border: 1px solid;
     }
 
     .status-details-grid {
-        display: grid;
         grid-template-columns: repeat(3, 1fr);
-        gap: 1.5rem;
-        margin-top: 1.5rem;
-        padding-top: 1.5rem;
-        border-top: 1px solid var(--border-light);
     }
 
     /* No Bids State */
     .no-bids {
-        text-align: center;
-        padding: 3rem;
-        color: var(--text-light);
-        border: 2px dashed var(--border-light);
-        border-radius: 12px;
-        background-color: var(--background-white);
+        padding: 5rem;
+        font-size: 1.2rem;
+        font-weight: 600;
     }
 
     /* Alerts */
     .alert {
-        padding: 1rem 1.25rem;
-        border-radius: 8px;
-        margin-bottom: 1.5rem;
-        font-size: 0.95rem;
-    }
-
-    .alert-success {
-        background-color: #D1FAE5;
-        color: #065F46;
-        border: 1px solid #6EE7B7;
-    }
-
-    .alert-danger {
-        background-color: #FEE2E2;
-        color: #991B1B;
-        border: 1px solid #FCA5A5;
+        padding: 1.25rem 2rem;
+        border-radius: 6px;
+        font-size: 1rem;
+        font-weight: 700;
     }
 
     /* Responsive */
-    @media (max-width: 768px) {
-        .container {
-            padding: 1.5rem;
-        }
-
+    @media (max-width: 992px) {
         .section-container {
             grid-template-columns: 1fr;
-            gap: 1.5rem;
+            gap: 2rem;
         }
+        .right-section {
+            position: static;
+        }
+        .bid-details-content {
+            margin-top: 0;
+        }
+    }
+    @media (max-width: 768px) {
+        .container { padding: 1.5rem; }
+        .bid-details-grid { grid-template-columns: 1fr; }
+        .status-details-grid { grid-template-columns: 1fr; }
 
-        .bid-details-grid {
-            grid-template-columns: 1fr;
-        }
-
-        .status-details-grid {
-            grid-template-columns: 1fr;
-        }
-
-        .status-item-header {
-            flex-direction: column;
-        }
-
-        .nav-menu {
-            flex-direction: column;
-            gap: 0;
-        }
-
-        .nav-item {
-            border-bottom: none;
-            border-left: 3px solid transparent;
-            padding: 0.75rem 1.25rem;
-        }
-
-        .nav-item.active {
-            border-bottom: none;
-            border-left-color: var(--primary-teal);
-        }
+        .nav-menu { width: 100%; border-radius: 0; box-shadow: none; border-left: none; border-right: none;}
+        .nav-item { flex: 1; padding: 0.75rem 1rem; }
     }
     </style>
 </head>
@@ -586,299 +411,224 @@
 
         <div class="main-content">
 
-          <!-- PLACE BID SECTION -->
-          <div id="place-bid" class="content-section active">
-              <% if (typeof req !== 'undefined') { %>
-                  <% if (req.query.success === 'bid_submitted') { %>
-                      <div class="alert alert-success">Your bid has been submitted successfully!</div>
-                  <% } else if (req.query.error === 'invalid_data') { %>
-                      <div class="alert alert-danger">Please provide a valid bid amount.</div>
-                  <% } else if (req.query.error === 'server_error') { %>
-                      <div class="alert alert-danger">An error occurred while processing your bid. Please try again.</div>
-                  <% } %>
-              <% } %>
-      
-              <div class="section-container">
-      
-                  <!-- LEFT: Available Projects with Full Details -->
-                  <div class="left-section">
-                      <h2>Available Projects</h2>
-                      <div class="bid-options">
-                          <% if (bids && bids.length > 0) { %>
-                              <% bids.forEach(function(bid) { %>
-                                  <div class="bid-item" data-bid-id="<%= bid._id %>">
-                                      <div class="bid-title"><%= bid.buildingType %> Project - <%= bid.totalFloors %> Floors</div>
-                                      <div class="bid-price">Est. Budget: ₹<%= bid.estimatedBudget ? bid.estimatedBudget.toLocaleString('en-IN') : 'Not specified' %></div>
-                                      <div class="bid-description"><%= bid.specialRequirements || 'No special requirements provided.' %></div>
-                                      <div class="bid-date">Posted: <%= new Date(bid.createdAt).toLocaleDateString('en-IN') %></div>
-                                      
-                                      <!-- Enhanced Details Grid -->
-                                      <div class="bid-details-grid">
-                                          <div class="detail-item">
-                                              <span class="detail-label">Location</span>
-                                              <span class="detail-value"><%= bid.projectLocation %></span>
-                                          </div>
-                                          <div class="detail-item">
-                                              <span class="detail-label">Address</span>
-                                              <span class="detail-value"><%= bid.projectAddress %></span>
-                                          </div>
-                                          <div class="detail-item">
-                                              <span class="detail-label">Total Area</span>
-                                              <span class="detail-value"><%= bid.totalArea %> sq.ft</span>
-                                          </div>
-                                          <div class="detail-item">
-                                              <span class="detail-label">Timeline</span>
-                                              <span class="detail-value"><%= bid.projectTimeline || 'Not specified' %> months</span>
-                                          </div>
-                                          <div class="detail-item">
-                                              <span class="detail-label">Accessibility</span>
-                                              <span class="detail-value"><%= bid.accessibilityNeeds || 'None' %></span>
-                                          </div>
-                                          <div class="detail-item">
-                                              <span class="detail-label">Energy Efficiency</span>
-                                              <span class="detail-value"><%= bid.energyEfficiency || 'Standard' %></span>
-                                          </div>
-                                      </div>
+            <div id="place-bid" class="content-section active">
+                <% if (typeof req !== 'undefined') { %>
+                    <% if (req.query.success === 'bid_submitted') { %>
+                        <div class="alert alert-success">Your bid has been submitted successfully!</div>
+                    <% } else if (req.query.error === 'invalid_data') { %>
+                        <div class="alert alert-danger">Please provide a valid bid amount.</div>
+                    <% } else if (req.query.error === 'server_error') { %>
+                        <div class="alert alert-danger">An error occurred while processing your bid. Please try again.</div>
+                    <% } %>
+                <% } %>
+          
+                <div class="section-container">
+          
+                    <div class="left-section">
+                        <h2>Available Projects</h2>
+                        <div class="bid-options">
+                            <% if (bids && bids.length > 0) { %>
+                                <% bids.forEach(function(bid) { %>
+                                    <div class="bid-item" data-bid-id="<%= bid._id %>">
+                                        <div class="project-name-title"><%= bid.projectName || 'Unnamed Project' %></div> 
+                                        
+                                        <div class="bid-title"><%= bid.buildingType %> | <%= bid.totalFloors %> Floors</div>
+                                        
+                                        <div class="bid-price">Est. Budget: ₹<%= bid.estimatedBudget ? bid.estimatedBudget.toLocaleString('en-IN') : 'Not specified' %></div>
+                                        
+                                        <div class="bid-description" style="display: none;"><%= bid.specialRequirements || '' %></div>
+                                        <div class="bid-date" style="display: none;">Posted: <%= new Date(bid.createdAt).toLocaleDateString('en-IN') %></div>
+                                        <div class="bid-details-grid" style="display: none;"></div>
+                                        <div class="customer-info-section" style="display: none;"></div>
+                                        <div class="floor-section" style="display: none;"></div>
+                                    </div>
+                                <% }); %>
+                            <% } else { %>
+                                <div class="no-bids">No projects available for bidding at the moment.</div>
+                            <% } %>
+                        </div>
+                    </div>
+          
+                    <div class="right-section">
+                        <% if (!selectedBid) { %>
+                            <div class="bid-details-placeholder">
+                                <p>Click on a project to view details and place your bid</p>
+                            </div>
+                        <% } else { %>
+                            <div class="bid-details-content" style="display: block;">
+                                <h2><%= selectedBid.projectName || 'Project Details' %></h2>
+                                <div class="detail-price">Est. Budget: ₹<%= selectedBid.estimatedBudget ? selectedBid.estimatedBudget.toLocaleString('en-IN') : 'Not specified' %></div>
+                                <div class="detail-description"><%= selectedBid.specialRequirements || 'No special requirements provided.' %></div>
+                                <div class="detail-date">Posted: <%= new Date(selectedBid.createdAt).toLocaleDateString('en-IN') %></div>
+          
+                                <div class="additional-info">
+                                    <h3>Project Details</h3>
+                                    <div class="info-item"><strong>Location:</strong> <%= selectedBid.projectLocation %></div>
+                                    <div class="info-item"><strong>Address:</strong> <%= selectedBid.projectAddress %></div>
+                                    <div class="info-item"><strong>Total Area:</strong> <%= selectedBid.totalArea %> sq.ft</div>
+                                    <div class="info-item"><strong>Timeline:</strong> <%= selectedBid.projectTimeline || 'Not specified' %> months</div>
+                                    <div class="info-item"><strong>Total Floors:</strong> <%= selectedBid.totalFloors %></div>
+                                    <div class="info-item"><strong>Building Type:</strong> <%= selectedBid.buildingType %></div>
+                                    <div class="info-item"><strong>Accessibility Needs:</strong> <%= selectedBid.accessibilityNeeds || 'None' %></div>
+                                    <div class="info-item"><strong>Energy Efficiency:</strong> <%= selectedBid.energyEfficiency || 'Standard' %></div>
+                                    <div class="info-item"><strong>Status:</strong> <%= selectedBid.status %></div>
+                                </div>
 
-                                      <!-- Customer Information -->
-                                      <div class="customer-info-section">
-                                          <div class="customer-info-title">Customer Information</div>
-                                          <div class="customer-info-grid">
-                                              <div class="customer-info-item">
-                                                  <strong>Name:</strong> <%= bid.customerName %>
-                                              </div>
-                                              <div class="customer-info-item">
-                                                  <strong>Email:</strong> <%= bid.customerEmail %>
-                                              </div>
-                                              <div class="customer-info-item">
-                                                  <strong>Phone:</strong> <%= bid.customerPhone %>
-                                              </div>
-                                          </div>
-                                      </div>
+                                <div class="additional-info">
+                                    <h3>Customer Information</h3>
+                                    <div class="info-item"><strong>Name:</strong> <%= selectedBid.customerName %></div>
+                                    <div class="info-item"><strong>Email:</strong> <%= selectedBid.customerEmail %></div>
+                                    <div class="info-item"><strong>Phone:</strong> <%= selectedBid.customerPhone %></div>
+                                </div>
 
-                                      <!-- Floor Information -->
-                                      <% if (bid.floors && bid.floors.length > 0) { %>
-                                      <div class="floor-section">
-                                          <div class="floor-title">Floor Details (<%= bid.floors.length %> floors)</div>
-                                          <div class="floor-list">
-                                              <% bid.floors.slice(0, 3).forEach(function(floor) { %>
-                                                  <div class="floor-badge">
-                                                      Floor <%= floor.floorNumber %>: <%= floor.floorType %>
-                                                  </div>
-                                              <% }); %>
-                                          </div>
-                                          <% if (bid.floors.length > 3) { %>
-                                          <button class="expand-toggle" onclick="toggleFloors(event, '<%= bid._id %>')">
-                                              <span class="toggle-text">Show <%= bid.floors.length - 3 %> more floors</span>
-                                              <span class="toggle-icon">▼</span>
-                                          </button>
-                                          <div class="expandable-content" id="floors-<%= bid._id %>">
-                                              <div class="floor-list" style="margin-top: 0.5rem;">
-                                                  <% bid.floors.slice(3).forEach(function(floor) { %>
-                                                      <div class="floor-badge">
-                                                          Floor <%= floor.floorNumber %>: <%= floor.floorType %>
-                                                      </div>
-                                                  <% }); %>
-                                              </div>
-                                          </div>
-                                          <% } %>
-                                      </div>
-                                      <% } %>
-                                  </div>
-                              <% }); %>
-                          <% } else { %>
-                              <div class="no-bids">No projects available for bidding at the moment.</div>
-                          <% } %>
-                      </div>
-                  </div>
-      
-                  <!-- RIGHT: Detailed View + Form -->
-                  <div class="right-section">
-                      <% if (!selectedBid) { %>
-                          <div class="bid-details-placeholder">
-                              <p>Click on a project to view details and place your bid</p>
-                          </div>
-                      <% } else { %>
-                          <div class="bid-details-content" style="display: block;">
-                              <h2><%= selectedBid.buildingType %> Project - <%= selectedBid.totalFloors %> Floors</h2>
-                              <div class="detail-price">Est. Budget: ₹<%= selectedBid.estimatedBudget ? selectedBid.estimatedBudget.toLocaleString('en-IN') : 'Not specified' %></div>
-                              <div class="detail-description"><%= selectedBid.specialRequirements || 'No special requirements provided.' %></div>
-                              <div class="detail-date">Posted: <%= new Date(selectedBid.createdAt).toLocaleDateString('en-IN') %></div>
-      
-                              <div class="additional-info">
-                                  <h3>Project Details</h3>
-                                  <div class="info-item"><strong>Location:</strong> <%= selectedBid.projectLocation %></div>
-                                  <div class="info-item"><strong>Address:</strong> <%= selectedBid.projectAddress %></div>
-                                  <div class="info-item"><strong>Total Area:</strong> <%= selectedBid.totalArea %> sq.ft</div>
-                                  <div class="info-item"><strong>Timeline:</strong> <%= selectedBid.projectTimeline || 'Not specified' %> months</div>
-                                  <div class="info-item"><strong>Total Floors:</strong> <%= selectedBid.totalFloors %></div>
-                                  <div class="info-item"><strong>Building Type:</strong> <%= selectedBid.buildingType %></div>
-                                  <div class="info-item"><strong>Accessibility Needs:</strong> <%= selectedBid.accessibilityNeeds || 'None' %></div>
-                                  <div class="info-item"><strong>Energy Efficiency:</strong> <%= selectedBid.energyEfficiency || 'Standard' %></div>
-                                  <div class="info-item"><strong>Status:</strong> <%= selectedBid.status %></div>
-                              </div>
+                                <% if (selectedBid.floors && selectedBid.floors.length > 0) { %>
+                                <div class="additional-info">
+                                    <h3>Floor Information (<%= selectedBid.floors.length %> floors)</h3>
+                                    <% selectedBid.floors.forEach(function(floor, index) { %>
+                                        <div class="info-item">
+                                            <strong>Floor <%= floor.floorNumber %>:</strong> 
+                                            <%= floor.floorType %> 
+                                            <% if (floor.area) { %>
+                                                | Area: <%= floor.area %> sq.ft
+                                            <% } %>
+                                            <% if (floor.rooms) { %>
+                                                | Rooms: <%= floor.rooms %>
+                                            <% } %>
+                                        </div>
+                                    <% }); %>
+                                </div>
+                                <% } %>
 
-                              <div class="additional-info">
-                                  <h3>Customer Information</h3>
-                                  <div class="info-item"><strong>Name:</strong> <%= selectedBid.customerName %></div>
-                                  <div class="info-item"><strong>Email:</strong> <%= selectedBid.customerEmail %></div>
-                                  <div class="info-item"><strong>Phone:</strong> <%= selectedBid.customerPhone %></div>
-                              </div>
+                                <% if (selectedBid.siteFiles && selectedBid.siteFiles.length > 0) { %>
+                                <div class="additional-info">
+                                    <h3>Site Files</h3>
+                                    <% selectedBid.siteFiles.forEach(function(file, index) { %>
+                                        <div class="info-item">
+                                            <strong>File <%= index + 1 %>:</strong> 
+                                            <a href="<%= file %>" target="_blank" style="color: var(--primary-accent);">
+                                                View Document
+                                            </a>
+                                        </div>
+                                    <% }); %>
+                                </div>
+                                <% } %>
+          
+                                <div class="bid-form">
+                                    <h3>Place Your Bid</h3>
+                                    <form action="/submit-bid" method="POST">
+                                        <div class="form-group">
+                                            <label for="bid-amount">Your Bid Amount (₹):</label>
+                                            <input type="number" id="bid-amount" name="bidPrice" min="0" step="10000" required>
+                                        </div>
+                                        <input type="hidden" name="bidId" value="<%= selectedBid._id %>">
+                                        <input type="hidden" name="companyName" value="<%= companyName %>">
+                                        <input type="hidden" name="companyId" value="<%= companyId %>">
+                                        <button type="submit" class="btn-primary">Submit Bid</button>
+                                    </form>
+                                </div>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
 
-                              <!-- Floor Details in Right Section -->
-                              <% if (selectedBid.floors && selectedBid.floors.length > 0) { %>
-                              <div class="additional-info">
-                                  <h3>Floor Information (<%= selectedBid.floors.length %> floors)</h3>
-                                  <% selectedBid.floors.forEach(function(floor, index) { %>
-                                      <div class="info-item">
-                                          <strong>Floor <%= floor.floorNumber %>:</strong> 
-                                          <%= floor.floorType %> 
-                                          <% if (floor.area) { %>
-                                              | Area: <%= floor.area %> sq.ft
-                                          <% } %>
-                                          <% if (floor.rooms) { %>
-                                              | Rooms: <%= floor.rooms %>
-                                          <% } %>
-                                      </div>
-                                  <% }); %>
-                              </div>
-                              <% } %>
+            <div id="bid-status" class="content-section">
+                <h2>Your Bid Status</h2>
+                <div class="bid-status-container">
+                    <% 
+                        const companyBids = locals.companyBids || [];
+                        const visibleBids = companyBids.filter(bid => bid.status !== 'rejected');
+                        if (visibleBids.length > 0) { 
+                    %>
+                        <% visibleBids.forEach(function(bid) { %>
+                            <div class="status-item">
+                                <div class="status-item-header">
+                                    <div class="status-info">
+                                        <div class="status-title"><%= bid.project.projectName || 'Project' %> - <%= bid.project.totalFloors %> Floors</div>
+                                        <div class="status-price">Est. Budget: ₹<%= bid.project.estimatedBudget ? bid.project.estimatedBudget.toLocaleString('en-IN') : 'Not specified' %></div>
+                                        <div class="status-description"><%= bid.project.specialRequirements || 'No special requirements provided.' %></div>
+                                        <div class="status-date">Posted: <%= new Date(bid.project.createdAt).toLocaleDateString('en-IN') %></div>
+                                        <div class="your-bid">Your Bid: ₹<%= bid.bidPrice ? bid.bidPrice.toLocaleString('en-IN') : 'Not specified' %></div>
+                                    </div>
+                                    <div class="status-badge <%= bid.status.toLowerCase() %>"><%= bid.status %></div>
+                                </div>
 
-                              <!-- Site Files -->
-                              <% if (selectedBid.siteFiles && selectedBid.siteFiles.length > 0) { %>
-                              <div class="additional-info">
-                                  <h3>Site Files</h3>
-                                  <% selectedBid.siteFiles.forEach(function(file, index) { %>
-                                      <div class="info-item">
-                                          <strong>File <%= index + 1 %>:</strong> 
-                                          <a href="<%= file %>" target="_blank" style="color: var(--primary-teal);">
-                                              View Document
-                                          </a>
-                                      </div>
-                                  <% }); %>
-                              </div>
-                              <% } %>
-      
-                              <!-- Form -->
-                              <div class="bid-form">
-                                  <h3>Place Your Bid</h3>
-                                  <form action="/submit-bid" method="POST">
-                                      <div class="form-group">
-                                          <label for="bid-amount">Your Bid Amount (₹):</label>
-                                          <input type="number" id="bid-amount" name="bidPrice" min="0" step="10000" required>
-                                      </div>
-                                      <input type="hidden" name="bidId" value="<%= selectedBid._id %>">
-                                      <input type="hidden" name="companyName" value="<%= companyName %>">
-                                      <input type="hidden" name="companyId" value="<%= companyId %>">
-                                      <button type="submit" class="btn-primary">Submit Bid</button>
-                                  </form>
-                              </div>
-                          </div>
-                      <% } %>
-                  </div>
-              </div>
-          </div>
+                                <div class="status-details-grid">
+                                    <div class="detail-item">
+                                        <span class="detail-label">Location</span>
+                                        <span class="detail-value"><%= bid.project.projectLocation %></span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <span class="detail-label">Total Area</span>
+                                        <span class="detail-value"><%= bid.project.totalArea %> sq.ft</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <span class="detail-label">Timeline</span>
+                                        <span class="detail-value"><%= bid.project.projectTimeline || 'Not specified' %> months</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <span class="detail-label">Building Type</span>
+                                        <span class="detail-value"><%= bid.project.buildingType %></span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <span class="detail-label">Accessibility</span>
+                                        <span class="detail-value"><%= bid.project.accessibilityNeeds || 'None' %></span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <span class="detail-label">Energy Efficiency</span>
+                                        <span class="detail-value"><%= bid.project.energyEfficiency || 'Standard' %></span>
+                                    </div>
+                                </div>
 
-          <!-- BID STATUS SECTION -->
-          <div id="bid-status" class="content-section">
-              <h2>Your Bid Status</h2>
-              <div class="bid-status-container">
-                  <% 
-                      const visibleBids = (companyBids || []).filter(bid => bid.status !== 'rejected');
-                      if (visibleBids.length > 0) { 
-                  %>
-                      <% visibleBids.forEach(function(bid) { %>
-                          <div class="status-item">
-                              <div class="status-item-header">
-                                  <div class="status-info">
-                                      <div class="status-title"><%= bid.project.buildingType %> Project - <%= bid.project.totalFloors %> Floors</div>
-                                      <div class="status-price">Est. Budget: ₹<%= bid.project.estimatedBudget ? bid.project.estimatedBudget.toLocaleString('en-IN') : 'Not specified' %></div>
-                                      <div class="status-description"><%= bid.project.specialRequirements || 'No special requirements provided.' %></div>
-                                      <div class="status-date">Posted: <%= new Date(bid.project.createdAt).toLocaleDateString('en-IN') %></div>
-                                      <div class="your-bid">Your Bid: ₹<%= bid.bidPrice ? bid.bidPrice.toLocaleString('en-IN') : 'Not specified' %></div>
-                                  </div>
-                                  <div class="status-badge <%= bid.status.toLowerCase() %>"><%= bid.status %></div>
-                              </div>
+                                <div class="customer-info-section">
+                                    <div class="customer-info-title">Customer Information</div>
+                                    <div class="customer-info-grid">
+                                        <div class="customer-info-item">
+                                            <strong>Name:</strong> <%= bid.project.customerName %>
+                                        </div>
+                                        <div class="customer-info-item">
+                                            <strong>Email:</strong> <%= bid.project.customerEmail %>
+                                        </div>
+                                        <div class="customer-info-item">
+                                            <strong>Phone:</strong> <%= bid.project.customerPhone %>
+                                        </div>
+                                    </div>
+                                </div>
 
-                              <!-- Additional Status Details -->
-                              <div class="status-details-grid">
-                                  <div class="detail-item">
-                                      <span class="detail-label">Location</span>
-                                      <span class="detail-value"><%= bid.project.projectLocation %></span>
-                                  </div>
-                                  <div class="detail-item">
-                                      <span class="detail-label">Total Area</span>
-                                      <span class="detail-value"><%= bid.project.totalArea %> sq.ft</span>
-                                  </div>
-                                  <div class="detail-item">
-                                      <span class="detail-label">Timeline</span>
-                                      <span class="detail-value"><%= bid.project.projectTimeline || 'Not specified' %> months</span>
-                                  </div>
-                                  <div class="detail-item">
-                                      <span class="detail-label">Building Type</span>
-                                      <span class="detail-value"><%= bid.project.buildingType %></span>
-                                  </div>
-                                  <div class="detail-item">
-                                      <span class="detail-label">Accessibility</span>
-                                      <span class="detail-value"><%= bid.project.accessibilityNeeds || 'None' %></span>
-                                  </div>
-                                  <div class="detail-item">
-                                      <span class="detail-label">Energy Efficiency</span>
-                                      <span class="detail-value"><%= bid.project.energyEfficiency || 'Standard' %></span>
-                                  </div>
-                              </div>
-
-                              <!-- Customer Information in Status -->
-                              <div class="customer-info-section">
-                                  <div class="customer-info-title">Customer Information</div>
-                                  <div class="customer-info-grid">
-                                      <div class="customer-info-item">
-                                          <strong>Name:</strong> <%= bid.project.customerName %>
-                                      </div>
-                                      <div class="customer-info-item">
-                                          <strong>Email:</strong> <%= bid.project.customerEmail %>
-                                      </div>
-                                      <div class="customer-info-item">
-                                          <strong>Phone:</strong> <%= bid.project.customerPhone %>
-                                      </div>
-                                  </div>
-                              </div>
-
-                              <!-- Floor Information in Status -->
-                              <% if (bid.project.floors && bid.project.floors.length > 0) { %>
-                              <div class="floor-section">
-                                  <div class="floor-title">Floor Details (<%= bid.project.floors.length %> floors)</div>
-                                  <div class="floor-list">
-                                      <% bid.project.floors.slice(0, 3).forEach(function(floor) { %>
-                                          <div class="floor-badge">
-                                              Floor <%= floor.floorNumber %>: <%= floor.floorType %>
-                                          </div>
-                                      <% }); %>
-                                  </div>
-                                  <% if (bid.project.floors.length > 3) { %>
-                                  <button class="expand-toggle" onclick="toggleFloors(event, 'status-<%= bid._id %>')">
-                                      <span class="toggle-text">Show <%= bid.project.floors.length - 3 %> more floors</span>
-                                      <span class="toggle-icon">▼</span>
-                                  </button>
-                                  <div class="expandable-content" id="floors-status-<%= bid._id %>">
-                                      <div class="floor-list" style="margin-top: 0.5rem;">
-                                          <% bid.project.floors.slice(3).forEach(function(floor) { %>
-                                              <div class="floor-badge">
-                                                  Floor <%= floor.floorNumber %>: <%= floor.floorType %>
-                                              </div>
-                                          <% }); %>
-                                      </div>
-                                  </div>
-                                  <% } %>
-                              </div>
-                              <% } %>
-                          </div>
-                      <% }); %>
-                  <% } else { %>
-                      <div class="no-bids">You haven't placed any bids yet.</div>
-                  <% } %>
-              </div>
-          </div>
+                                <% if (bid.project.floors && bid.project.floors.length > 0) { %>
+                                <div class="floor-section">
+                                    <div class="floor-title">Floor Details (<%= bid.project.floors.length %> floors)</div>
+                                    <div class="floor-list">
+                                        <% bid.project.floors.slice(0, 3).forEach(function(floor) { %>
+                                            <div class="floor-badge">
+                                                Floor <%= floor.floorNumber %>: <%= floor.floorType %>
+                                            </div>
+                                        <% }); %>
+                                    </div>
+                                    <% if (bid.project.floors.length > 3) { %>
+                                    <button class="expand-toggle" onclick="toggleFloors(event, 'status-<%= bid._id %>')">
+                                        <span class="toggle-text">Show <%= bid.project.floors.length - 3 %> more floors</span>
+                                        <span class="toggle-icon">▼</span>
+                                    </button>
+                                    <div class="expandable-content" id="floors-status-<%= bid._id %>">
+                                        <div class="floor-list" style="margin-top: 0.5rem;">
+                                            <% bid.project.floors.slice(3).forEach(function(floor) { %>
+                                                <div class="floor-badge">
+                                                    Floor <%= floor.floorNumber %>: <%= floor.floorType %>
+                                                </div>
+                                            <% }); %>
+                                        </div>
+                                    </div>
+                                    <% } %>
+                                </div>
+                                <% } %>
+                            </div>
+                        <% }); %>
+                    <% } else { %>
+                        <div class="no-bids">You haven't placed any bids yet.</div>
+                    <% } %>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -925,17 +675,35 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Bid selection handling
-    const bidItems = document.querySelectorAll('.bid-item');
+    const bidItems = document.querySelectorAll('.bid-options .bid-item');
     
     bidItems.forEach(item => {
         item.addEventListener('click', function(e) {
+            // Check if the click was on an expandable toggle, and if so, ignore the card click
+            if (e.target.closest('.expand-toggle') || e.target.closest('a')) {
+                return;
+            }
+
             bidItems.forEach(bidItem => bidItem.classList.remove('active'));
             this.classList.add('active');
             
             const bidId = this.getAttribute('data-bid-id');
+            // Navigate to the current page with the bidId to load details
             window.location.href = `/companybids?bidId=${bidId}`;
         });
     });
+
+    // Check if a selectedBid is present on load and highlight the corresponding card
+    const urlParams = new URLSearchParams(window.location.search);
+    const selectedBidId = urlParams.get('bidId');
+    if (selectedBidId) {
+        const activeCard = document.querySelector(`.bid-item[data-bid-id="${selectedBidId}"]`);
+        if (activeCard) {
+            activeCard.classList.add('active');
+            // Scroll to the active item on load if necessary
+            activeCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+    }
 
     // Form submission handling
     const bidForm = document.querySelector('.bid-form form');
@@ -946,8 +714,8 @@ document.addEventListener('DOMContentLoaded', function() {
             const bidAmountInput = document.getElementById('bid-amount');
             const bidAmount = parseFloat(bidAmountInput.value);
             
-            if (!bidAmount || isNaN(bidAmount)) {
-                alert('Please enter a valid bid amount');
+            if (!bidAmount || isNaN(bidAmount) || bidAmount <= 0) {
+                alert('Please enter a valid bid amount greater than zero.');
                 return;
             }
             
@@ -955,23 +723,22 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Status badge tooltips
+    // Status badge tooltips - Simplified since the CSS handles the look
     const statusBadges = document.querySelectorAll('.status-badge');
     statusBadges.forEach(badge => {
         badge.addEventListener('mouseenter', function() {
-            const status = this.classList.contains('pending') ? 'pending' : 
-                          this.classList.contains('accepted') ? 'accepted' : 'rejected';
+            const status = this.textContent.trim().toLowerCase();
             
             let statusMessage = '';
             switch(status) {
                 case 'pending':
-                    statusMessage = 'Your bid is under review';
+                    statusMessage = 'Your bid is under review by the client.';
                     break;
                 case 'accepted':
-                    statusMessage = 'Congratulations! Your bid was accepted';
+                    statusMessage = 'Congratulations! Your bid was accepted.';
                     break;
                 case 'rejected':
-                    statusMessage = 'Sorry, your bid was not accepted';
+                    statusMessage = 'Sorry, your bid was not accepted.';
                     break;
             }
             
