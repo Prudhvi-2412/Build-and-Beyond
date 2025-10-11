@@ -489,8 +489,8 @@
                 </div>
             </div>
             <div class="bid-review-modal-footer">
-                <button id="modalRejectBtn" class="btn btn-secondary">Reject Bid</button>
-                <button id="modalAcceptBtn" class="btn btn-primary">Accept Bid</button>
+                <button id="modalRejectBtn" class="btn btn-secondary"></button>
+                <button id="modalAcceptBtn" class="btn btn-primary" >Go to Bids</button>
             </div>
         </div>
     </div>
@@ -603,7 +603,8 @@
             }
 
             // Set up modal buttons to have the correct ID
-            modalAcceptBtn.onclick = () => updateProjectStatus(bidData._id, 'accepted');
+           modalAcceptBtn.onclick = () => {window.location.href = "/companybids";};
+
             modalRejectBtn.onclick = () => updateProjectStatus(bidData._id, 'rejected');
 
             // Show the modal

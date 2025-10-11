@@ -144,118 +144,9 @@ const updateProjectStatusController = async (req, res) => {
 };
 // In controllers/companyController.js
 
-const handleBidActionController = async (req, res) => {
-  try {
-    const { bidId, status } = req.params;   // ✅ Correct destructuring
-    const { user_id } = req.user;
 
-    const bid = await Bid.findById(bidId);
-    if (!bid) return res.status(404).json({ message: 'Bid not found.' });
-
-    if (status === 'accepted') {
-      const newProject = new ConstructionProjectSchema({
-        projectName: bid.projectName || 'Unnamed Project',
-        customerName: bid.customerName,
-        customerId: bid.customerId,
-        customerEmail: bid.customerEmail,
-        customerPhone: bid.customerPhone,
-        projectAddress: bid.projectAddress,
-        projectLocationPincode: bid.projectLocation,
-        estimatedBudget: bid.estimatedBudget,
-        projectTimeline: bid.projectTimeline,
-        totalArea: bid.totalArea,
-        buildingType: bid.buildingType,
-        totalFloors: bid.totalFloors,
-        floors: bid.floors,
-        specialRequirements: bid.specialRequirements,
-        accessibilityNeeds: bid.accessibilityNeeds,
-        energyEfficiency: bid.energyEfficiency,
-        siteFilepaths: bid.siteFiles,
-        companyId: user_id,
-        status: 'accepted'
-      });
-
-      await newProject.save();
-      bid.status = 'awarded';
-      await bid.save();
-
-      return res.status(201).json({ message: 'Bid accepted and project created!', project: newProject });
-    }
-
-    if (status === 'rejected') {
-      bid.status = 'closed';
-      await bid.save();
-      return res.status(200).json({ message: 'Bid has been rejected.' });
-    }
-
-    res.status(400).json({ message: 'Invalid status provided.' });
-
-  } catch (error) {
-    console.error('Error handling bid action:', error);
-    res.status(500).json({ error: 'Server error while handling bid action.' });
-  }
-};
 
 // ===== ADD THIS NEW FUNCTION =====
-const customerAcceptsBidController = async (req, res) => {
-  try {
-    const { bidId, companyBidId } = req.body;
-    
-    const bid = await Bid.findById(bidId);
-    if (!bid) {
-      return res.status(404).json({ success: false, message: 'Bid not found' });
-    }
-
-    const acceptedCompanyBid = bid.companyBids.id(companyBidId);
-    if (!acceptedCompanyBid) {
-      return res.status(404).json({ success: false, message: 'Company bid not found' });
-    }
-
-    if (bid.status === 'awarded') {
-      return res.status(400).json({ success: false, message: 'Project already awarded' });
-    }
-
-    bid.status = 'awarded';
-    bid.winningBidId = companyBidId;
-    await bid.save();
-
-    const newProject = new ConstructionProjectSchema({
-      projectName: `${bid.buildingType} Project - ${bid.totalFloors} Floors`,
-      status: 'accepted',
-      customerId: bid.customerId,
-      companyId: acceptedCompanyBid.companyId,
-      customerName: bid.customerName,
-      customerEmail: bid.customerEmail,
-      customerPhone: bid.customerPhone,
-      projectAddress: bid.projectAddress,
-      projectLocationPincode: bid.projectLocation,
-      totalArea: bid.totalArea,
-      buildingType: bid.buildingType,
-      estimatedBudget: acceptedCompanyBid.bidPrice,
-      projectTimeline: bid.projectTimeline,
-      totalFloors: bid.totalFloors,
-      floors: bid.floors,
-      specialRequirements: bid.specialRequirements,
-      accessibilityNeeds: bid.accessibilityNeeds,
-      energyEfficiency: bid.energyEfficiency,
-      siteFilepaths: bid.siteFiles,
-      completionPercentage: 0,
-      currentPhase: 'Foundation'
-    });
-
-    await newProject.save();
-
-    res.status(200).json({
-      success: true,
-      message: 'Bid accepted and project created!',
-      project: newProject
-    });
-
-  } catch (error) {
-    console.error('Error accepting bid:', error);
-    res.status(500).json({ success: false, message: 'Error accepting bid', error: error.message });
-  }
-};
 
 const submitBidController = async (req, res) => {
     // 1. Get the data from the form submission
@@ -591,6 +482,5 @@ const submitProjectProposal = async (req, res) => {
 // Add other company controllers like revenue, etc., if needed
 
 module.exports = { getDashboard, getOngoingProjects, getProjectRequests, updateProjectStatusController, 
-  handleBidActionController, getHiring, getSettings, getBids , getCompanyRevenue, createHireRequest,  
-  updateCompanyProfile, handleWorkerRequest, submitBidController, 
-  customerAcceptsBidController , submitProjectProposal };
+   getHiring, getSettings, getBids , getCompanyRevenue, createHireRequest,  
+  updateCompanyProfile, handleWorkerRequest, submitBidController, submitProjectProposal};
