@@ -7,403 +7,464 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
     <style>
-        :root {
-            --primary-green: #4D7A70;
-            --secondary-green: #6A9E8E;
-            --light-green: #A3C5BB;
-            --dark-grey: #363636;
-            --medium-grey: #5A5A5A;
-            --light-grey: #E0E0E0;
-            --white: #FFFFFF;
-            --black: #000000;
-        }
-        .progress-bar {
-            width: calc(var(--progress) * 1%);
-        }
-        a:-webkit-any-link {
-            cursor: pointer;
-            text-decoration: none;
-        }
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-        }
+    /* --- CORPORATE/ESTABLISHED COLOR PALETTE --- */
+    :root {
+        --primary-accent: #004D7A;       /* Deep Navy Blue for Authority/Trust */
+        --primary-accent-hover: #003355; /* Darker Navy for interaction */
+        --background-light: #F8F9FA;     /* Very light, soft grey background (Main BG) */
+        --content-light: #FFFFFF;        /* Pure white for cards */
+        --text-primary: #212529;         /* Dark charcoal for main text */
+        --text-secondary: #6C757D;       /* Medium grey for labels */
+        --highlight-color: #A06700;      /* Muted Gold/Amber for emphasis/pending */
+        --border-light: #D1D5DB;         /* Clean, soft border */
+        --soft-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        --card-radius: 8px;
+        --button-secondary-bg: #E9ECEF;
 
-        body {
-            background-color: var(--white);
-            color: var(--black);
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
+        /* Mapping Original Variables */
+        --primary-green: var(--primary-accent);
+        --secondary-green: var(--primary-accent-hover);
+        --light-green: #E6F0F8; /* Light blue accent */
+        --dark-grey: var(--text-primary);
+        --medium-grey: var(--text-secondary);
+        --light-grey: var(--background-light); /* Main background */
+        --white: var(--content-light);
+        --black: var(--text-primary);
+    }
+    
+    .progress-bar {
+        width: calc(var(--progress) * 1%);
+    }
+    a:-webkit-any-link {
+        cursor: pointer;
+        text-decoration: none;
+    }
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Poppins', sans-serif;
+    }
 
-        .main-container {
-            flex: 1;
-            padding: 2rem;
-            background-color: var(--light-grey);
-        }
+    body {
+        background-color: var(--light-grey); /* Use soft background */
+        color: var(--text-primary);
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+    }
 
-        .page-title {
-            margin-bottom: 1.5rem;
-            color: var(--primary-green);
-            font-size: 1.8rem;
-        }
+    .main-container {
+        flex: 1;
+        padding: 3rem 2.5rem; /* Increased padding */
+        background-color: var(--light-grey);
+    }
 
-        .stats-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
+    .page-title {
+        margin-bottom: 2rem;
+        color: var(--primary-accent);
+        font-size: 2.2rem;
+        font-weight: 700;
+        border-bottom: 3px solid var(--border-light);
+        padding-bottom: 0.5rem;
+    }
 
-        .stat-card {
-            background-color: var(--white);
-            border-radius: 8px;
-            padding: 1.5rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
+    /* --- STATS CARDS (Top) --- */
+    .stats-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 2rem; /* Increased gap */
+        margin-bottom: 3rem;
+    }
 
-        .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        }
+    .stat-card {
+        background-color: var(--white);
+        border-radius: var(--card-radius);
+        padding: 2rem;
+        box-shadow: var(--soft-shadow);
+        border: 1px solid var(--border-light);
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
 
-        .stat-card h3 {
-            font-size: 1rem;
-            color: var(--medium-grey);
-            margin-bottom: 0.5rem;
-        }
+    .stat-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 18px rgba(0,0,0,0.15);
+    }
 
-        .stat-card .stat-value {
-            font-size: 1.8rem;
-            font-weight: bold;
-            color: var(--primary-green);
-        }
+    .stat-card h3 {
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+        margin-bottom: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
 
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-            margin-top: 2rem;
-        }
+    .stat-card .stat-value {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: var(--text-primary);
+    }
 
-        .section-title {
-            color: var(--medium-grey);
-            font-size: 1.2rem;
-        }
+    /* Highlight pending/sidebar metric color explicitly */
+    .stat-card:nth-child(4) .stat-value,
+    .sidebar .stat-card .stat-value {
+        color: var(--highlight-color);
+    }
 
-        .view-all {
-            color: var(--primary-green);
-            cursor: pointer;
-            font-weight: 500;
-        }
+    /* --- CONTENT LAYOUT --- */
+    .content-wrapper {
+        display: grid;
+        grid-template-columns: 3fr 1fr;
+        gap: 2rem;
+        align-items: flex-start;
+    }
 
-        .project-list {
-            background-color: var(--white);
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            overflow: hidden;
-        }
+    .main-section {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+    }
 
-        .project-item {
-            padding: 1.5rem;
-            border-bottom: 1px solid var(--light-grey);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: background-color 0.3s;
-        }
+    /* --- FILTER SECTION --- */
+    .filter-container {
+        background-color: var(--white);
+        border-radius: var(--card-radius);
+        padding: 1.5rem 2rem;
+        box-shadow: var(--soft-shadow);
+        border: 1px solid var(--border-light);
+    }
 
-        .project-item:last-child {
-            border-bottom: none;
-        }
+    .filter-container h3 {
+        margin-bottom: 1.2rem;
+        color: var(--text-primary);
+        font-size: 1.3rem;
+        font-weight: 700;
+        border-bottom: 2px solid var(--border-light);
+        padding-bottom: 0.5rem;
+    }
 
-        .project-item:hover {
-            background-color: #E5F4EF;
-        }
+    .filter-options {
+        display: flex;
+        gap: 1rem;
+    }
 
-        .project-info {
-            flex: 1;
-        }
+    .filter-btn {
+        padding: 0.7rem 1.4rem;
+        border: 1px solid var(--border-light);
+        background-color: var(--button-secondary-bg);
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 0.95rem;
+        font-weight: 600;
+        transition: all 0.3s;
+    }
 
-        .project-info h3 {
-            margin-bottom: 0.5rem;
-            color: var(--dark-grey);
-            font-size: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
+    .filter-btn:hover {
+        background-color: #D1D5DB;
+        color: var(--text-primary);
+    }
 
-        .status-badge {
-            font-size: 0.8rem;
-            padding: 0.3rem 0.8rem;
-            border-radius: 100px;
-            text-transform: uppercase;
-            font-weight: 500;
-            letter-spacing: 0.5px;
-            margin-left: 0.5rem;
-        }
+    .filter-btn.active {
+        background-color: var(--primary-accent);
+        color: var(--white);
+        border-color: var(--primary-accent);
+        box-shadow: 0 2px 5px rgba(0, 77, 122, 0.2);
+    }
 
-        .status-ongoing {
-            background-color: rgba(77, 122, 112, 0.15);
-            color: var(--primary-green);
-            border: 1px solid rgba(77, 122, 112, 0.3);
-        }
+    /* --- PROJECT LIST --- */
+    .project-list {
+        background-color: var(--white);
+        border-radius: var(--card-radius);
+        box-shadow: var(--soft-shadow);
+        border: 1px solid var(--border-light);
+        overflow: hidden;
+    }
 
-        .status-completed {
-            background-color: rgba(106, 158, 142, 0.15);
-            color: var(--secondary-green);
-            border: 1px solid rgba(106, 158, 142, 0.3);
-        }
+    .project-item {
+        padding: 1.5rem 2rem;
+        border-bottom: 1px solid #E0E0E0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: background-color 0.3s;
+    }
 
-        .project-stats {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-            margin-top: 0.5rem;
-        }
+    .project-item:last-child {
+        border-bottom: none;
+    }
 
-        .stat {
-            display: flex;
-            flex-direction: column;
-        }
+    .project-item:hover {
+        background-color: var(--light-green); /* Light blue row hover */
+    }
 
-        .stat-label {
-            font-size: 0.8rem;
-            color: var(--medium-grey);
-            text-transform: uppercase;
-        }
+    .project-info {
+        flex: 1;
+    }
 
-        .stat-value {
-            font-weight: 600;
-            color: var(--dark-grey);
-        }
+    .project-info h3 {
+        margin-bottom: 0.75rem;
+        color: var(--text-primary);
+        font-size: 1.15rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
 
-        .received {
-            color: var(--secondary-green);
-        }
+    .status-badge {
+        font-size: 0.75rem;
+        padding: 0.3rem 0.8rem;
+        border-radius: 4px;
+        text-transform: uppercase;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        border: 1px solid;
+    }
 
-        .pending {
-            color: #FF9800;
-        }
+    .status-ongoing {
+        background-color: #E6F0F8;
+        color: var(--primary-accent);
+        border-color: var(--primary-accent);
+    }
 
-        .action-buttons {
-            display: flex;
-            gap: 0.5rem;
-        }
+    .status-completed {
+        background-color: #D4EDDA;
+        color: #155724;
+        border-color: #155724;
+    }
 
-        .btn {
-            padding: 0.5rem 1rem;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: background-color 0.3s;
-        }
+    .project-stats {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 2rem;
+        margin-top: 0.5rem;
+    }
 
-        .btn-primary {
-            background-color: var(--primary-green);
-            color: var(--white);
-        }
+    .stat-label {
+        font-size: 0.8rem;
+        color: var(--text-secondary);
+        text-transform: uppercase;
+        font-weight: 500;
+        letter-spacing: 0.5px;
+    }
 
-        .btn-primary:hover {
-            background-color: var(--secondary-green);
-        }
+    .stat-value {
+        font-weight: 700;
+        color: var(--text-primary);
+        font-size: 1rem;
+    }
 
-        .btn-secondary {
-            background-color: var(--light-grey);
-            color: var(--medium-grey);
-        }
+    .received {
+        color: var(--primary-green);
+    }
 
-        .btn-secondary:hover {
-            background-color: #D0D0D0;
-        }
+    .pending {
+        color: var(--highlight-color);
+    }
 
-        .filter-container {
-            background-color: var(--white);
-            border-radius: 8px;
-            padding: 1.5rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            margin-bottom: 1.5rem;
-        }
+    .action-buttons {
+        display: flex;
+        gap: 0.75rem;
+        min-width: 250px;
+        justify-content: flex-end;
+    }
 
-        .filter-container h3 {
-            margin-bottom: 1rem;
-            color: var(--dark-grey);
-            font-size: 1.2rem;
+    .btn {
+        padding: 0.6rem 1.2rem;
+        border-radius: 6px;
+        font-weight: 600;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        transition: all 0.2s;
+    }
+
+    .btn-primary {
+        background-color: var(--primary-green);
+        color: var(--white);
+        border: 1px solid var(--primary-green);
+    }
+
+    .btn-primary:hover {
+        background-color: var(--primary-accent-hover);
+        border-color: var(--primary-accent-hover);
+    }
+
+    .btn-secondary {
+        background-color: var(--button-secondary-bg);
+        color: var(--text-secondary);
+        border: 1px solid var(--border-light);
+    }
+
+    .btn-secondary:hover {
+        background-color: #D1D5DB;
+        color: var(--text-primary);
+    }
+
+    /* --- MODAL STYLING --- */
+
+    .modal {
+        /* Standard modal definition */
+        display: none;
+        position: fixed;
+        z-index: 100;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+    }
+
+    .modal-content {
+        background-color: var(--white);
+        margin: 5% auto;
+        padding: 2rem;
+        width: 90%;
+        max-width: 800px;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+        position: relative;
+        border: 3px solid var(--primary-accent);
+    }
+
+    .close-modal {
+        position: absolute;
+        right: 1.5rem;
+        top: 1rem;
+        font-size: 2rem;
+        color: var(--text-secondary);
+        cursor: pointer;
+    }
+
+    .close-modal:hover {
+        color: var(--text-primary);
+    }
+
+    .modal-project-name {
+        margin-bottom: 2rem;
+        color: var(--primary-accent);
+        font-size: 1.8rem;
+        font-weight: 700;
+        border-bottom: 2px solid var(--border-light);
+        padding-bottom: 0.5rem;
+    }
+
+    .detail-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.5rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px dashed var(--border-light);
+    }
+    .detail-row:last-child {
+        border-bottom: none;
+    }
+
+    .detail-label {
+        width: 40%;
+        font-weight: 500;
+        color: var(--text-secondary);
+        font-size: 0.95rem;
+        text-transform: uppercase;
+    }
+
+    .detail-value {
+        width: 60%;
+        color: var(--text-primary);
+        font-weight: 600;
+        text-align: right;
+    }
+
+    .progress-container {
+        width: 100%;
+        height: 10px;
+        background-color: var(--button-secondary-bg);
+        border-radius: 5px;
+        margin-top: 0.5rem;
+        overflow: hidden;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .progress-fill {
+        height: 100%;
+        background-color: var(--primary-accent);
+        border-radius: 5px;
+    }
+
+    .no-projects {
+        padding: 2rem;
+        text-align: center;
+        color: var(--text-secondary);
+        font-style: italic;
+    }
+
+    /* --- RESPONSIVE --- */
+    @media (max-width: 900px) {
+        .content-wrapper {
+            grid-template-columns: 1fr;
         }
 
         .filter-options {
-            display: flex;
-            gap: 0.5rem;
+            flex-wrap: wrap;
         }
 
         .filter-btn {
-            padding: 0.5rem 1rem;
-            border: 1px solid var(--light-grey);
-            background-color: var(--white);
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            transition: all 0.3s;
+            flex: 1;
+            min-width: 120px;
+            text-align: center;
+        }
+        
+        .sidebar {
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* Two columns for sidebar on tablet */
+            gap: 1.5rem;
+        }
+        .sidebar .stat-card {
+            padding: 1.5rem;
+        }
+    }
+
+    @media (max-width: 600px) {
+        .main-container { padding: 1.5rem; }
+        .stats-container { gap: 1rem; }
+        .stat-card { padding: 1.5rem; }
+        
+        .project-item {
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 1rem;
         }
 
-        .filter-btn:hover {
-            background-color: var(--light-grey);
-            border-color: var(--primary-green);
+        .project-info h3 {
+            font-size: 1rem;
         }
 
-        .filter-btn.active {
-            background-color: var(--primary-green);
-            color: var(--white);
-            border-color: var(--primary-green);
-            font-weight: 500;
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 100;
-            left: 0;
-            top: 0;
+        .project-stats {
+            flex-wrap: nowrap;
+            gap: 1rem;
             width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.6);
+            margin-top: 1rem;
+            justify-content: space-between;
         }
+        .stat { min-width: 30%; }
+
+        .action-buttons {
+            margin-top: 1rem;
+            width: 100%;
+            justify-content: flex-start;
+        }
+        .btn { flex: 1; text-align: center; }
+
+        .sidebar { grid-template-columns: 1fr; }
 
         .modal-content {
-            background-color: var(--white);
             margin: 10% auto;
-            padding: 1.5rem;
-            width: 80%;
-            max-width: 700px;
-            border-radius: 8px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-            position: relative;
+            width: 95%;
         }
-
-        .close-modal {
-            position: absolute;
-            right: 1rem;
-            top: 1rem;
-            font-size: 1.5rem;
-            color: var(--medium-grey);
-            cursor: pointer;
-        }
-
-        .close-modal:hover {
-            color: var(--dark-grey);
-        }
-
-        .modal-project-name {
-            margin-bottom: 1.5rem;
-            color: var(--dark-grey);
-        }
-
-        .detail-row {
-            display: flex;
-            margin-bottom: 1rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid var(--light-grey);
-        }
-
-        .detail-label {
-            width: 40%;
-            font-weight: 600;
-            color: var(--medium-grey);
-        }
-
-        .detail-value {
-            width: 60%;
-            color: var(--dark-grey);
-        }
-
-        .progress-container {
-            width: 100%;
-            height: 8px;
-            background-color: var(--light-grey);
-            border-radius: 4px;
-            margin-top: 0.5rem;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background-color: var(--secondary-green);
-            border-radius: 4px;
-            transition: width 0.5s ease-in-out;
-        }
-
-        .content-wrapper {
-            display: grid;
-            grid-template-columns: 3fr 1fr;
-            gap: 1.5rem;
-        }
-
-        .main-section {
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
-        }
-
-        .sidebar {
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
-        }
-
-        @media (max-width: 900px) {
-            .content-wrapper {
-                grid-template-columns: 1fr;
-            }
-
-            .filter-options {
-                flex-wrap: wrap;
-            }
-
-            .filter-btn {
-                flex: 1;
-                min-width: 120px;
-                text-align: center;
-            }
-        }
-
-        @media (max-width: 600px) {
-            .project-item {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .action-buttons {
-                margin-top: 1rem;
-                width: 100%;
-            }
-
-            .btn {
-                flex: 1;
-                text-align: center;
-            }
-
-            .project-stats {
-                flex-direction: column;
-                width: 100%;
-            }
-
-            .modal-content {
-                width: 95%;
-                margin: 5% auto;
-                padding: 1rem;
-            }
-        }
+    }
     </style>
 </head>
 <body>
@@ -442,8 +503,7 @@
                 </div>
 
                 <div class="project-list" id="project-list">
-                    <!-- Projects will be populated here -->
-                </div>
+                    </div>
             </div>
 
             <div class="sidebar">
@@ -468,154 +528,23 @@
             <span class="close-modal">&times;</span>
             <h2 id="modal-project-name" class="modal-project-name">Project Details</h2>
             <div id="modal-project-details">
-                <!-- Project details will be populated here -->
-            </div>
+                </div>
         </div>
     </div>
 
     <script>
-        // Sample project data
+        // Sample project data (Restored from your provided HTML)
         const projects = [
-            {
-                id: 1,
-                name: "City Heights Tower",
-                status: "ongoing",
-                totalCost: 1250000,
-                receivedAmount: 650000,
-                pendingAmount: 600000,
-                startDate: "2024-04-15",
-                estimatedEndDate: "2025-03-20",
-                clientName: "Urban Living Enterprises",
-                location: "Downtown Financial District",
-                description: "A 28-story luxury apartment complex with retail spaces on the ground floor. The project includes smart home integration throughout the building.",
-                completionPercentage: 52
-            },
-            {
-                id: 2,
-                name: "Riverside Medical Center",
-                status: "ongoing",
-                totalCost: 3450000,
-                receivedAmount: 2100000,
-                pendingAmount: 1350000,
-                startDate: "2023-10-12",
-                estimatedEndDate: "2025-01-30",
-                clientName: "Health Partners Group",
-                location: "North Riverside Area",
-                description: "State-of-the-art medical facility with specialized wings for surgery, emergency care, and outpatient services.",
-                completionPercentage: 68
-            },
-            {
-                id: 3,
-                name: "Greenfield Shopping Mall",
-                status: "completed",
-                totalCost: 2850000,
-                receivedAmount: 2850000,
-                pendingAmount: 0,
-                startDate: "2022-05-10",
-                endDate: "2024-06-15",
-                clientName: "Retail Development Corp",
-                location: "Greenfield District",
-                description: "Modern multi-level shopping complex with over 200 retail spaces, food court, and entertainment area.",
-                completionPercentage: 100
-            },
-            {
-                id: 4,
-                name: "Oceanview Hotel & Resort",
-                status: "completed",
-                totalCost: 5750000,
-                receivedAmount: 5750000,
-                pendingAmount: 0,
-                startDate: "2022-01-20",
-                endDate: "2024-05-11",
-                clientName: "Luxury Stays International",
-                location: "Coastal Boulevard",
-                description: "Luxury 5-star hotel and resort with 350 rooms, conference centers, 3 restaurants, and exclusive beach access.",
-                completionPercentage: 100
-            },
-            {
-                id: 5,
-                name: "Tech Park Office Complex",
-                status: "ongoing",
-                totalCost: 4250000,
-                receivedAmount: 1800000,
-                pendingAmount: 2450000,
-                startDate: "2023-12-05",
-                estimatedEndDate: "2025-08-10",
-                clientName: "Innovation Works LLC",
-                location: "Technology District",
-                description: "Modern office complex designed for tech companies with flexible workspaces, collaborative areas, and advanced infrastructure.",
-                completionPercentage: 42
-            },
-            {
-                id: 6,
-                name: "Sunset Residential Community",
-                status: "ongoing",
-                totalCost: 3850000,
-                receivedAmount: 1925000,
-                pendingAmount: 1925000,
-                startDate: "2024-01-15",
-                estimatedEndDate: "2025-06-30",
-                clientName: "Community Homes Inc.",
-                location: "Western Suburbs",
-                description: "Planned residential community with 120 units, including single-family homes, townhouses, and a community center with recreational facilities.",
-                completionPercentage: 50
-            },
-            {
-                id: 7,
-                name: "Central Public Library",
-                status: "ongoing",
-                totalCost: 2100000,
-                receivedAmount: 1050000,
-                pendingAmount: 1050000,
-                startDate: "2023-11-22",
-                estimatedEndDate: "2025-02-15",
-                clientName: "City Municipal Authority",
-                location: "Downtown Arts District",
-                description: "Modern three-story library with digital resources center, community meeting spaces, and an auditorium for public events.",
-                completionPercentage: 35
-            },
-            {
-                id: 8,
-                name: "Eastside Elementary School",
-                status: "completed",
-                totalCost: 3200000,
-                receivedAmount: 3200000,
-                pendingAmount: 0,
-                startDate: "2022-03-15",
-                endDate: "2023-08-20",
-                clientName: "District School Board",
-                location: "Eastside Neighborhood",
-                description: "Elementary school with 30 classrooms, science lab, art studio, gymnasium, and outdoor playground with eco-friendly design.",
-                completionPercentage: 100
-            },
-            {
-                id: 9,
-                name: "Urban Transit Hub",
-                status: "ongoing",
-                totalCost: 5600000,
-                receivedAmount: 2800000,
-                pendingAmount: 2800000,
-                startDate: "2023-09-10",
-                estimatedEndDate: "2025-10-05",
-                clientName: "Metropolitan Transit Authority",
-                location: "Central Business District",
-                description: "Multi-modal transit center connecting bus, light rail, and subway systems with retail spaces and public plaza.",
-                completionPercentage: 45
-            },
-            {
-                id: 10,
-                name: "Harbor View Waterfront Park",
-                status: "completed",
-                totalCost: 1750000,
-                receivedAmount: 1750000,
-                pendingAmount: 0,
-                startDate: "2023-02-05",
-                endDate: "2024-03-30",
-                clientName: "Parks and Recreation Department",
-                location: "City Harbor",
-                description: "Waterfront recreational area with walking paths, bike lanes, pavilions, playground, and boat launch with ecological restoration elements.",
-                completionPercentage: 100
-            }
+            { id: 1, name: "City Heights Tower", status: "ongoing", totalCost: 1250000, receivedAmount: 650000, pendingAmount: 600000, startDate: "2024-04-15", estimatedEndDate: "2025-03-20", clientName: "Urban Living Enterprises", location: "Downtown Financial District", description: "A 28-story luxury apartment complex with retail spaces on the ground floor. The project includes smart home integration throughout the building.", completionPercentage: 52 },
+            { id: 2, name: "Riverside Medical Center", status: "ongoing", totalCost: 3450000, receivedAmount: 2100000, pendingAmount: 1350000, startDate: "2023-10-12", estimatedEndDate: "2025-01-30", clientName: "Health Partners Group", location: "North Riverside Area", description: "State-of-the-art medical facility with specialized wings for surgery, emergency care, and outpatient services.", completionPercentage: 68 },
+            { id: 3, name: "Greenfield Shopping Mall", status: "completed", totalCost: 2850000, receivedAmount: 2850000, pendingAmount: 0, startDate: "2022-05-10", endDate: "2024-06-15", clientName: "Retail Development Corp", location: "Greenfield District", description: "Modern multi-level shopping complex with over 200 retail spaces, food court, and entertainment area.", completionPercentage: 100 },
+            { id: 4, name: "Oceanview Hotel & Resort", status: "completed", totalCost: 5750000, receivedAmount: 5750000, pendingAmount: 0, startDate: "2022-01-20", endDate: "2024-05-11", clientName: "Luxury Stays International", location: "Coastal Boulevard", description: "Luxury 5-star hotel and resort with 350 rooms, conference centers, 3 restaurants, and exclusive beach access.", completionPercentage: 100 },
+            { id: 5, name: "Tech Park Office Complex", status: "ongoing", totalCost: 4250000, receivedAmount: 1800000, pendingAmount: 2450000, startDate: "2023-12-05", estimatedEndDate: "2025-08-10", clientName: "Innovation Works LLC", location: "Technology District", description: "Modern office complex designed for tech companies with flexible workspaces, collaborative areas, and advanced infrastructure.", completionPercentage: 42 },
+            { id: 6, name: "Sunset Residential Community", status: "ongoing", totalCost: 3850000, receivedAmount: 1925000, pendingAmount: 1925000, startDate: "2024-01-15", estimatedEndDate: "2025-06-30", clientName: "Community Homes Inc.", location: "Western Suburbs", description: "Planned residential community with 120 units, including single-family homes, townhouses, and a community center with recreational facilities.", completionPercentage: 50 },
+            { id: 7, name: "Central Public Library", status: "ongoing", totalCost: 2100000, receivedAmount: 1050000, pendingAmount: 1050000, startDate: "2023-11-22", estimatedEndDate: "2025-02-15", clientName: "City Municipal Authority", location: "Downtown Arts District", description: "Modern three-story library with digital resources center, community meeting spaces, and an auditorium for public events.", completionPercentage: 35 },
+            { id: 8, name: "Eastside Elementary School", status: "completed", totalCost: 3200000, receivedAmount: 3200000, pendingAmount: 0, startDate: "2022-03-15", endDate: "2023-08-20", clientName: "District School Board", location: "Eastside Neighborhood", description: "Elementary school with 30 classrooms, science lab, art studio, gymnasium, and outdoor playground with eco-friendly design.", completionPercentage: 100 },
+            { id: 9, name: "Urban Transit Hub", status: "ongoing", totalCost: 5600000, receivedAmount: 2800000, pendingAmount: 2800000, startDate: "2023-09-10", estimatedEndDate: "2025-10-05", clientName: "Metropolitan Transit Authority", location: "Central Business District", description: "Multi-modal transit center connecting bus, light rail, and subway systems with retail spaces and public plaza.", completionPercentage: 45 },
+            { id: 10, name: "Harbor View Waterfront Park", status: "completed", totalCost: 1750000, receivedAmount: 1750000, pendingAmount: 0, startDate: "2023-02-05", endDate: "2024-03-30", clientName: "Parks and Recreation Department", location: "City Harbor", description: "Waterfront recreational area with walking paths, bike lanes, pavilions, playground, and boat launch with ecological restoration elements.", completionPercentage: 100 }
         ];
 
         // DOM elements
@@ -650,9 +579,12 @@
                 const projectItem = document.createElement('div');
                 projectItem.className = 'project-item';
                 
+                // Determine status badge class
+                const statusClass = project.status === 'ongoing' ? 'status-ongoing' : 'status-completed';
+
                 projectItem.innerHTML = `
                     <div class="project-info">
-                        <h3>${project.name} <span class="status-badge status-${project.status}">${project.status}</span></h3>
+                        <h3>${project.name} <span class="status-badge ${statusClass}">${capitalizeFirstLetter(project.status)}</span></h3>
                         <div class="project-stats">
                             <div class="stat">
                                 <span class="stat-label">Total Cost</span>
@@ -677,7 +609,7 @@
                 projectList.appendChild(projectItem);
             });
 
-            // Add event listeners to view details buttons
+            // Re-add event listeners to view details buttons after rendering
             document.querySelectorAll('.view-details').forEach(button => {
                 button.addEventListener('click', function() {
                     const projectId = parseInt(this.getAttribute('data-id'));
@@ -719,7 +651,10 @@
             const project = projects.find(p => p.id === projectId);
             if (!project) return;
             
-            modalProjectName.textContent = project.name;
+            const statusText = capitalizeFirstLetter(project.status);
+            const statusClass = project.status === 'ongoing' ? 'status-ongoing' : 'status-completed';
+
+            modalProjectName.innerHTML = `${project.name} <span class="status-badge ${statusClass}">${statusText}</span>`;
             
             let endDateInfo = project.status === 'completed' 
                 ? `<div class="detail-row">
@@ -732,11 +667,6 @@
                    </div>`;
             
             modalProjectDetails.innerHTML = `
-                <div class="detail-row">
-                    <div class="detail-label">Status</div>
-                    <div class="detail-value">${capitalizeFirstLetter(project.status)}</div>
-                </div>
-                
                 <div class="detail-row">
                     <div class="detail-label">Client</div>
                     <div class="detail-value">${project.clientName}</div>
@@ -783,6 +713,11 @@
                     <div class="detail-label">Description</div>
                     <div class="detail-value">${project.description}</div>
                 </div>
+                
+                <div class="action-buttons" style="margin-top: 2rem;">
+                    <button class="btn btn-primary">Make Payment Request</button>
+                    <button class="btn btn-secondary">Update Status</button>
+                </div>
             `;
             
             modal.style.display = 'block';
@@ -790,12 +725,13 @@
 
         // Utility functions
         function formatNumber(number) {
-            return number.toLocaleString('en-US');
+            // Uses Indian numbering system for better readability of large sums
+            return number.toLocaleString('en-IN'); 
         }
 
         function formatDate(dateString) {
             const date = new Date(dateString);
-            return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+            return date.toLocaleDateString('en-IN', { year: 'numeric', month: 'short', day: 'numeric' });
         }
 
         function capitalizeFirstLetter(string) {
