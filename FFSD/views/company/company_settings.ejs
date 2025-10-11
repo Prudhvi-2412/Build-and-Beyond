@@ -7,25 +7,35 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+    /* --- CORPORATE/ESTABLISHED COLOR PALETTE --- */
     :root {
-        /* --- "Deep Dive" Dark Theme Palette --- */
-        --primary-accent: #2DD4BF; /* Vibrant Teal */
-        --primary-accent-darker: #14B8A6;
-        --background-dark: #111827; /* Deep Charcoal Blue */
-        --content-dark: #1F2937;    /* Lighter shade for cards */
-        --border-dark: #374151;
-        --text-primary: #F9FAFB;    /* Off-white for readability */
-        --text-secondary: #9CA3AF; /* Light grey for secondary info */
-        --text-dark: #111827;
+        --primary-accent: #004D7A;       /* Deep Navy Blue */
+        --primary-accent-hover: #003355; 
+        --background-light: #F8F9FA;     /* Main Page BG */
+        --content-light: #FFFFFF;        /* Card BG */
+        --text-primary: #212529;         /* Main Dark Text */
+        --text-secondary: #6C757D;       /* Medium Gray Text */
+        --highlight-color: #A06700;      /* Muted Gold/Amber */
+        --border-light: #D1D5DB;         /* Soft Border */
+        --soft-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        --card-radius: 8px;
+        --button-secondary-bg: #E9ECEF;
+        --light-accent-bg: #E6F0F8; 
 
-        /* Status Colors for Dark Mode */
-        --success-color: #10B981;
+        /* Status & Action Colors */
+        --success-color: #155724;
         --danger-color: #EF4444;
         --danger-color-darker: #DC2626;
+
+        /* Mapped Variables for cleanup */
+        --background-dark: var(--content-light); /* Modal/Sub-section BG */
+        --border-dark: var(--border-light); 
+        --text-dark: var(--content-light);
     }
     * {
         margin: 0;
@@ -34,142 +44,106 @@
         font-family: "Poppins", sans-serif;
     }
     body {
-        background-color: var(--background-dark);
+        background-color: var(--background-light);
         color: var(--text-primary);
         line-height: 1.6;
         -webkit-font-smoothing: antialiased;
     }
+    
+    /* --- MAIN LAYOUT --- */
     .settings-container {
         max-width: 1200px;
         margin: 2rem auto;
-        padding: 0 1rem;
+        padding: 0 1.5rem;
     }
     .settings-header {
         margin-bottom: 2rem;
-        border-bottom: 2px solid var(--primary-accent);
+        border-bottom: 3px solid var(--primary-accent); /* Strong header line */
         padding-bottom: 1rem;
     }
     .settings-header h1 {
-        color: var(--text-primary);
-        font-size: 2rem;
+        color: var(--primary-accent);
+        font-size: 2.5rem;
+        font-weight: 700;
     }
     .settings-header p {
         color: var(--text-secondary);
         margin-top: 0.5rem;
+        font-size: 1rem;
     }
     .settings-grid {
         display: grid;
-        grid-template-columns: 250px 1fr;
+        grid-template-columns: 280px 1fr; /* Wider sidebar */
         gap: 2rem;
+        align-items: flex-start;
     }
+    
+    /* --- SIDEBAR NAVIGATION --- */
     .settings-sidebar, .settings-content {
-        background-color: var(--content-dark);
-        border-radius: 12px;
-        border: 1px solid var(--border-dark);
-        box-shadow: none;
+        background-color: var(--content-light);
+        border-radius: var(--card-radius);
+        border: 1px solid var(--border-light);
+        box-shadow: var(--soft-shadow);
     }
     .settings-sidebar {
-        padding: 1.5rem;
+        padding: 1rem 0; /* Padding inside list items */
     }
     .settings-nav {
         list-style: none;
     }
     .settings-nav li {
-        margin-bottom: 0.5rem;
+        margin-bottom: 0;
     }
     .settings-nav a {
         display: flex;
         align-items: center;
-        padding: 0.75rem 1rem;
+        padding: 0.8rem 1.5rem;
         color: var(--text-secondary);
         text-decoration: none;
-        border-radius: 8px;
-        transition: all 0.3s ease;
-        font-weight: 500;
+        transition: all 0.2s ease;
+        font-weight: 600;
+        border-left: 4px solid transparent;
     }
-    .settings-nav a:hover, .settings-nav a.active {
-        background-color: var(--primary-accent);
-        color: var(--text-dark);
+    .settings-nav a:hover {
+        background-color: var(--button-secondary-bg);
+        color: var(--text-primary);
+    }
+    .settings-nav a.active {
+        background-color: var(--light-accent-bg);
+        color: var(--primary-accent);
+        border-left-color: var(--primary-accent);
     }
     .settings-nav a i {
-        margin-right: 0.75rem;
+        margin-right: 1rem;
         width: 20px;
         text-align: center;
     }
+    
+    /* --- MAIN CONTENT AREA --- */
     .settings-content {
         padding: 2rem;
     }
     .settings-section {
         margin-bottom: 2rem;
         display: none;
+        animation: fadeIn 0.3s ease;
     }
     .settings-section.active {
         display: block;
     }
-    .settings-section:last-of-type {
-        margin-bottom: 0;
-    }
     .settings-section h2 {
         color: var(--text-primary);
+        font-size: 1.8rem;
+        font-weight: 700;
         margin-bottom: 1.5rem;
         padding-bottom: 0.75rem;
-        border-bottom: 1px solid var(--border-dark);
+        border-bottom: 2px solid var(--border-light);
     }
-    .form-group {
-        margin-bottom: 1.5rem;
-    }
-    .form-group label {
-        display: block;
-        margin-bottom: 0.5rem;
-        font-weight: 600;
-        color: var(--text-secondary);
-    }
-    .form-control {
-        width: 100%;
-        padding: 0.75rem;
-        border: 1px solid var(--border-dark);
-        border-radius: 6px;
-        font-size: 1rem;
-        background-color: var(--background-dark);
-        color: var(--text-primary);
-    }
-    .form-control:focus {
-        outline: none;
-        border-color: var(--primary-accent);
-        box-shadow: 0 0 0 3px rgba(45, 212, 191, 0.2);
-    }
-    .btn {
-        padding: 0.75rem 1.5rem;
-        background-color: var(--primary-accent);
-        color: var(--text-dark);
-        border: none;
-        border-radius: 6px;
-        cursor: pointer;
-        font-size: 1rem;
-        font-weight: 600;
-        transition: all 0.2s ease;
-    }
-    .btn:hover {
-        background-color: var(--primary-accent-darker);
-        transform: translateY(-2px);
-    }
-    .btn-secondary {
-        background-color: var(--border-dark);
-        color: var(--text-primary);
-    }
-    .btn-secondary:hover {
-        background-color: #4B5563;
-    }
-    .btn-danger {
-        background-color: var(--danger-color);
-        color: var(--text-primary);
-    }
-    .btn-danger:hover {
-        background-color: var(--danger-color-darker);
-    }
+    
+    /* --- PROFILE TABS (Worker/Customer) --- */
     .profile-tabs {
         display: flex;
-        border-bottom: 1px solid var(--border-dark);
+        border-bottom: 2px solid var(--border-light);
         margin-bottom: 1.5rem;
     }
     .profile-tab {
@@ -177,114 +151,135 @@
         cursor: pointer;
         border-bottom: 3px solid transparent;
         color: var(--text-secondary);
+        font-weight: 500;
+        transition: all 0.2s ease;
     }
     .profile-tab.active {
         border-bottom-color: var(--primary-accent);
-        font-weight: 600;
+        font-weight: 700;
         color: var(--primary-accent);
     }
     .profile-content {
         display: none;
+        animation: fadeIn 0.3s ease;
     }
     .profile-content.active {
         display: block;
     }
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* --- FORM STYLING (Display Mode & Edit Mode) --- */
+    .form-group {
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px dashed #E0E0E0;
+    }
+    .form-group:last-of-type {
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+    
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+        text-transform: uppercase;
+    }
+    
+    /* Display Mode Paragraphs */
+    .settings-section p { 
+        color: var(--text-primary);
+        font-weight: 500;
+        margin: 0;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid var(--border-light);
+        border-radius: 6px;
+        font-size: 1rem;
+        background-color: var(--background-light);
+        color: var(--text-primary);
+        box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .form-control:focus {
+        outline: none;
+        border-color: var(--primary-accent);
+        box-shadow: 0 0 0 3px rgba(0, 77, 122, 0.2);
+        background-color: var(--content-light);
+    }
+    textarea.form-control {
+        min-height: 100px;
+        resize: vertical;
+    }
+    
+    /* Dynamic List Styling */
+    #worker-profile-display .current-opening-item h4 {
+        color: var(--primary-accent);
+        font-weight: 600;
+        font-size: 1rem;
+    }
     .skills-tags {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.5rem;
         margin-top: 0.5rem;
     }
     .skill-tag {
-        background-color: rgba(45, 212, 191, 0.1);
+        background-color: var(--light-accent-bg);
         color: var(--primary-accent);
-        padding: 0.25rem 0.75rem;
-        border-radius: 20px;
+        padding: 0.35rem 0.75rem;
+        border-radius: 4px;
         font-size: 0.85rem;
+        font-weight: 600;
+        border: 1px solid var(--primary-accent);
     }
-    .team-member, .team-project-items, .current-opening-item {
+
+    /* Customer Profile Specific Display Styles */
+    #customer-profile-display .team-project-items {
         display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        margin-bottom: 1rem;
-        padding: 1rem;
-        border: 1px solid var(--border-dark);
-        border-radius: 8px;
-        transition: background-color 0.2s ease;
-    }
-    /* Override for display mode to keep original row layout */
-    #customer-profile-display .team-member, #worker-profile-display .current-opening-item, #customer-profile-display .team-project-items {
         flex-direction: row;
-        align-items: center;
-        padding: 1rem 0;
+        align-items: flex-start;
+        padding: 0.5rem 0;
         border: none;
     }
-    #customer-profile-display .team-project-items{
-        align-items: flex-start;
-    }
-    .team-member img {
-        width: 60px;
-        height: 60px;
+    #customer-profile-display .team-member img {
+        width: 50px;
+        height: 50px;
         border-radius: 50%;
-        object-fit: cover;
+        margin-right: 1rem;
+        border: 2px solid var(--border-light);
+    }
+    #customer-profile-display .project-item img {
+        width: 100px;
+        height: 70px;
+        border-radius: 4px;
         margin-right: 1rem;
     }
-    .team-member-info h4, .project-info h4, .current-opening-item h4 {
-        margin-bottom: 0.25rem;
-        color: var(--text-primary);
+    .team-member-info h4, .project-info h4 {
+        color: var(--primary-accent);
+        font-weight: 600;
     }
-    .team-member-info p, .project-info p, .current-opening-item p {
-        color: var(--text-secondary);
-        font-size: 0.9rem;
-    }
-    .team-project-items img {
-        width: 120px;
-        height: 80px;
-        object-fit: cover;
-        margin-right: 1rem;
-        border-radius: 6px;
-    }
-    #customer-profile-display .project-info {
+    .team-project-items .project-info {
         flex: 1;
     }
     .did-you-know {
-        background-color: var(--background-dark);
+        background-color: var(--light-accent-bg);
         padding: 1.5rem;
-        border-radius: 8px;
-        border-left: 4px solid var(--primary-accent);
-        margin-bottom: 1.5rem;
+        border-radius: var(--card-radius);
+        border-left: 5px solid var(--highlight-color);
+        margin-top: 1.5rem;
     }
     .did-you-know h4 {
-        color: var(--primary-accent);
+        color: var(--highlight-color);
         margin-bottom: 0.5rem;
+        font-weight: 700;
     }
-    .company-size-selector {
-        display: flex;
-        gap: 1rem;
-        margin-top: 0.5rem;
-    }
-    .company-size-option {
-        flex: 1;
-        text-align: center;
-        padding: 1rem;
-        border: 1px solid var(--border-dark);
-        border-radius: 6px;
-        cursor: pointer;
-        transition: all 0.2s ease;
-    }
-    .company-size-option.selected {
-        border-color: var(--primary-accent);
-        background-color: rgba(45, 212, 191, 0.1);
-        color: var(--primary-accent);
-    }
-    .company-size-option input {
-        display: none;
-    }
-    textarea.form-control {
-        min-height: 120px;
-        resize: vertical;
-    }
-    /* Styling for dynamically added items in edit mode */
+    
+    /* Edit Mode Dynamic Inputs */
     .dynamic-item-edit {
         display: flex;
         align-items: center;
@@ -294,8 +289,97 @@
     .dynamic-item-edit .form-control {
         flex-grow: 1;
     }
+    .company-size-selector {
+        display: flex;
+        gap: 1rem;
+        margin-top: 0.5rem;
+        flex-wrap: wrap;
+    }
+    .company-size-option {
+        flex: 1;
+        min-width: 120px;
+        text-align: center;
+        padding: 0.75rem;
+        border: 1px solid var(--border-light);
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        background-color: var(--button-secondary-bg);
+        font-weight: 500;
+    }
+    .company-size-option.selected {
+        border-color: var(--primary-accent);
+        background-color: var(--light-accent-bg);
+        color: var(--primary-accent);
+        font-weight: 600;
+    }
+    .company-size-option input {
+        display: none;
+    }
+
+    /* --- BUTTONS --- */
+    .btn {
+        padding: 0.8rem 1.5rem;
+        background-color: var(--primary-accent);
+        color: var(--text-dark);
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 1rem;
+        font-weight: 700;
+        transition: all 0.2s ease;
+        box-shadow: 0 3px 6px rgba(0, 77, 122, 0.2);
+    }
+    .btn:hover {
+        background-color: var(--primary-accent-hover);
+        transform: translateY(-2px);
+    }
+    .btn-secondary {
+        background-color: var(--button-secondary-bg);
+        color: var(--text-primary);
+        border: 1px solid var(--border-light);
+        box-shadow: none;
+        font-weight: 600;
+    }
+    .btn-secondary:hover {
+        background-color: #D1D5DB;
+        color: var(--text-primary);
+    }
+    .btn-danger {
+        background-color: var(--danger-color);
+        color: var(--content-light);
+        box-shadow: 0 3px 6px rgba(239, 68, 68, 0.2);
+    }
+    .btn-danger:hover {
+        background-color: var(--danger-color-darker);
+    }
+    
+    /* --- Responsive --- */
+    @media (max-width: 992px) {
+        .settings-grid {
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+        .settings-sidebar {
+            padding: 1.5rem;
+        }
+        .settings-nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .settings-nav a {
+            flex-grow: 1;
+            text-align: center;
+            border-left: none;
+            border-bottom: 4px solid transparent;
+            border-radius: 4px;
+        }
+        .settings-nav a.active {
+            border-bottom-color: var(--primary-accent);
+        }
+    }
     </style>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <%- include('navbar_company') %>
@@ -318,8 +402,8 @@
                     <h2>Company Profile</h2>
                     
                     <div class="profile-tabs">
-                        <div class="profile-tab active" data-tab="worker">Worker Profile</div>
-                        <div class="profile-tab" data-tab="customer">Customer Profile</div>
+                        <div class="profile-tab active" data-tab="worker">Worker Profile (Hiring)</div>
+                        <div class="profile-tab" data-tab="customer">Customer Profile (Projects)</div>
                     </div>
                     
                     <div id="worker-profile" class="profile-content active">
@@ -366,11 +450,11 @@
                         <form id="worker-profile-edit" style="display: none;">
                             <div class="form-group">
                                 <label for="companyName">Company Name</label>
-                                <input type="text" id="companyName" class="form-control" value="<%= company.workerProfile.name %>" readonly>
+                                <input type="text" id="companyName" class="form-control" name="name" value="<%= company.workerProfile.name %>" readonly>
                             </div>
                             <div class="form-group">
                                 <label for="companyLocation">Location</label>
-                                <input type="text" id="companyLocation" class="form-control" value="<%= company.workerProfile.location %>">
+                                <input type="text" id="companyLocation" class="form-control" name="location" value="<%= company.workerProfile.location %>">
                             </div>
                             <div class="form-group">
                                 <label>Company Size</label>
@@ -385,13 +469,13 @@
                             </div>
                             <div class="form-group">
                                 <label for="specializations">Specializations (comma separated)</label>
-                                <input type="text" id="specializations" class="form-control" value="<%= company.workerProfile.specializations.join(', ') %>">
+                                <input type="text" id="specializations" class="form-control" name="specializations" value="<%= company.workerProfile.specializations.join(', ') %>">
                             </div>
                             <div class="form-group" id="openings-container">
                                 <label>Current Openings</label>
                                 <% company.workerProfile.currentOpenings.forEach(opening => { %>
                                     <div class="dynamic-item-edit">
-                                        <input type="text" class="form-control" value="<%= opening %>">
+                                        <input type="text" class="form-control" value="<%= opening %>" name="currentOpenings[]">
                                         <button type="button" class="btn btn-danger" onclick="this.parentElement.remove()">Remove</button>
                                     </div>
                                 <% }) %>
@@ -399,11 +483,11 @@
                             </div>
                             <div class="form-group">
                                 <label for="aboutCompany">About the Company</label>
-                                <textarea id="aboutCompany" class="form-control"><%= company.workerProfile.about %></textarea>
+                                <textarea id="aboutCompany" class="form-control" name="about"><%= company.workerProfile.about %></textarea>
                             </div>
                             <div class="form-group">
                                 <label for="whyJoinUs">Why Join Our Team?</label>
-                                <textarea id="whyJoinUs" class="form-control"><%= company.workerProfile.whyJoin %></textarea>
+                                <textarea id="whyJoinUs" class="form-control" name="whyJoin"><%= company.workerProfile.whyJoin %></textarea>
                             </div>
                             <button type="button" id="cancel-worker-edit-btn" class="btn btn-secondary" style="margin-right: 1rem;">Cancel</button>
                             <button type="submit" class="btn">Save Changes</button>
@@ -463,62 +547,65 @@
                             <button id="edit-customer-profile-btn" class="btn">Edit Customer Profile</button>
                         </div>
                         
-                        <form id="customer-profile-edit" style="display: none;">
-                           <div class="form-group">
+                        <form id="customer-profile-edit" style="display: none;" enctype="multipart/form-data">
+                            <div class="form-group">
                                 <label for="customerCompanyName">Company Name</label>
-                                <input type="text" id="customerCompanyName" class="form-control" value="<%= company.customerProfile.name %>" readonly>
+                                <input type="text" id="customerCompanyName" class="form-control" name="name" value="<%= company.customerProfile.name %>" readonly>
                             </div>
                             <div class="form-group">
                                 <label for="customerCompanyLocation">Location</label>
-                                <input type="text" id="customerCompanyLocation" class="form-control" value="<%= company.customerProfile.location %>">
+                                <input type="text" id="customerCompanyLocation" class="form-control" name="location" value="<%= company.customerProfile.location %>">
                             </div>
                             <div class="form-group">
                                 <label for="projectsCompleted">Projects Completed</label>
-                                <input type="text" id="projectsCompleted" class="form-control" value="<%= company.customerProfile.projectsCompleted %>">
+                                <input type="text" id="projectsCompleted" class="form-control" name="projectsCompleted" value="<%= company.customerProfile.projectsCompleted %>">
                             </div>
                             <div class="form-group">
                                 <label for="yearsInBusiness">Years in Business</label>
-                                <input type="text" id="yearsInBusiness" class="form-control" value="<%= company.customerProfile.yearsInBusiness %>">
+                                <input type="text" id="yearsInBusiness" class="form-control" name="yearsInBusiness" value="<%= company.customerProfile.yearsInBusiness %>">
                             </div>
                             <div class="form-group">
                                 <label for="customerAboutCompany">About the Company</label>
-                                <textarea id="customerAboutCompany" class="form-control"><%= company.customerProfile.about %></textarea>
+                                <textarea id="customerAboutCompany" class="form-control" name="about"><%= company.customerProfile.about %></textarea>
                             </div>
+                            
                             <div class="form-group" id="team-member-container">
                                 <label>Team Members</label>
                                 <% company.customerProfile.teamMembers.forEach((member, index) => { %>
                                     <div class="team-member">
                                         <div style="display: flex; align-items: center; margin-bottom: 0.5rem;">
-                                            <img src="<%= member.imageUrl %>" alt="Team Member" style="margin-right: 1rem;">
-                                            <input type="file" id="member<%= index %>Image" name="memberImages" style="display: none;" onchange="updateImagePreview(this)">
+                                            <img src="<%= member.image %>" alt="Team Member" data-type="member" data-index="<%= index %>" style="margin-right: 1rem;">
+                                            <input type="file" id="member<%= index %>Image" name="memberImage_<%= index %>" style="display: none;" onchange="updateImagePreview(this)">
                                             <button type="button" class="btn btn-secondary" onclick="document.getElementById('member<%= index %>Image').click()">Change Image</button>
                                         </div>
-                                        <input type="text" class="form-control" value="<%= member.name %>" style="margin-bottom: 0.5rem;">
-                                        <input type="text" class="form-control" value="<%= member.position %>">
+                                        <input type="text" class="form-control" value="<%= member.name %>" placeholder="Name" name="teamMemberName_<%= index %>" style="margin-bottom: 0.5rem;">
+                                        <input type="text" class="form-control" value="<%= member.position %>" placeholder="Position/Title" name="teamMemberPosition_<%= index %>">
                                         <button type="button" class="btn btn-danger" style="margin-top: 0.5rem;" onclick="this.closest('.team-member').remove()">Remove</button>
                                     </div>
                                 <% }) %>
                                 <button type="button" id="add-team-member-btn" class="btn btn-secondary" style="margin-top: 0.5rem;">+ Add Team Member</button>
                             </div>
+                            
                             <div class="form-group" id="project-container">
                                 <label>Completed Projects</label>
                                 <% company.customerProfile.completedProjects.forEach((project, index) => { %>
                                 <div class="project-item">
                                     <div style="display: flex; align-items: center; margin-bottom: 0.5rem;">
-                                        <img src="<%= project.imageUrl %>" alt="Project" style="margin-right: 1rem;">
-                                        <input type="file" id="project<%= index %>Image" name="projectImages" style="display: none;" onchange="updateImagePreview(this)">
+                                        <img src="<%= project.image %>" alt="Project" data-type="project" data-index="<%= index %>" style="margin-right: 1rem;">
+                                        <input type="file" id="project<%= index %>Image" name="projectImage_<%= index %>" style="display: none;" onchange="updateImagePreview(this)">
                                         <button type="button" class="btn btn-secondary" onclick="document.getElementById('project<%= index %>Image').click()">Change Image</button>
                                     </div>
-                                    <input type="text" class="form-control" value="<%= project.title %>" style="margin-bottom: 0.5rem;">
-                                    <textarea class="form-control"><%= project.description %></textarea>
+                                    <input type="text" class="form-control" value="<%= project.title %>" placeholder="Project Title" name="projectTitle_<%= index %>" style="margin-bottom: 0.5rem;">
+                                    <textarea class="form-control" name="projectDescription_<%= index %>" placeholder="Project Description"><%= project.description %></textarea>
                                     <button type="button" class="btn btn-danger" style="margin-top: 0.5rem;" onclick="this.closest('.project-item').remove()">Remove</button>
                                 </div>
                                 <% }) %>
                                 <button type="button" id="add-project-btn" class="btn btn-secondary" style="margin-top: 0.5rem;">+ Add Project</button>
                             </div>
+                            
                             <div class="form-group">
                                 <label for="didYouKnow">Did You Know?</label>
-                                <textarea id="didYouKnow" class="form-control"><%= company.customerProfile.didYouKnow %></textarea>
+                                <textarea id="didYouKnow" class="form-control" name="didYouKnow"><%= company.customerProfile.didYouKnow %></textarea>
                             </div>
                             <button type="button" id="cancel-customer-edit-btn" class="btn btn-secondary" style="margin-right: 1rem;">Cancel</button>
                             <button type="submit" class="btn">Save Changes</button>
@@ -527,42 +614,41 @@
                 </div>
 
                 <div id="security" class="settings-section">
-                     <h2>Security Settings</h2>
-                     <form>
-                         <div class="form-group">
-                             <label for="currentPassword">Current Password</label>
-                             <input type="password" id="currentPassword" class="form-control">
-                         </div>
-                         <div class="form-group">
-                             <label for="newPassword">New Password</label>
-                             <input type="password" id="newPassword" class="form-control">
-                         </div>
-                         <div class="form-group">
-                             <label for="confirmPassword">Confirm New Password</label>
-                             <input type="password" id="confirmPassword" class="form-control">
-                         </div>
-                         <button type="submit" class="btn">Update Password</button>
-                         <hr style="margin: 2rem 0;">
-                     </form>
+                    <h2>Security Settings</h2>
+                    <form>
+                        <div class="form-group">
+                            <label for="currentPassword">Current Password</label>
+                            <input type="password" id="currentPassword" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="newPassword">New Password</label>
+                            <input type="password" id="newPassword" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="confirmPassword">Confirm New Password</label>
+                            <input type="password" id="confirmPassword" class="form-control">
+                        </div>
+                        <button type="submit" class="btn">Update Password</button>
+                    </form>
                 </div>
 
                 <div id="help-center" class="settings-section">
                     <h2>Help Center</h2>
                     <div style="margin-bottom: 2rem;">
-                        <h3 style="margin-bottom: 1rem; color: var(--text-primary);">Frequently Asked Questions</h3>
-                        <div style="padding: 1rem; border: 1px solid var(--border-dark); border-radius: 4px; margin-bottom: 1rem; background-color: var(--background-dark);">
+                        <h3 style="margin-bottom: 1rem; color: var(--text-primary); font-weight: 600;">Frequently Asked Questions</h3>
+                        <div class="did-you-know" style="background-color: var(--content-light); border: 1px solid var(--border-light); margin-bottom: 1rem; border-left: 4px solid var(--primary-accent);">
                             <div>
                                 <span style="font-weight: 600; color: var(--text-primary);">How do I create a new project?</span>
                                 <p style="margin-top: 0.5rem; color: var(--text-secondary);">Go to the Dashboard and click on the "New Project" button in the top right corner.</p>
                             </div>
                         </div>
-                        <div style="padding: 1rem; border: 1px solid var(--border-dark); border-radius: 4px; margin-bottom: 1rem; background-color: var(--background-dark);">
+                        <div class="did-you-know" style="background-color: var(--content-light); border: 1px solid var(--border-light); margin-bottom: 1rem; border-left: 4px solid var(--primary-accent);">
                             <div>
                                 <span style="font-weight: 600; color: var(--text-primary);">How do I invite team members?</span>
                                 <p style="margin-top: 0.5rem; color: var(--text-secondary);">Navigate to your project, click on "Team" tab, and use the "Invite Member" button.</p>
                             </div>
                         </div>
-                        <div style="padding: 1rem; border: 1px solid var(--border-dark); border-radius: 4px; margin-bottom: 1rem; background-color: var(--background-dark);">
+                        <div class="did-you-know" style="background-color: var(--content-light); border: 1px solid var(--border-light); margin-bottom: 1rem; border-left: 4px solid var(--primary-accent);">
                             <div>
                                 <span style="font-weight: 600; color: var(--text-primary);">How can I track my project's budget?</span>
                                 <p style="margin-top: 0.5rem; color: var(--text-secondary);">Use the "Finances" tab within your project to track expenses and compare with your budget.</p>
@@ -570,8 +656,8 @@
                         </div>
                     </div>
                     <div style="margin-bottom: 2rem;">
-                        <h3 style="margin-bottom: 1rem; color: var(--text-primary);">Support Options</h3>
-                        <button class="btn" style="margin-right: 1rem;">Contact Support</button>
+                        <h3 style="margin-bottom: 1rem; color: var(--text-primary); font-weight: 600;">Support Options</h3>
+                        <button class="btn">Contact Support</button>
                     </div>
                 </div>
 
@@ -593,7 +679,7 @@
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    // Get the img element (it's the first child of the div that contains the input/button)
+                    // Get the img element (it's the first sibling element before the input's container)
                     const img = input.closest('div').querySelector('img');
                     if (img) {
                         img.src = e.target.result;
@@ -613,12 +699,12 @@
             div.style.marginTop = '1rem';
             div.innerHTML = `
                 <div style="display: flex; align-items: center; margin-bottom: 0.5rem;">
-                    <img src="https://via.placeholder.com/60x60" alt="New Team Member" style="margin-right: 1rem; width: 60px; height: 60px; border-radius: 50%; object-fit: cover;">
-                    <input type="file" id="${newFileId}" name="memberImages" style="display: none;" onchange="updateImagePreview(this)">
+                    <img src="https://via.placeholder.com/60x60" alt="New Team Member" data-type="member" data-index="${newMemberIndex}" style="margin-right: 1rem;">
+                    <input type="file" id="${newFileId}" name="memberImage_${newMemberIndex}" style="display: none;" onchange="updateImagePreview(this)">
                     <button type="button" class="btn btn-secondary" onclick="document.getElementById('${newFileId}').click()">Change Image</button>
                 </div>
-                <input type="text" class="form-control" value="" placeholder="New Member Name" style="margin-bottom: 0.5rem;">
-                <input type="text" class="form-control" value="" placeholder="Position/Title">
+                <input type="text" class="form-control" value="" placeholder="New Member Name" name="teamMemberName_${newMemberIndex}" style="margin-bottom: 0.5rem;">
+                <input type="text" class="form-control" value="" placeholder="Position/Title" name="teamMemberPosition_${newMemberIndex}">
                 <button type="button" class="btn btn-danger" style="margin-top: 0.5rem;" onclick="this.closest('.team-member').remove()">Remove</button>
             `;
             return div;
@@ -634,12 +720,12 @@
             div.style.marginTop = '1rem';
             div.innerHTML = `
                 <div style="display: flex; align-items: center; margin-bottom: 0.5rem;">
-                    <img src="https://via.placeholder.com/120x80" alt="New Project" style="margin-right: 1rem; width: 120px; height: 80px; border-radius: 6px; object-fit: cover;">
-                    <input type="file" id="${newFileId}" name="projectImages" style="display: none;" onchange="updateImagePreview(this)">
+                    <img src="https://via.placeholder.com/120x80" alt="New Project" data-type="project" data-index="${newProjectIndex}" style="margin-right: 1rem;">
+                    <input type="file" id="${newFileId}" name="projectImage_${newProjectIndex}" style="display: none;" onchange="updateImagePreview(this)">
                     <button type="button" class="btn btn-secondary" onclick="document.getElementById('${newFileId}').click()">Change Image</button>
                 </div>
-                <input type="text" class="form-control" value="" placeholder="New Project Title" style="margin-bottom: 0.5rem;">
-                <textarea class="form-control" placeholder="A brief description of the new project."></textarea>
+                <input type="text" class="form-control" value="" placeholder="Project Title" name="projectTitle_${newProjectIndex}" style="margin-bottom: 0.5rem;">
+                <textarea class="form-control" name="projectDescription_${newProjectIndex}" placeholder="Project Description"></textarea>
                 <button type="button" class="btn btn-danger" style="margin-top: 0.5rem;" onclick="this.closest('.project-item').remove()">Remove</button>
             `;
             return div;
@@ -649,15 +735,15 @@
         function showAlert(message, type) {
             const alertDiv = document.createElement('div');
             alertDiv.style.position = 'fixed';
-            alertDiv.style.top = '20px';
+            alertDiv.style.bottom = '20px';
             alertDiv.style.right = '20px';
             alertDiv.style.padding = '15px 20px';
             alertDiv.style.borderRadius = '4px';
-            alertDiv.style.color = 'white';
             alertDiv.style.zIndex = '1000';
             alertDiv.style.boxShadow = '0 4px 8px rgba(0,0,0,0.3)';
-            
-            alertDiv.style.backgroundColor = type === 'success' ? 'var(--success-color)' : 'var(--danger-color)';
+            alertDiv.style.color = type === 'success' ? 'white' : 'white';
+
+            alertDiv.style.backgroundColor = type === 'success' ? '#10B981' : 'var(--danger-color)';
             alertDiv.textContent = message;
             
             document.body.appendChild(alertDiv);
@@ -768,7 +854,7 @@
                     const newOpeningDiv = document.createElement('div');
                     newOpeningDiv.className = 'dynamic-item-edit';
                     newOpeningDiv.innerHTML = `
-                        <input type="text" class="form-control" placeholder="Job Title">
+                        <input type="text" class="form-control" placeholder="Job Title" name="currentOpenings[]">
                         <button type="button" class="btn btn-danger" onclick="this.parentElement.remove()">Remove</button>
                     `;
                     openingsContainer.insertBefore(newOpeningDiv, addOpeningBtn);
@@ -781,7 +867,6 @@
             if (addTeamMemberBtn && teamMemberContainer) {
                 addTeamMemberBtn.addEventListener('click', function() {
                     const newMemberInput = createTeamMemberInput();
-                    // Insert the new member *before* the add button
                     teamMemberContainer.insertBefore(newMemberInput, addTeamMemberBtn);
                 });
             }
@@ -792,7 +877,6 @@
             if (addProjectBtn && projectContainer) {
                 addProjectBtn.addEventListener('click', function() {
                     const newProjectInput = createProjectInput();
-                    // Insert the new project *before* the add button
                     projectContainer.insertBefore(newProjectInput, addProjectBtn);
                 });
             }
@@ -805,14 +889,15 @@
                     
                     const formData = {
                         profileType: 'worker',
-                        companyName: document.getElementById('companyName').value,
-                        companyLocation: document.getElementById('companyLocation').value,
-                        companySize: document.querySelector('input[name="companySize"]:checked').value,
-                        specializations: document.getElementById('specializations').value,
-                        aboutCompany: document.getElementById('aboutCompany').value,
-                        whyJoinUs: document.getElementById('whyJoinUs').value,
-                        currentOpenings: Array.from(document.querySelectorAll('#openings-container .dynamic-item-edit input'))
-                                              .map(input => input.value)
+                        name: document.getElementById('companyName').value,
+                        location: document.getElementById('companyLocation').value,
+                        size: document.querySelector('input[name="companySize"]:checked').value,
+                        specializations: document.getElementById('specializations').value.split(',').map(s => s.trim()).filter(s => s.length > 0),
+                        about: document.getElementById('aboutCompany').value,
+                        whyJoin: document.getElementById('whyJoinUs').value,
+                        // Collect values from dynamically named inputs
+                        currentOpenings: Array.from(document.querySelectorAll('#openings-container input[name="currentOpenings[]"]'))
+                                         .map(input => input.value).filter(s => s.length > 0)
                     };
     
                     try {
@@ -831,8 +916,6 @@
                         if (contentType && contentType.includes('application/json')) {
                             result = await response.json();
                         } else {
-                            const htmlError = await response.text();
-                            console.error('Server returned HTML instead of JSON (Worker Profile). Check server logs/network for redirect/error details.', htmlError);
                             throw new Error('Server returned an unexpected response format (likely an HTML error page/redirect).');
                         }
 
@@ -840,10 +923,6 @@
                             throw new Error(result.message || 'Failed to update profile');
                         }
     
-                        // NOTE: To fully update the UI, you would ideally reload the page
-                        // or manually update every single field on the display side.
-                        // For simplicity, we just show success and toggle the view.
-                        
                         workerProfileDisplay.style.display = 'block';
                         workerProfileEdit.style.display = 'none';
                         showAlert('Worker Profile updated successfully! Please refresh to see all changes.', 'success');
@@ -859,73 +938,74 @@
             if (customerProfileForm) {
                 customerProfileForm.addEventListener('submit', async function (e) {
                     e.preventDefault();
-    
-                    // Using FormData for file uploads
+        
                     const formData = new FormData();
+                    let memberData = [];
+                    let projectData = [];
                     
-                    // Add text fields
+                    // Count elements to ensure dynamic indices are correct
+                    const teamMemberInputs = document.querySelectorAll('#customer-profile-edit .team-member');
+                    const projectInputs = document.querySelectorAll('#customer-profile-edit .project-item');
+
+                    // 1. Collect Team Member Data and Files
+                    teamMemberInputs.forEach((member, index) => {
+                        const fileInput = member.querySelector('input[type="file"]');
+                        if (fileInput.files[0]) {
+                            formData.append(`memberImage_${index}`, fileInput.files[0]);
+                        }
+                        
+                        memberData.push({ 
+                            name: member.querySelector('input[name^="teamMemberName"]').value,
+                            position: member.querySelector('input[name^="teamMemberPosition"]').value,
+                            image: member.querySelector('img').src 
+                        });
+                    });
+                    
+                    // 2. Collect Completed Project Data and Files
+                    projectInputs.forEach((project, index) => {
+                        const fileInput = project.querySelector('input[type="file"]');
+                        if (fileInput.files[0]) {
+                            formData.append(`projectImage_${index}`, fileInput.files[0]);
+                        }
+                        projectData.push({ 
+                            title: project.querySelector('input[name^="projectTitle"]').value,
+                            description: project.querySelector('textarea[name^="projectDescription"]').value,
+                            image: project.querySelector('img').src 
+                        });
+                    });
+                    
+                    // 3. Append text fields
                     formData.append('profileType', 'customer');
-                    formData.append('companyName', document.getElementById('customerCompanyName').value);
-                    formData.append('companyLocation', document.getElementById('customerCompanyLocation').value);
+                    formData.append('name', document.getElementById('customerCompanyName').value);
+                    formData.append('location', document.getElementById('customerCompanyLocation').value);
                     formData.append('projectsCompleted', document.getElementById('projectsCompleted').value);
                     formData.append('yearsInBusiness', document.getElementById('yearsInBusiness').value);
-                    formData.append('customerAboutCompany', document.getElementById('customerAboutCompany').value);
+                    formData.append('about', document.getElementById('customerAboutCompany').value);
                     formData.append('didYouKnow', document.getElementById('didYouKnow').value);
-
-                    // Process team members and add image files
-                    const teamMembers = [];
-                    const teamMemberInputs = document.querySelectorAll('#customer-profile-edit .team-member');
-                    teamMemberInputs.forEach((member, index) => {
-                        const name = member.querySelector('input[type="text"]:nth-of-type(1)').value;
-                        const position = member.querySelector('input[type="text"]:nth-of-type(2)').value;
-                        const fileInput = member.querySelector('input[type="file"]');
-                        
-                        // Only append new files
-                        if (fileInput.files[0]) {
-                            formData.append('memberImages', fileInput.files[0], `member_image_${index}`); 
-                        }
-                        teamMembers.push({ name, position, image: member.querySelector('img').src }); 
-                    });
-                    formData.append('teamMembers', JSON.stringify(teamMembers));
-
-                    // Process completed projects and add image files
-                    const completedProjects = [];
-                    const projectInputs = document.querySelectorAll('#customer-profile-edit .project-item');
-                    projectInputs.forEach((project, index) => {
-                        const title = project.querySelector('input[type="text"]').value;
-                        const description = project.querySelector('textarea').value;
-                        const fileInput = project.querySelector('input[type="file"]');
-                        
-                        // Only append new files
-                        if (fileInput.files[0]) {
-                            formData.append('projectImages', fileInput.files[0], `project_image_${index}`);
-                        }
-                        completedProjects.push({ title, description, image: project.querySelector('img').src }); 
-                    });
-                    formData.append('completedProjects', JSON.stringify(completedProjects));
+                    
+                    // Append structured data as JSON strings
+                    formData.append('teamMembers', JSON.stringify(memberData));
+                    formData.append('completedProjects', JSON.stringify(projectData));
 
                     try {
                         const response = await fetch('/update-company-profile', {
                             method: 'POST',
-                            // Do NOT set Content-Type here; FormData handles it
                             headers: {
+                                // Do NOT set Content-Type; FormData handles it
                                 'Authorization': `Bearer ${localStorage.getItem('token')}`
                             },
                             body: formData
                         });
                         
-                        // Correctly check response type (avoids HTML-as-JSON error)
                         let result;
                         const contentType = response.headers.get('content-type');
 
                         if (contentType && contentType.includes('application/json')) {
                             result = await response.json();
                         } else {
-                            const htmlError = await response.text(); 
-                            console.error('Server returned HTML instead of JSON (Customer Profile). Check server logs/network for redirect/error details.', htmlError);
                             throw new Error('Server returned an unexpected response format (likely an HTML error page/redirect).');
                         }
-    
+        
                         if (!response.ok) {
                             throw new Error(result.message || 'Failed to update profile (Server Error)');
                         }
@@ -944,6 +1024,6 @@
             }
         });
         // --- DOMContentLoaded End ---
-    </script>      
+    </script> 
 </body>
 </html>
