@@ -4,269 +4,140 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Architectural Design Request Form | Build & Beyond</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: "Inter", sans-serif;
+        :root {
+            --primary: #1e293b;
+            --accent: #facc15;
+            --gray: #e2e8f0;
+            --text-secondary: #475569;
         }
 
         body {
-            background-color: #f8fafc;
-            color: #1e293b;
-            line-height: 1.6;
-            padding: 40px 20px;
+            @apply bg-gray-50 text-gray-900 min-h-screen flex items-center justify-center p-4;
         }
 
         .container {
-            max-width: 900px;
-            margin: 0 auto;
-            background: white;
-            padding: 40px;
-            border-radius: 16px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+            @apply max-w-3xl mx-auto bg-white p-8 rounded-2xl shadow-lg;
         }
 
-        /* Page Title */
         .page-title {
-            text-align: center;
-            margin-bottom: 30px;
+            @apply text-center mb-8;
         }
 
         .page-title h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: #1e293b;
-            margin-bottom: 15px;
+            @apply text-2xl md:text-3xl font-bold text-primary;
         }
 
         .page-title .underline {
-            width: 120px;
-            height: 4px;
-            background: linear-gradient(to right, #facc15, #1e293b);
-            margin: 0 auto;
+            @apply w-24 h-1 bg-gradient-to-r from-accent to-primary mx-auto mt-2 rounded;
         }
 
-        /* Form Sections */
         .section {
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid #e2e8f0;
+            @apply mb-6 pb-6 border-b border-gray-200;
         }
 
         .section-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: #1e293b;
-            margin-bottom: 20px;
-            position: relative;
+            @apply text-xl font-semibold text-primary mb-4 relative;
         }
-        
+
         .section-title::after {
+            @apply absolute bottom-0 left-0 w-12 h-1 bg-accent rounded;
             content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 60px;
-            height: 4px;
-            background: #facc15;
-            border-radius: 2px;
         }
 
         .form-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
+            @apply grid gap-4 md:grid-cols-2;
         }
 
         .form-group {
-            margin-bottom: 15px;
+            @apply mb-4;
         }
-        
+
         label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-            color: #475569;
+            @apply block mb-2 font-medium text-text-secondary;
         }
-        
+
+        label.required::after {
+            content: '*';
+            @apply text-accent ml-1;
+        }
+
         input, select, textarea {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #e2e8f0;
-            border-radius: 8px;
-            font-size: 1rem;
-            color: #1e293b;
-            background-color: #fff;
-            transition: all 0.3s ease;
-        }
-        
-        input:focus, select:focus, textarea:focus {
-            outline: none;
-            border-color: #facc15;
-            box-shadow: 0 0 0 3px rgba(250, 204, 21, 0.2);
+            @apply w-full p-3 border-2 border-gray rounded-lg text-primary bg-white focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/20 transition-all;
         }
 
         textarea {
-            min-height: 100px;
-            resize: vertical;
+            @apply min-h-[100px] resize-y;
         }
 
         select {
-            height: 48px;
+            @apply h-12;
         }
 
-        /* Required asterisk */
-        .form-group label[for]:after {
-            content: "*";
-            color: #facc15;
-            margin-left: 4px;
-        }
-
-        /* File Upload */
         .file-upload {
-            margin-top: 10px;
+            @apply mt-2;
         }
-        
+
         .file-upload label {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: #f1f5f9;
-            border: 2px dashed #cbd5e1;
-            border-radius: 8px;
-            padding: 30px 20px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            text-align: center;
-            color: #64748b;
+            @apply flex items-center justify-center bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg p-6 cursor-pointer hover:bg-gray-100 hover:border-accent transition-all text-center text-text-secondary;
         }
-        
-        .file-upload label:hover {
-            background-color: #e2e8f0;
-            border-color: #facc15;
-        }
-        
+
         .file-upload input {
-            display: none;
+            @apply hidden;
         }
 
-        /* File Previews */
         .image-preview-container {
-            margin-top: 15px;
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 15px;
-        }
-        
-        .image-preview {
-            position: relative;
-            border-radius: 8px;
-            overflow: hidden;
-            height: 150px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
-        
-        .image-preview img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        
-        .image-preview .file-name {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: rgba(30, 41, 59, 0.8);
-            color: white;
-            padding: 8px;
-            font-size: 12px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        
-        .image-preview .remove-btn {
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            background: #ef4444;
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 24px;
-            height: 24px;
-            font-size: 14px;
-            line-height: 1;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s ease;
-        }
-        
-        .image-preview .remove-btn:hover {
-            background: #dc2626;
-        }
-        
-        .pdf-preview {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            background-color: #f1f5f9;
-            color: #ef4444;
-            font-size: 0.9rem;
-        }
-        
-        .pdf-preview svg {
-            width: 40px;
-            height: 40px;
-            color: #ef4444;
-            margin-bottom: 5px;
+            @apply mt-4 grid gap-4 grid-cols-2 sm:grid-cols-3;
         }
 
-        /* Submit Button */
+        .image-preview {
+            @apply relative rounded-lg overflow-hidden h-36 shadow-sm;
+        }
+
+        .image-preview img {
+            @apply w-full h-full object-cover;
+        }
+
+        .image-preview .file-name {
+            @apply absolute bottom-0 left-0 right-0 bg-primary/80 text-white p-2 text-xs truncate;
+        }
+
+        .image-preview .remove-btn {
+            @apply absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm cursor-pointer hover:bg-red-600 transition-all;
+        }
+
+        .pdf-preview {
+            @apply flex flex-col items-center justify-center bg-gray-50 text-red-500 text-sm;
+        }
+
+        .pdf-preview svg {
+            @apply w-10 h-10 mb-2 text-red-500;
+        }
+
         .btn-submit {
-            background-color: #facc15;
-            color: #1e293b;
-            border: none;
-            border-radius: 50px;
-            padding: 15px 40px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            display: block;
-            margin: 30px auto 0;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            @apply bg-accent text-primary px-8 py-3 rounded-full font-semibold hover:bg-yellow-500 hover:shadow-lg transition-all block mx-auto mt-6;
         }
-        
-        .btn-submit:hover {
-            background-color: #eab308;
-            transform: translateY(-3px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-        }
-        
-        /* Responsive Design */
-        @media (max-width: 768px) {
+
+        @media (max-width: 640px) {
             .container {
-                padding: 20px;
+                @apply p-4;
             }
-            .page-title h1 {
-                font-size: 2rem;
-            }
-            .section-title {
-                font-size: 1.3rem;
-            }
+
             .form-grid {
-                grid-template-columns: 1fr;
+                @apply grid-cols-1;
+            }
+
+            .page-title h1 {
+                @apply text-xl;
+            }
+
+            .section-title {
+                @apply text-lg;
             }
         }
     </style>
@@ -277,20 +148,21 @@
             <h1>Architectural Design Request Form</h1>
             <div class="underline"></div>
         </div>
-        
+
         <form id="designRequestForm" enctype="multipart/form-data" action="/architect_submit" method="post">
             <input type="hidden" id="workerId" name="workerId" value="">
-            
+
+            <!-- Project Information -->
             <div class="section">
                 <h2 class="section-title">Project Information</h2>
                 <div class="form-group">
-                    <label for="projectName">Project Name*</label>
-                    <input type="text" id="projectName" name="projectName" required>
+                    <label for="projectName" class="required">Project Name</label>
+                    <input type="text" id="projectName" name="projectName" required aria-required="true">
                 </div>
                 <div class="form-grid">
                     <div class="form-group">
-                        <label for="designType">Type of Design*</label>
-                        <select id="designType" name="designType" required>
+                        <label for="designType" class="required">Type of Design</label>
+                        <select id="designType" name="designType" required aria-required="true">
                             <option value="">Select Design Type</option>
                             <option value="Residential">Residential</option>
                             <option value="Commercial">Commercial</option>
@@ -301,8 +173,8 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="architecturalStyle">Preferred Architectural Style*</label>
-                        <select id="architecturalStyle" name="architecturalStyle" required>
+                        <label for="architecturalStyle" class="required">Preferred Architectural Style</label>
+                        <select id="architecturalStyle" name="architecturalStyle" required aria-required="true">
                             <option value="">Select Style</option>
                             <option value="Modern">Modern</option>
                             <option value="Traditional">Traditional</option>
@@ -318,60 +190,63 @@
                 </div>
             </div>
 
+            <!-- Customer Details -->
             <div class="section">
                 <h2 class="section-title">Customer Details</h2>
                 <div class="form-grid">
                     <div class="form-group">
-                        <label for="fullName">Full Name*</label>
-                        <input type="text" id="fullName" name="fullName" required>
+                        <label for="fullName" class="required">Full Name</label>
+                        <input type="text" id="fullName" name="fullName" required aria-required="true">
                     </div>
                     <div class="form-group">
-                        <label for="contactNumber">Contact Number*</label>
-                        <input type="tel" id="contactNumber" name="contactNumber" required>
+                        <label for="contactNumber" class="required">Contact Number</label>
+                        <input type="tel" id="contactNumber" name="contactNumber" required aria-required="true" pattern="[0-9]{10,}" title="Please enter a valid phone number">
                     </div>
                     <div class="form-group">
-                        <label for="email">Email Address*</label>
-                        <input type="email" id="email" name="email" required>
+                        <label for="email" class="required">Email Address</label>
+                        <input type="email" id="email" name="email" required aria-required="true">
                     </div>
                 </div>
             </div>
-            
+
+            <!-- Customer Address -->
             <div class="section">
                 <h2 class="section-title">Customer Address</h2>
                 <div class="form-group">
-                    <label for="streetAddress">Street Address*</label>
-                    <input type="text" id="streetAddress" name="streetAddress" required>
+                    <label for="streetAddress" class="required">Street Address</label>
+                    <input type="text" id="streetAddress" name="streetAddress" required aria-required="true">
                 </div>
                 <div class="form-grid">
                     <div class="form-group">
-                        <label for="city">City*</label>
-                        <input type="text" id="city" name="city" required>
+                        <label for="city" class="required">City</label>
+                        <input type="text" id="city" name="city" required aria-required="true">
                     </div>
                     <div class="form-group">
-                        <label for="state">State*</label>
-                        <input type="text" id="state" name="state" required>
+                        <label for="state" class="required">State</label>
+                        <input type="text" id="state" name="state" required aria-required="true">
                     </div>
                     <div class="form-group">
-                        <label for="zipCode">Pincode/ZIP Code*</label>
-                        <input type="text" id="zipCode" name="zipCode" required>
+                        <label for="zipCode" class="required">Pincode/ZIP Code</label>
+                        <input type="text" id="zipCode" name="zipCode" required aria-required="true" pattern="[0-9]{5,}" title="Please enter a valid ZIP code">
                     </div>
                 </div>
             </div>
-            
+
+            <!-- Plot Information -->
             <div class="section">
                 <h2 class="section-title">Plot Information</h2>
                 <div class="form-group">
-                    <label for="plotLocation">Plot Location/Address*</label>
-                    <input type="text" id="plotLocation" name="plotLocation" required>
+                    <label for="plotLocation" class="required">Plot Location/Address</label>
+                    <input type="text" id="plotLocation" name="plotLocation" required aria-required="true">
                 </div>
                 <div class="form-grid">
                     <div class="form-group">
-                        <label for="plotSize">Plot Size* (in sq.ft or sq.m)</label>
-                        <input type="text" id="plotSize" name="plotSize" required>
+                        <label for="plotSize" class="required">Plot Size (in sq.ft or sq.m)</label>
+                        <input type="text" id="plotSize" name="plotSize" required aria-required="true" pattern="^[0-9]+(\.[0-9]+)?\s*(sq\.ft|sq\.m)$" title="Please enter a valid plot size (e.g., 1000 sq.ft or 100 sq.m)">
                     </div>
                     <div class="form-group">
-                        <label for="plotOrientation">Plot Orientation*</label>
-                        <select id="plotOrientation" name="plotOrientation" required>
+                        <label for="plotOrientation" class="required">Plot Orientation</label>
+                        <select id="plotOrientation" name="plotOrientation" required aria-required="true">
                             <option value="">Select Orientation</option>
                             <option value="North">North</option>
                             <option value="South">South</option>
@@ -385,13 +260,14 @@
                     </div>
                 </div>
             </div>
-            
+
+            <!-- Design Requirements -->
             <div class="section">
                 <h2 class="section-title">Design Requirements</h2>
                 <div class="form-grid">
                     <div class="form-group">
-                        <label for="numFloors">Number of Floors*</label>
-                        <select id="numFloors" name="numFloors" required>
+                        <label for="numFloors" class="required">Number of Floors</label>
+                        <select id="numFloors" name="numFloors" required aria-required="true">
                             <option value="">Select Number</option>
                             <option value="1">1</option>
                             <option value="2">2</option>
@@ -401,24 +277,24 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="budget">Max Budget (if applicable)</label>
-                        <input type="text" id="budget" name="budget" placeholder="e.g., 100000">
+                        <label for="budget">Max Budget (optional)</label>
+                        <input type="text" id="budget" name="budget" placeholder="e.g., 100000" pattern="^[0-9]+$" title="Please enter a valid number">
                     </div>
                     <div class="form-group">
-                        <label for="completionDate">Preferred Design Completion Date</label>
-                        <input type="date" id="completionDate" name="completionDate">
+                        <label for="completionDate">Preferred Completion Date</label>
+                        <input type="date" id="completionDate" name="completionDate" min="2025-10-12">
                     </div>
                 </div>
-                
-                <div id="floorRequirements"></div>
-                
+
+                <div id="floorRequirements" class="form-group"></div>
+
                 <div class="form-group">
-                    <label for="specialFeatures">Special Features</label>
-                    <textarea id="specialFeatures" name="specialFeatures" placeholder="e.g., Balcony, Garden, Parking Space, Swimming Pool, Home Theater, etc."></textarea>
+                    <label for="specialFeatures">Special Features (optional)</label>
+                    <textarea id="specialFeatures" name="specialFeatures" placeholder="e.g., Balcony, Garden, Parking Space, Swimming Pool, Home Theater"></textarea>
                 </div>
 
                 <div class="form-group">
-                    <label>Reference Images/Sketches (if any)</label>
+                    <label>Reference Images/Sketches (optional)</label>
                     <div class="file-upload">
                         <label for="referenceImages">
                             <span>Drop files here or click to upload<br>(JPG, PNG, PDF up to 5MB)</span>
@@ -428,126 +304,125 @@
                     <div id="imagePreviewContainer" class="image-preview-container"></div>
                 </div>
             </div>
-            
+
             <button type="submit" class="btn-submit">Submit Design Request</button>
         </form>
     </div>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const workerId = urlParams.get('workerId');
-        if (workerId) {
-            document.getElementById('workerId').value = workerId;
-        }
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize workerId from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const workerId = urlParams.get('workerId');
+            if (workerId) {
+                document.getElementById('workerId').value = workerId;
+            }
 
-        const numFloorsSelect = document.getElementById('numFloors');
-        const floorRequirementsContainer = document.getElementById('floorRequirements');
-        const referenceImagesInput = document.getElementById('referenceImages');
-        const imagePreviewContainer = document.getElementById('imagePreviewContainer');
-        const form = document.getElementById('designRequestForm');
-        
-        numFloorsSelect.addEventListener('change', function() {
-            const numFloors = this.value === '5+' ? 5 : parseInt(this.value);
-            floorRequirementsContainer.innerHTML = '';
-            if (!isNaN(numFloors)) {
+            // Floor requirements
+            const numFloorsSelect = document.getElementById('numFloors');
+            const floorRequirementsContainer = document.getElementById('floorRequirements');
+
+            numFloorsSelect.addEventListener('change', () => {
+                const numFloors = numFloorsSelect.value === '5+' ? 5 : parseInt(numFloorsSelect.value) || 0;
+                floorRequirementsContainer.innerHTML = '';
                 for (let i = 1; i <= numFloors; i++) {
                     const floorDiv = document.createElement('div');
                     floorDiv.className = 'form-group';
                     floorDiv.innerHTML = `
-                        <label for="floor${i}">Floor ${i} Room Requirements*</label>
-                        <textarea id="floor${i}" name="floorRequirements[${i-1}][details]" placeholder="e.g., 2 Bedrooms, 1 Bathroom, Living Room, etc." required></textarea>
+                        <label for="floor${i}" class="required">Floor ${i} Room Requirements</label>
+                        <textarea id="floor${i}" name="floorRequirements[${i-1}][details]" placeholder="e.g., 2 Bedrooms, 1 Bathroom, Living Room" required aria-required="true"></textarea>
                         <input type="hidden" name="floorRequirements[${i-1}][floorNumber]" value="${i}">
                     `;
                     floorRequirementsContainer.appendChild(floorDiv);
                 }
-            }
-        });
-
-        referenceImagesInput.addEventListener('change', function(event) {
-            const files = event.target.files;
-            const maxFileSize = 5 * 1024 * 1024; // 5MB
-            const allowedTypes = ['image/jpeg', 'image/png', 'application/pdf'];
-            
-            imagePreviewContainer.innerHTML = '';
-            
-            Array.from(files).forEach((file, index) => {
-                if (file.size > maxFileSize) {
-                    alert(`File ${file.name} exceeds 5MB limit.`);
-                    return;
-                }
-                if (!allowedTypes.includes(file.type)) {
-                    alert(`File ${file.name} is not a valid type (JPG, PNG, PDF only).`);
-                    return;
-                }
-                
-                const previewElement = document.createElement('div');
-                previewElement.className = 'image-preview';
-                
-                const removeButton = document.createElement('button');
-                removeButton.className = 'remove-btn';
-                removeButton.textContent = '×';
-                removeButton.addEventListener('click', function() {
-                    const dt = new DataTransfer();
-                    Array.from(referenceImagesInput.files).filter(f => f !== file).forEach(f => dt.items.add(f));
-                    referenceImagesInput.files = dt.files;
-                    imagePreviewContainer.removeChild(previewElement);
-                });
-                
-                const fileName = document.createElement('div');
-                fileName.className = 'file-name';
-                fileName.textContent = file.name;
-                
-                previewElement.appendChild(removeButton);
-                previewElement.appendChild(fileName);
-                
-                if (file.type.startsWith('image/')) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        const img = document.createElement('img');
-                        img.src = e.target.result;
-                        previewElement.appendChild(img);
-                    };
-                    reader.readAsDataURL(file);
-                } else if (file.type === 'application/pdf') {
-                    previewElement.classList.add('pdf-preview');
-                    const pdfIcon = document.createElement('div');
-                    pdfIcon.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="#d9534f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><path d="M9 15h6"></path><path d="M9 11h6"></path></svg>';
-                    previewElement.appendChild(pdfIcon);
-                }
-                
-                imagePreviewContainer.appendChild(previewElement);
             });
-        });
 
-        form.addEventListener("submit", (e) => {
-            e.preventDefault();
-            const formData = new FormData(form);
-            fetch("/architect_submit", {
-                method: "POST",
-                body: formData,
-            })
-            .then((response) => {
-                if (!response.ok) {
-                    return response.json().then(errorData => {
-                        throw new Error(errorData.message || `HTTP error! Status: ${response.status}`);
+            // File upload handling
+            const referenceImagesInput = document.getElementById('referenceImages');
+            const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+            referenceImagesInput?.addEventListener('change', (event) => {
+                imagePreviewContainer.innerHTML = '';
+                const files = Array.from(event.target.files);
+                const maxFileSize = 5 * 1024 * 1024;
+                const allowedTypes = ['image/jpeg', 'image/png', 'application/pdf'];
+
+                files.forEach((file, index) => {
+                    if (file.size > maxFileSize) {
+                        alert(`File ${file.name} exceeds 5MB limit.`);
+                        return;
+                    }
+                    if (!allowedTypes.includes(file.type)) {
+                        alert(`File ${file.name} is not a valid type (JPG, PNG, PDF only).`);
+                        return;
+                    }
+
+                    const previewElement = document.createElement('div');
+                    previewElement.className = 'image-preview';
+                    const removeButton = document.createElement('button');
+                    removeButton.className = 'remove-btn';
+                    removeButton.textContent = '×';
+                    removeButton.setAttribute('aria-label', `Remove ${file.name}`);
+                    removeButton.addEventListener('click', () => {
+                        const dt = new DataTransfer();
+                        files.filter(f => f !== file).forEach(f => dt.items.add(f));
+                        referenceImagesInput.files = dt.files;
+                        imagePreviewContainer.removeChild(previewElement);
                     });
+
+                    const fileName = document.createElement('div');
+                    fileName.className = 'file-name';
+                    fileName.textContent = file.name;
+
+                    previewElement.append(fileName, removeButton);
+
+                    if (file.type.startsWith('image/')) {
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            const img = document.createElement('img');
+                            img.src = e.target.result;
+                            img.alt = file.name;
+                            previewElement.insertBefore(img, fileName);
+                        };
+                        reader.readAsDataURL(file);
+                    } else if (file.type === 'application/pdf') {
+                        previewElement.classList.add('pdf-preview');
+                        const pdfIcon = document.createElement('div');
+                        pdfIcon.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="#d9534f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><path d="M9 15h6"></path><path d="M9 11h6"></path></svg>';
+                        previewElement.insertBefore(pdfIcon, fileName);
+                    }
+
+                    imagePreviewContainer.appendChild(previewElement);
+                });
+            });
+
+            // Form submission with validation
+            const form = document.getElementById('designRequestForm');
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const formData = new FormData(form);
+
+                try {
+                    const response = await fetch('/architect_submit', {
+                        method: 'POST',
+                        body: formData,
+                    });
+
+                    const data = await response.json();
+                    if (!response.ok) {
+                        throw new Error(data.message || `HTTP error! Status: ${response.status}`);
+                    }
+
+                    if (data.redirect) {
+                        window.location.href = data.redirect;
+                    } else {
+                        alert(data.message || 'Form submitted successfully!');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert(`Failed to submit form: ${error.message}`);
                 }
-                return response.json();
-            })
-            .then((data) => {
-                if (data.redirect) {
-                    window.location.href = data.redirect;
-                } else {
-                    console.log(data.message);
-                }
-            })
-            .catch((error) => {
-                console.error("Error:", error);
-                alert("Failed to submit form: " + error.message);
             });
         });
-    });
-</script>
+    </script>
 </body>
 </html>
