@@ -4,11 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Architect Portfolio | Build & Beyond</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --primary: #2c3e50;
@@ -21,23 +20,20 @@
             --shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
             --transition: all 0.3s ease;
         }
-        
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: "Poppins", sans-serif;
         }
-        
+
         body {
-            background-color: #f8f9fa;
+            background-color: var(--light);
             color: #495057;
             line-height: 1.6;
         }
-        .text-heading{
-            font-weight: bold;
-        }
-        
+
         .heading {
             text-align: center;
             margin: 1rem auto 2rem;
@@ -45,10 +41,10 @@
             padding-bottom: 15px;
             color: var(--primary);
             font-weight: 700;
-            font-size: larger;
+            font-size: 1.5rem;
         }
-        
-        .heading:after {
+
+        .heading::after {
             content: '';
             position: absolute;
             bottom: 0;
@@ -59,89 +55,89 @@
             background: var(--secondary);
             border-radius: 2px;
         }
-        
+
         .container {
             display: flex;
             max-width: 1400px;
-            gap: 10px;
+            gap: 1rem;
             width: 95%;
             min-height: 80vh;
             margin: 2rem auto;
-            background-color: white;
+            background: white;
             box-shadow: var(--shadow);
             border-radius: 15px;
             overflow: hidden;
         }
-        
+
         .left-section {
             width: 40%;
             max-height: 80vh;
             overflow-y: auto;
-            padding: 25px;
-            background-color: var(--light);
+            padding: 1.5rem;
+            background: var(--light);
             border-right: 1px solid var(--light-gray);
         }
-        
+
         .left-section::-webkit-scrollbar {
             width: 4px;
         }
-        
+
         .left-section::-webkit-scrollbar-track {
             background: transparent;
         }
-        
+
         .left-section::-webkit-scrollbar-thumb {
             background: rgba(108, 117, 125, 0.3);
             border-radius: 10px;
         }
-        
+
         .left-section::-webkit-scrollbar-thumb:hover {
             background: rgba(108, 117, 125, 0.5);
         }
-        
+
         .a_right_section {
             width: 60%;
             max-height: 80vh;
             position: relative;
-            padding: 25px;
-            background-color: white;
+            padding: 1.5rem;
+            background: white;
             display: flex;
             flex-direction: column;
         }
-        
+
         .right-content {
             flex: 1;
             max-height: calc(80vh - 60px);
             overflow-y: auto;
-            padding-right: 10px;
+            padding-right: 0.5rem;
         }
-        
+
         .right-content::-webkit-scrollbar {
             width: 4px;
         }
-        
+
         .right-content::-webkit-scrollbar-track {
             background: transparent;
         }
-        
+
         .right-content::-webkit-scrollbar-thumb {
             background: rgba(108, 117, 125, 0.3);
             border-radius: 10px;
         }
-        
+
         .right-content::-webkit-scrollbar-thumb:hover {
             background: rgba(108, 117, 125, 0.5);
         }
-        
+
         .search-box {
-            margin-bottom: 20px;
+            margin-bottom: 1rem;
             position: sticky;
             top: 0;
-            background-color: var(--light);
+            background: var(--light);
             z-index: 10;
-            padding-bottom: 10px;
+            padding-bottom: 0.5rem;
         }
-        
+
         .search-box input {
             width: 100%;
             padding: 12px 20px 12px 45px;
@@ -150,7 +146,7 @@
             font-size: 14px;
             outline: none;
         }
-        
+
         .search-box i {
             position: absolute;
             left: 20px;
@@ -158,123 +154,115 @@
             transform: translateY(-50%);
             color: var(--gray);
         }
-        
+
         .architect-card {
             display: flex;
-            padding: 20px;
-            margin-bottom: 20px;
+            padding: 1rem;
+            margin-bottom: 1rem;
             border-radius: 12px;
             cursor: pointer;
             border: 1px solid var(--light-gray);
-            background-color: white;
+            background: white;
             position: relative;
             overflow: hidden;
+            transition: var(--transition);
         }
-        
-        .architect-card:hover{
-            border: 1px solid var(--secondary);
-        }
-        .architect-card.active {
-            background-color: rgba(212, 175, 55, 0.05);
+
+        .architect-card:hover {
             border-color: var(--secondary);
         }
-        
-        /* .architect-card.active:before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            height: 100%;
-            width: 5px;
-            background-color: var(--secondary);
-        } */
-        
+
+        .architect-card.active {
+            background: rgba(212, 175, 55, 0.05);
+            border-color: var(--secondary);
+        }
+
         .architect-image-small {
             width: 80px;
             height: 80px;
             border-radius: 10%;
             object-fit: cover;
-            margin-right: 20px;
+            margin-right: 1rem;
             border: 3px solid var(--light-gray);
         }
-        
+
         .architect-info {
             flex: 1;
         }
-        
+
         .architect-info h3 {
-            margin-bottom: 5px;
+            margin-bottom: 0.25rem;
             color: var(--primary);
             font-size: 18px;
             font-weight: 600;
         }
-        
+
         .architect-info p {
             color: var(--gray);
             font-size: 14px;
-            margin-bottom: 5px;
+            margin-bottom: 0.25rem;
         }
-        
+
         .rating {
             display: flex;
             align-items: center;
-            margin-top: 8px;
+            margin-top: 0.5rem;
         }
-        
+
         .rating .star {
             color: #ffc107;
             font-size: 14px;
             margin-right: 3px;
         }
-        
+
         .rating-count {
-            margin-left: 8px;
+            margin-left: 0.5rem;
             color: var(--gray);
             font-size: 14px;
         }
-        
+
         .architect-header {
             display: flex;
             align-items: center;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
             border-bottom: 1px solid var(--light-gray);
         }
-        
+
         .architect-image-large {
             width: 120px;
             height: 120px;
             border-radius: 7%;
             object-fit: cover;
-            margin-right: 25px;
+            margin-right: 1.5rem;
             border: 4px solid var(--light-gray);
             box-shadow: var(--shadow);
         }
-        
+
         .architect-header-content h2 {
-            margin-bottom: 5px;
+            margin-bottom: 0.25rem;
             color: var(--primary);
         }
-        
+
         .architect-header-content p {
             color: var(--gray);
-            margin-bottom: 10px;
+            margin-bottom: 0.5rem;
         }
-        
+
         .bio {
-            margin-bottom: 30px;
+            margin-bottom: 1.5rem;
         }
-        
-        .bio h3 {
-            margin-bottom: 15px;
+
+        .bio h3, .projects h3 {
+            margin-bottom: 0.75rem;
             color: var(--primary);
             font-size: 22px;
             font-weight: 600;
             position: relative;
-            padding-bottom: 10px;
+            padding-bottom: 0.5rem;
         }
-        
-        .bio h3:after {
+
+        .bio h3::after, .projects h3::after {
             content: '';
             position: absolute;
             left: 0;
@@ -284,114 +272,94 @@
             background: var(--secondary);
             border-radius: 2px;
         }
-        
+
         .bio p {
             color: #555;
             line-height: 1.8;
-            margin-bottom: 15px;
+            margin-bottom: 0.75rem;
         }
-        
+
         .specialties {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 15px;
+            gap: 0.5rem;
+            margin-top: 0.75rem;
         }
-        
+
         .specialty {
-            background-color: rgba(212, 175, 55, 0.1);
+            background: rgba(212, 175, 55, 0.1);
             color: var(--secondary);
-            padding: 5px 15px;
+            padding: 0.25rem 0.75rem;
             border-radius: 20px;
             font-size: 14px;
             font-weight: 500;
         }
-        
+
         .projects {
-            margin-top: 30px;
+            margin-top: 1.5rem;
         }
-        
-        .projects h3 {
-            margin-bottom: 20px;
-            color: var(--primary);
-            font-size: 22px;
-            font-weight: 600;
-            position: relative;
-            padding-bottom: 10px;
-        }
-        
-        .projects h3:after {
-            content: '';
-            position: absolute;
-            left: 0;
-            bottom: 0;
-            width: 40px;
-            height: 3px;
-            background: var(--secondary);
-            border-radius: 2px;
-        }
-        
+
         .project {
-            margin-bottom: 30px;
-            padding: 20px;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
             border-radius: 10px;
-            background-color: var(--light);
+            background: var(--light);
             transition: var(--transition);
         }
-        
+
         .project:hover {
             transform: translateY(-3px);
             box-shadow: var(--shadow);
         }
-        
+
         .project h4 {
-            margin-bottom: 10px;
+            margin-bottom: 0.5rem;
             color: var(--primary);
             font-size: 18px;
             font-weight: 600;
         }
-        
+
         .project-image {
             width: 100%;
             height: 200px;
             object-fit: cover;
             border-radius: 8px;
-            margin-bottom: 15px;
+            margin-bottom: 0.75rem;
             box-shadow: var(--shadow);
         }
-        
+
         .project p {
             color: #555;
             line-height: 1.8;
         }
-        
+
         .project-meta {
             display: flex;
-            gap: 15px;
-            margin-top: 10px;
+            gap: 0.75rem;
+            margin-top: 0.5rem;
             color: var(--gray);
             font-size: 14px;
         }
-        
+
         .project-meta span {
             display: flex;
             align-items: center;
         }
-        
+
         .project-meta i {
-            margin-right: 5px;
+            margin-right: 0.25rem;
             color: var(--secondary);
         }
-        
+
         .book-now-container {
-            padding: 10px;
-            background-color: white;
+            padding: 0.5rem;
+            background: white;
             border-top: 1px solid var(--light-gray);
             text-align: center;
         }
-        
+
         .book-now-btn {
-            background-color: var(--secondary);
+            background: var(--secondary);
             color: white;
             border: none;
             padding: 12px 30px;
@@ -405,131 +373,127 @@
             align-items: center;
             justify-content: center;
         }
-        
-        .book-now-btn:hover {
-            background-color: #c99a1c;
+
+        .book-now-btn:hover:not(:disabled) {
+            background: #c99a1c;
             transform: translateY(-3px);
             box-shadow: 0 6px 12px rgba(212, 175, 55, 0.25);
         }
-        
+
         .book-now-btn i {
             margin-left: 8px;
         }
-        
+
         .company-info {
-            margin-bottom: 30px;
-            padding: 25px;
+            margin-bottom: 1.5rem;
+            padding: 1.5rem;
             background: linear-gradient(135deg, rgba(212, 175, 55, 0.05) 0%, rgba(52, 152, 219, 0.05) 100%);
             border-radius: 12px;
             border-left: 4px solid var(--secondary);
         }
-        
-        .company-info h2 {
-            margin-bottom: 15px;
+
+        .company-info h2, .company-info h3 {
+            margin-bottom: 0.75rem;
             color: var(--primary);
-            font-size: 26px;
         }
-        
+
         .company-info p {
             color: #555;
             line-height: 1.8;
-            margin-bottom: 15px;
+            margin-bottom: 0.75rem;
         }
-        
+
         .company-info ul {
-            list-style-type: none;
+            list-style: none;
             color: #555;
+            padding-left: 0;
         }
-        
+
         .company-info ul li {
-            margin-bottom: 10px;
-            padding-left: 25px;
+            margin-bottom: 0.5rem;
+            padding-left: 1.25rem;
             position: relative;
         }
-        
-        .company-info ul li:before {
+
+        .company-info ul li::before {
             content: '✓';
             position: absolute;
             left: 0;
             color: var(--secondary);
             font-weight: bold;
         }
-        
+
         .architect-details {
             display: none;
             animation: fadeIn 0.5s ease;
         }
-        
+
         .architect-details.active {
             display: block;
         }
-        
+
         .no-architects {
             text-align: center;
-            padding: 30px;
+            padding: 1.5rem;
             color: var(--gray);
         }
-        
+
         .initial-message {
             animation: fadeIn 0.8s ease;
         }
-        
+
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        
+
+        /* Responsive */
         @media (max-width: 992px) {
             .container {
                 flex-direction: column;
                 height: auto;
             }
-            
+
             .left-section, .a_right_section {
                 width: 100%;
             }
-            
+
             .left-section {
                 border-right: none;
                 border-bottom: 1px solid var(--light-gray);
                 max-height: 400px;
             }
-            
+
             .a_right_section {
                 max-height: none;
             }
         }
-        
+
         @media (max-width: 576px) {
-            .architect-card {
+            .architect-card, .architect-header {
                 flex-direction: column;
                 text-align: center;
             }
-            
+
             .architect-image-small {
                 margin-right: 0;
-                margin-bottom: 15px;
+                margin-bottom: 0.75rem;
             }
-            
-            .architect-header {
-                flex-direction: column;
-                text-align: center;
-            }
-            
+
             .architect-image-large {
                 margin-right: 0;
-                margin-bottom: 15px;
+                margin-bottom: 0.75rem;
             }
-            
+
             .project-meta {
                 flex-direction: column;
-                gap: 5px;
+                gap: 0.25rem;
             }
         }
     </style>
 </head>
 <body>
-    <%- include('navbar_customer') %> 
+    <%- include('navbar_customer') %>
     <h1 class="heading">Hire Architects</h1>
     <div class="container">
         <div class="left-section" id="architectList">
@@ -537,9 +501,8 @@
                 <i class="fas fa-search"></i>
                 <input type="text" placeholder="Search architects..." id="architectSearch">
             </div>
-            
-            <% if (architects && architects.length > 0) { %>
-                <% architects.forEach((architect, index) => { %>
+            <% if (architects?.length) { %>
+                <% architects.forEach(architect => { %>
                     <div class="architect-card" data-id="<%= architect._id %>">
                         <img src="<%= architect.profileImage || 'https://t4.ftcdn.net/jpg/03/64/21/11/360_F_364211147_1qgLVxv1Tcq0Ohz3FawUfrtONzz8nq3e.jpg' %>" 
                              alt="<%= architect.name %>" class="architect-image-small">
@@ -551,7 +514,7 @@
                                 <% for(let i = 0; i < Math.floor(architect.rating); i++) { %>
                                     <span class="star">★</span>
                                 <% } %>
-                                <% if(architect.rating % 1 >= 0.5) { %>
+                                <% if (architect.rating % 1 >= 0.5) { %>
                                     <span class="star">½</span>
                                 <% } %>
                                 <span class="rating-count">(<%= architect.rating %>)</span>
@@ -565,16 +528,15 @@
                 </div>
             <% } %>
         </div>
-        
         <div class="a_right_section">
             <div class="right-content" id="architectDetails">
                 <div class="initial-message">
                     <div class="company-info">
-                        <h2 class="text-heading">Welcome to Build & Beyond Architects</h2>
+                        <h2>Welcome to Build & Beyond Architects</h2>
                         <p>Build & Beyond Architects is a leading architectural firm dedicated to creating innovative and sustainable designs that inspire and transform communities. With over 20 years of experience, our team of talented architects and designers has delivered award-winning projects across the globe.</p>
-                        <h3 class="text-heading">Our Mission</h3>
+                        <h3>Our Mission</h3>
                         <p>Our mission is to design spaces that enhance the quality of life, promote sustainability, and reflect the unique identity of our clients. We believe in the power of architecture to shape the future and create lasting impact.</p>
-                        <h3 class="text-heading">Our Services</h3>
+                        <h3>Our Services</h3>
                         <ul>
                             <li>Residential Architecture</li>
                             <li>Commercial Architecture</li>
@@ -585,8 +547,7 @@
                         </ul>
                     </div>
                 </div>
-                
-                <% if (architects && architects.length > 0) { %>
+                <% if (architects?.length) { %>
                     <% architects.forEach(architect => { %>
                         <div class="architect-details" id="architect-<%= architect._id %>">
                             <div class="architect-header">
@@ -600,19 +561,17 @@
                                         <% for(let i = 0; i < Math.floor(architect.rating); i++) { %>
                                             <span class="star">★</span>
                                         <% } %>
-                                        <% if(architect.rating % 1 >= 0.5) { %>
+                                        <% if (architect.rating % 1 >= 0.5) { %>
                                             <span class="star">½</span>
                                         <% } %>
                                         <span class="rating-count">(<%= architect.rating %>)</span>
                                     </div>
                                 </div>
                             </div>
-                            
                             <div class="bio">
                                 <h3>About</h3>
                                 <p><%= architect.about || 'Information not available' %></p>
-                                
-                                <% if (architect.specialties && architect.specialties.length > 0) { %>
+                                <% if (architect.specialties?.length) { %>
                                     <div class="specialties">
                                         <% architect.specialties.forEach(specialty => { %>
                                             <span class="specialty"><%= specialty %></span>
@@ -620,10 +579,9 @@
                                     </div>
                                 <% } %>
                             </div>
-                            
                             <div class="projects">
                                 <h3>Notable Projects</h3>
-                                <% if (architect.projects && architect.projects.length > 0) { %>
+                                <% if (architect.projects?.length) { %>
                                     <% architect.projects.forEach(project => { %>
                                         <div class="project">
                                             <h4><%= project.name %></h4>
@@ -644,35 +602,32 @@
                     <% }); %>
                 <% } %>
             </div>
-            
             <div class="book-now-container">
                 <form id="bookArchitectForm" action="/architect_form" method="GET">
                     <input type="hidden" name="workerId" id="selectedWorkerId" value="">
-                    <button type="submit" class="book-now-btn" id="bookNowBtn">Book Consultation <i class="fas fa-arrow-right"></i></button>
+                    <button type="submit" class="book-now-btn" id="bookNowBtn" disabled>Book Consultation <i class="fas fa-arrow-right"></i></button>
                 </form>
             </div>
         </div>
     </div>
     <%- include('customer_footer') %>
     <script>
-        // Navbar functionality
+        // Notification handling (assuming navbar has these elements)
         const notificationIcon = document.getElementById('notificationIcon');
         const notificationPanel = document.getElementById('notificationPanel');
-        
         if (notificationIcon && notificationPanel) {
-            notificationIcon.addEventListener('click', function(e) {
+            notificationIcon.addEventListener('click', (e) => {
                 e.stopPropagation();
                 notificationPanel.classList.toggle('show');
             });
-            
-            document.addEventListener('click', function(e) {
+            document.addEventListener('click', (e) => {
                 if (!notificationPanel.contains(e.target) && !notificationIcon.contains(e.target)) {
                     notificationPanel.classList.remove('show');
                 }
             });
         }
-        
-        // Architect selection functionality
+
+        // Architect functionality
         document.addEventListener('DOMContentLoaded', () => {
             const architectCards = document.querySelectorAll('.architect-card');
             const initialMessage = document.querySelector('.initial-message');
@@ -683,44 +638,39 @@
             const leftSection = document.querySelector('.left-section');
             const rightContent = document.querySelector('.right-content');
             let activeArchitectId = null;
-            
+
             architectCards.forEach(card => {
                 card.addEventListener('click', () => {
                     architectCards.forEach(c => c.classList.remove('active'));
                     card.classList.add('active');
-                    
-                    const architectId = card.getAttribute('data-id');
-                    activeArchitectId = architectId;
-                    selectedWorkerIdInput.value = architectId;
-                    
-                    initialMessage.style.transition = 'opacity 0.5s ease';
-                    initialMessage.style.opacity = '0';
-                    setTimeout(() => {
-                        initialMessage.style.display = 'none';
-                        document.querySelectorAll('.architect-details').forEach(detail => {
-                            detail.classList.remove('active');
-                        });
-                        const selectedArchitect = document.getElementById(`architect-${architectId}`);
-                        if (selectedArchitect) {
-                            selectedArchitect.classList.add('active');
-                        }
-                    }, 300);
-                    
+                    activeArchitectId = card.getAttribute('data-id');
+                    selectedWorkerIdInput.value = activeArchitectId;
                     bookNowBtn.disabled = false;
+
+                    if (initialMessage) {
+                        initialMessage.style.transition = 'opacity 0.5s ease';
+                        initialMessage.style.opacity = '0';
+                        setTimeout(() => {
+                            initialMessage.style.display = 'none';
+                            document.querySelectorAll('.architect-details').forEach(detail => detail.classList.remove('active'));
+                            const selectedArchitect = document.getElementById(`architect-${activeArchitectId}`);
+                            if (selectedArchitect) selectedArchitect.classList.add('active');
+                        }, 300);
+                    }
                 });
             });
-            
+
             if (searchInput) {
                 searchInput.addEventListener('input', () => {
                     const searchTerm = searchInput.value.toLowerCase();
                     architectCards.forEach(card => {
-                        const name = card.querySelector('h3').textContent.toLowerCase();
-                        const title = card.querySelector('p').textContent.toLowerCase();
+                        const name = card.querySelector('h3')?.textContent.toLowerCase() || '';
+                        const title = card.querySelector('p')?.textContent.toLowerCase() || '';
                         card.style.display = (name.includes(searchTerm) || title.includes(searchTerm)) ? 'flex' : 'none';
                     });
                 });
             }
-            
+
             if (bookArchitectForm) {
                 bookArchitectForm.addEventListener('submit', (e) => {
                     if (!activeArchitectId) {
@@ -730,22 +680,19 @@
                 });
             }
 
-            // Prevent scroll chaining for left and right sections
+            // Prevent scroll chaining
             [leftSection, rightContent].forEach(section => {
-                section.addEventListener('wheel', (event) => {
-                    const delta = event.deltaY;
-                    const scrollTop = section.scrollTop;
-                    const scrollHeight = section.scrollHeight;
-                    const clientHeight = section.clientHeight;
-
-                    // Prevent scrolling up when at the top or down when at the bottom
-                    if (
-                        (delta > 0 && scrollTop + clientHeight >= scrollHeight - 1) || // Scrolling down at bottom
-                        (delta < 0 && scrollTop <= 0) // Scrolling up at top
-                    ) {
-                        event.preventDefault();
-                    }
-                }, { passive: false });
+                if (section) {
+                    section.addEventListener('wheel', (event) => {
+                        const delta = event.deltaY;
+                        const scrollTop = section.scrollTop;
+                        const scrollHeight = section.scrollHeight;
+                        const clientHeight = section.clientHeight;
+                        if ((delta > 0 && scrollTop + clientHeight >= scrollHeight - 1) || (delta < 0 && scrollTop <= 0)) {
+                            event.preventDefault();
+                        }
+                    }, { passive: false });
+                }
             });
         });
     </script>
