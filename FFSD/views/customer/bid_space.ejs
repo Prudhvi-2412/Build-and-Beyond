@@ -327,7 +327,10 @@
         scrollbar-width: thin;
         max-height: 60vh;
       }
-      
+      .bid-actions{
+        display: flex;
+        flex-direction: column;
+      }
     </style>
   </head>
   <body>
@@ -442,6 +445,9 @@
                 <% bid.companyBids.forEach(companyBid => { %>
                   <div class="company-bid">
                     <div class="bid-actions">
+                      <h3><%= companyBid.companyName %></h3>
+                      <p>Bidded Price : <%= companyBid.bidPrice %></p>
+                      <p>Bidded Date : <%= companyBid.bidDate %></p>
                       <% if (bid.winningBidId && bid.winningBidId.toString() === companyBid._id.toString()) { %>
                         <button class="btn btn-awarded" disabled>Project Awarded</button>
                       <% } else if (bid.status === 'awarded') { %>
@@ -449,11 +455,11 @@
                       <% } else if (companyBid.status === 'rejected') { %>
                         <button class="btn btn-declined-status" disabled>Declined</button>
                       <% } else if (bid.status === 'open') { %>
-                        
-                        <a href="/customer/accept-bid/<%= bid._id %>/<%= companyBid._id %>" class="btn btn-accept">Accept & Pay</a>
-                        
-                        <button class="btn btn-deny" onclick="declineBid('<%= bid._id %>', '<%= companyBid._id %>')">Decline</button>
-
+                        <div>
+                          <a href="/customer/accept-bid/<%= bid._id %>/<%= companyBid._id %>" class="btn btn-accept">Accept & Pay</a>
+                          
+                          <button class="btn btn-deny" onclick="declineBid('<%= bid._id %>', '<%= companyBid._id %>')">Decline</button>
+                        </div>
                       <% } %>
                     </div>
                   </div>
