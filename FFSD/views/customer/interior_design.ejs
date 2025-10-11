@@ -4,215 +4,536 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Interior Designer Portfolio | Build & Beyond</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <style>
         :root {
             --primary: #2c3e50;
             --secondary: #d4af37;
             --accent: #3498db;
             --light: #f8f9fa;
+            --dark: #2c3e50;
             --gray: #6c757d;
             --light-gray: #e9ecef;
-            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
         }
-
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
+        }
+        
         body {
-            @apply bg-gray-100 text-gray-700;
+            background-color: #f8f9fa;
+            color: #495057;
+            line-height: 1.6;
         }
-
-        .container {
-            @apply max-w-7xl mx-auto my-8 bg-white rounded-2xl shadow-lg flex flex-col md:flex-row overflow-hidden;
+        
+        .heading {
+            text-align: center;
+            margin: 1rem auto 2rem;
+            position: relative;
+            padding-bottom: 15px;
+            color: var(--primary);
+            font-weight: 700;
+            font-size: larger;
         }
-
-        .left-section {
-            @apply w-full md:w-2/5 p-6 bg-gray-50 border-r border-gray-200 overflow-y-auto;
-            max-height: 80vh;
-        }
-
-        .right-section {
-            @apply w-full md:w-3/5 p-6 flex flex-col;
-        }
-
-        .right-content {
-            @apply flex-1 overflow-y-auto pr-2;
-        }
-
-        .search-box {
-            @apply relative mb-4 sticky top-0 bg-gray-50 z-10;
-        }
-
-        .search-box input {
-            @apply w-full p-3 pl-10 border border-gray-200 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-yellow-500;
-        }
-
-        .search-box i {
-            @apply absolute left-3 top-1/2 -translate-y-1/2 text-gray-400;
-        }
-
-        .designer-card {
-            @apply flex p-4 mb-4 rounded-lg border border-gray-200 bg-white cursor-pointer hover:border-yellow-500 transition-all;
-        }
-
-        .designer-card.active {
-            @apply bg-yellow-50 border-yellow-500;
-        }
-
-        .designer-image-small {
-            @apply w-16 h-16 rounded-lg object-cover mr-4 border-2 border-gray-200;
-        }
-
-        .designer-info h3 {
-            @apply text-lg font-semibold text-primary mb-1;
-        }
-
-        .designer-info p {
-            @apply text-sm text-gray-500 mb-1;
-        }
-
-        .rating {
-            @apply flex items-center mt-2;
-        }
-
-        .rating .star {
-            @apply text-yellow-400 text-sm mr-1;
-        }
-
-        .rating-count {
-            @apply text-sm text-gray-500 ml-2;
-        }
-
-        .designer-header {
-            @apply flex items-center mb-6 pb-4 border-b border-gray-200;
-        }
-
-        .designer-image-large {
-            @apply w-24 h-24 rounded-lg object-cover mr-6 border-4 border-gray-200 shadow-md;
-        }
-
-        .designer-header-content h2 {
-            @apply text-xl font-semibold text-primary mb-1;
-        }
-
-        .bio, .projects {
-            @apply mb-6;
-        }
-
-        .bio h3, .projects h3 {
-            @apply text-lg font-semibold text-primary mb-4 relative;
-        }
-
-        .bio h3::after, .projects h3::after {
-            @apply absolute bottom-0 left-0 w-10 h-1 bg-yellow-500 rounded;
+        
+        .heading:after {
             content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: var(--secondary);
+            border-radius: 2px;
         }
-
+        
+        .container {
+            display: flex;
+            max-width: 1800px;
+            gap: 10px;
+            width: 95%;
+            min-height: 80vh;
+            margin: 2rem auto;
+            background-color: white;
+            box-shadow: var(--shadow);
+            border-radius: 15px;
+            overflow: hidden;
+        }
+        
+        .left-section {
+            width: 40%;
+            max-height: 80vh;
+            overflow-y: auto;
+            padding: 25px;
+            background-color: var(--light);
+            border-right: 1px solid var(--light-gray);
+        }
+        
+        .left-section::-webkit-scrollbar {
+            width: 4px;
+        }
+        
+        .left-section::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        
+        .left-section::-webkit-scrollbar-thumb {
+            background: rgba(108, 117, 125, 0.3);
+            border-radius: 10px;
+        }
+        
+        .left-section::-webkit-scrollbar-thumb:hover {
+            background: rgba(108, 117, 125, 0.5);
+        }
+        
+        .i_right_section {
+            width: 60%;
+            max-height: 80vh;
+            position: relative;
+            padding: 25px;
+            background-color: white;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .right-content {
+            flex: 1;
+            max-height: calc(80vh - 60px);
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+        
+        .right-content::-webkit-scrollbar {
+            width: 4px;
+        }
+        
+        .right-content::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        
+        .right-content::-webkit-scrollbar-thumb {
+            background: rgba(108, 117, 125, 0.3);
+            border-radius: 10px;
+        }
+        
+        .right-content::-webkit-scrollbar-thumb:hover {
+            background: rgba(108, 117, 125, 0.5);
+        }
+        
+        .search-box {
+            margin-bottom: 20px;
+            position: sticky;
+            top: 0;
+            background-color: var(--light);
+            z-index: 10;
+            padding-bottom: 10px;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 12px 20px 12px 45px;
+            border: 1px solid var(--light-gray);
+            border-radius: 30px;
+            font-size: 14px;
+            outline: none;
+        }
+        
+        .search-box i {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+        }
+        
+        .designer-card {
+            display: flex;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            border: 1px solid var(--light-gray);
+            background-color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .designer-card:hover{
+            border: 1px solid var(--secondary);
+        }
+        .designer-card.active {
+            background-color: rgba(212, 175, 55, 0.05);
+            border-color: var(--secondary);
+        }
+        
+        .designer-image-small {
+            width: 80px;
+            height: 80px;
+            border-radius: 10%;
+            object-fit: cover;
+            margin-right: 20px;
+            border: 3px solid var(--light-gray);
+        }
+        
+        .designer-info {
+            flex: 1;
+        }
+        
+        .designer-info h3 {
+            margin-bottom: 5px;
+            color: var(--primary);
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .designer-info p {
+            color: var(--gray);
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+        
+        .rating {
+            display: flex;
+            align-items: center;
+            margin-top: 8px;
+        }
+        
+        .rating .star {
+            color: #ffc107;
+            font-size: 14px;
+            margin-right: 3px;
+        }
+        
+        .rating-count {
+            margin-left: 8px;
+            color: var(--gray);
+            font-size: 14px;
+        }
+        
+        .designer-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        
+        .designer-image-large {
+            width: 120px;
+            height: 120px;
+            border-radius: 7%;
+            object-fit: cover;
+            margin-right: 25px;
+            border: 4px solid var(--light-gray);
+            box-shadow: var(--shadow);
+        }
+        
+        .designer-header-content h2 {
+            margin-bottom: 5px;
+            color: var(--primary);
+        }
+        
+        .designer-header-content p {
+            color: var(--gray);
+            margin-bottom: 10px;
+        }
+        
+        .bio {
+            margin-bottom: 30px;
+        }
+        
+        .bio h3 {
+            margin-bottom: 15px;
+            color: var(--primary);
+            font-size: 22px;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .bio h3:after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 40px;
+            height: 3px;
+            background: var(--secondary);
+            border-radius: 2px;
+        }
+        
+        .bio p {
+            color: #555;
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+        
         .specialties {
-            @apply flex flex-wrap gap-2 mt-3;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
         }
-
+        
         .specialty {
-            @apply bg-yellow-50 text-yellow-600 px-3 py-1 rounded-full text-sm font-medium;
+            background-color: rgba(212, 175, 55, 0.1);
+            color: var(--secondary);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
         }
-
+        
+        .projects {
+            margin-top: 30px;
+        }
+        
+        .projects h3 {
+            margin-bottom: 20px;
+            color: var(--primary);
+            font-size: 22px;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .projects h3:after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 40px;
+            height: 3px;
+            background: var(--secondary);
+            border-radius: 2px;
+        }
+        
         .project {
-            @apply mb-6 p-4 rounded-lg bg-gray-50 hover:shadow-md transition-all;
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: var(--light);
+            transition: var(--transition);
         }
-
+        
+        .project:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow);
+        }
+        
+        .project h4 {
+            margin-bottom: 10px;
+            color: var(--primary);
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
         .project-image {
-            @apply w-full h-48 object-cover rounded-lg mb-3 shadow-sm;
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: var(--shadow);
         }
-
+        
+        .project p {
+            color: #555;
+            line-height: 1.8;
+        }
+        
         .project-meta {
-            @apply flex flex-wrap gap-3 text-sm text-gray-500 mt-2;
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+            color: var(--gray);
+            font-size: 14px;
         }
-
+        
+        .project-meta span {
+            display: flex;
+            align-items: center;
+        }
+        
         .project-meta i {
-            @apply text-yellow-500 mr-1;
+            margin-right: 5px;
+            color: var(--secondary);
         }
-
+        
         .book-now-container {
-            @apply p-4 bg-white border-t border-gray-200 text-center;
+            padding: 10px;
+            background-color: white;
+            border-top: 1px solid var(--light-gray);
+            text-align: center;
         }
-
+        
         .book-now-btn {
-            @apply bg-yellow-500 text-white px-6 py-3 rounded-full font-semibold hover:bg-yellow-600 hover:shadow-lg transition-all flex items-center justify-center mx-auto;
+            background-color: var(--secondary);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 600;
+            transition: var(--transition);
+            box-shadow: 0 4px 6px rgba(212, 175, 55, 0.2);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
-
+        
+        .book-now-btn:hover {
+            background-color: #c99a1c;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(212, 175, 55, 0.25);
+        }
+        
+        .book-now-btn i {
+            margin-left: 8px;
+        }
+        
         .company-info {
-            @apply p-6 bg-gradient-to-br from-yellow-50 to-blue-50 rounded-lg border-l-4 border-yellow-500 mb-6;
+            margin-bottom: 30px;
+            padding: 25px;
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.05) 0%, rgba(52, 152, 219, 0.05) 100%);
+            border-radius: 12px;
+            border-left: 4px solid var(--secondary);
+            animation: fadeIn 0.8s ease;
         }
-
+        
+        .company-info h2 {
+            margin-bottom: 15px;
+            color: var(--primary);
+            font-size: 26px;
+        }
+        
+        .company-info p {
+            color: #555;
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+        
         .company-info ul {
-            @apply list-none;
+            list-style-type: none;
+            color: #555;
         }
-
+        
         .company-info ul li {
-            @apply mb-2 pl-6 relative;
+            margin-bottom: 10px;
+            padding-left: 25px;
+            position: relative;
         }
-
-        .company-info ul li::before {
-            @apply absolute left-0 text-yellow-500 font-bold;
+        
+        .company-info ul li:before {
             content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--secondary);
+            font-weight: bold;
         }
-
+        
         .designer-details {
-            @apply hidden;
+            display: none;
+            animation: fadeIn 0.5s ease;
         }
-
+        
         .designer-details.active {
-            @apply block animate-fadeIn;
+            display: block;
         }
-
+        
         .no-designers {
-            @apply text-center p-6 text-gray-500;
+            text-align: center;
+            padding: 30px;
+            color: var(--gray);
         }
-
+        
+        .initial-message {
+            animation: fadeIn 0.8s ease;
+        }
+        
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
-
-        @media (max-width: 768px) {
+        
+        @media (max-width: 992px) {
             .container {
-                @apply flex-col;
+                flex-direction: column;
+                height: auto;
             }
-
+            
+            .left-section, .i_right_section {
+                width: 100%;
+            }
+            
             .left-section {
-                @apply border-b border-gray-200 max-h-96;
+                border-right: none;
+                border-bottom: 1px solid var(--light-gray);
+                max-height: 400px;
             }
-
-            .designer-card, .designer-header {
-                @apply flex-col text-center;
+            
+            .i_right_section {
+                max-height: none;
             }
-
-            .designer-image-small, .designer-image-large {
-                @apply mb-4 mx-auto;
+        }
+        
+        @media (max-width: 576px) {
+            .designer-card {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .designer-image-small {
+                margin-right: 0;
+                margin-bottom: 15px;
+            }
+            
+            .designer-header {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .designer-image-large {
+                margin-right: 0;
+                margin-bottom: 15px;
+            }
+            
+            .project-meta {
+                flex-direction: column;
+                gap: 5px;
             }
         }
     </style>
 </head>
 <body>
     <%- include('navbar_customer') %>
-    <h1 class="heading text-2xl font-bold text-primary relative text-center my-8 after:content-[''] after:absolute after:bottom-0 after:left-1/2 after:-translate-x-1/2 after:w-20 after:h-1 after:bg-yellow-500 after:rounded">Hire Interior Designers</h1>
+    <h1 class="heading">Hire Interior Designers</h1>
     <div class="container">
         <div class="left-section" id="designerList">
             <div class="search-box">
                 <i class="fas fa-search"></i>
-                <input type="text" placeholder="Search designers..." id="designerSearch" aria-label="Search interior designers">
+                <input type="text" placeholder="Search designers..." id="designerSearch">
             </div>
-            <% if (designers?.length) { %>
-                <% designers.forEach((designer) => { %>
-                    <div class="designer-card" data-id="<%= designer._id %>" role="button" aria-label="Select designer <%= designer.name %>">
-                        <img src="<%= designer.profileImage || 'https://via.placeholder.com/80' %>" 
-                             alt="<%= designer.name %>" class="designer-image-small" loading="lazy">
+            
+            <% if (designers && designers.length > 0) { %>
+                <% designers.forEach((designer, index) => { %>
+                    <div class="designer-card" data-id="<%= designer._id %>">
+                        <img src="<%= designer.profileImage || 'https://t4.ftcdn.net/jpg/03/64/21/11/360_F_364211147_1qgLVxv1Tcq0Ohz3FawUfrtONzz8nq3e.jpg' %>" 
+                             alt="<%= designer.name %>" class="designer-image-small">
                         <div class="designer-info">
                             <h3><%= designer.name %></h3>
                             <p><%= designer.professionalTitle || 'Interior Designer' %></p>
-                            <p><i class="fas fa-briefcase"></i> <%= designer.experience %> years</p>
+                            <p><i class="fas fa-briefcase"></i> <%= designer.experience %> years experience</p>
                             <div class="rating">
                                 <% for(let i = 0; i < Math.floor(designer.rating); i++) { %>
                                     <span class="star">★</span>
@@ -227,20 +548,20 @@
                 <% }); %>
             <% } else { %>
                 <div class="no-designers">
-                    <p>No interior designers available.</p>
+                    <p>No interior designers are currently available.</p>
                 </div>
             <% } %>
         </div>
         
-        <div class="right-section">
+        <div class="i_right_section">
             <div class="right-content" id="designerDetails">
-                <div class="initial-message animate-fadeIn">
+                <div class="initial-message">
                     <div class="company-info">
-                        <h2 class="text-xl font-semibold text-primary">Welcome to Build & Beyond Interior Designers</h2>
-                        <p>Leading design firm creating innovative, sustainable interior spaces for over 20 years.</p>
-                        <h3 class="text-lg font-semibold text-primary">Our Mission</h3>
-                        <p>Designing spaces that enhance life quality, promote sustainability, and reflect client identity.</p>
-                        <h3 class="text-lg font-semibold text-primary">Our Services</h3>
+                        <h2>Welcome to Build & Beyond Interior Designers</h2>
+                        <p>Build & Beyond Interior Designers is a leading design firm dedicated to creating innovative and sustainable interior spaces that inspire and transform communities. With over 20 years of experience, our team of talented designers has delivered award-winning projects across the globe.</p>
+                        <h3>Our Mission</h3>
+                        <p>Our mission is to design spaces that enhance the quality of life, promote sustainability, and reflect the unique identity of our clients. We believe in the power of interior design to shape the future and create lasting impact.</p>
+                        <h3>Our Services</h3>
                         <ul>
                             <li>Residential Interior Design</li>
                             <li>Commercial Interior Design</li>
@@ -253,16 +574,16 @@
                     </div>
                 </div>
                 
-                <% if (designers?.length) { %>
+                <% if (designers && designers.length > 0) { %>
                     <% designers.forEach(designer => { %>
                         <div class="designer-details" id="designer-<%= designer._id %>">
                             <div class="designer-header">
-                                <img src="<%= designer.profileImage || 'https://via.placeholder.com/120' %>" 
-                                     alt="<%= designer.name %>" class="designer-image-large" loading="lazy">
+                                <img src="<%= designer.profileImage || 'https://t4.ftcdn.net/jpg/03/64/21/11/360_F_364211147_1qgLVxv1Tcq0Ohz3FawUfrtONzz8nq3e.jpg' %>" 
+                                     alt="<%= designer.name %>" class="designer-image-large">
                                 <div class="designer-header-content">
                                     <h2><%= designer.name %></h2>
                                     <p><strong><%= designer.professionalTitle || 'Interior Designer' %></strong></p>
-                                    <p><i class="fas fa-briefcase"></i> <%= designer.experience %> years</p>
+                                    <p><i class="fas fa-briefcase"></i> <%= designer.experience %> years experience</p>
                                     <div class="rating">
                                         <% for(let i = 0; i < Math.floor(designer.rating); i++) { %>
                                             <span class="star">★</span>
@@ -278,7 +599,8 @@
                             <div class="bio">
                                 <h3>About</h3>
                                 <p><%= designer.about || 'Information not available' %></p>
-                                <% if (designer.specialties?.length) { %>
+                                
+                                <% if (designer.specialties && designer.specialties.length > 0) { %>
                                     <div class="specialties">
                                         <% designer.specialties.forEach(specialty => { %>
                                             <span class="specialty"><%= specialty %></span>
@@ -289,7 +611,7 @@
                             
                             <div class="projects">
                                 <h3>Notable Projects</h3>
-                                <% if (designer.projects?.length) { %>
+                                <% if (designer.projects && designer.projects.length > 0) { %>
                                     <% designer.projects.forEach(project => { %>
                                         <div class="project">
                                             <h4><%= project.name %></h4>
@@ -297,13 +619,13 @@
                                                 <span><i class="fas fa-calendar-alt"></i> <%= project.year %></span>
                                                 <span><i class="fas fa-map-marker-alt"></i> <%= project.location %></span>
                                             </div>
-                                            <img src="<%= project.image || 'https://via.placeholder.com/300' %>" 
-                                                 alt="<%= project.name %>" class="project-image" loading="lazy">
+                                            <img src="<%= project.image || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQC7-RFA1wE4wTSP0DZJSJ1AJ8TitBYtkmEYA&s' %>" 
+                                                 alt="<%= project.name %>" class="project-image">
                                             <p><%= project.description %></p>
                                         </div>
                                     <% }); %>
                                 <% } else { %>
-                                    <p>No projects available.</p>
+                                    <p>No projects available for this designer.</p>
                                 <% } %>
                             </div>
                         </div>
@@ -314,92 +636,114 @@
             <div class="book-now-container">
                 <form id="bookDesignerForm" action="/interiordesign_form" method="GET">
                     <input type="hidden" name="workerId" id="selectedWorkerId" value="">
-                    <button type="submit" class="book-now-btn" id="bookNowBtn" disabled>
-                        Book Consultation <i class="fas fa-arrow-right ml-2"></i>
-                    </button>
+                    <button type="submit" class="book-now-btn" id="bookNowBtn">Book Consultation <i class="fas fa-arrow-right"></i></button>
                 </form>
             </div>
         </div>
     </div>
     <%- include('customer_footer') %>
     <script>
+        // Navbar functionality
+        const notificationIcon = document.getElementById('notificationIcon');
+        const notificationPanel = document.getElementById('notificationPanel');
+        
+        if (notificationIcon && notificationPanel) {
+            notificationIcon.addEventListener('click', function(e) {
+                e.stopPropagation();
+                notificationPanel.classList.toggle('show');
+            });
+            
+            document.addEventListener('click', function(e) {
+                if (!notificationPanel.contains(e.target) && !notificationIcon.contains(e.target)) {
+                    notificationPanel.classList.remove('show');
+                }
+            });
+        }
+        
+        // Designer selection functionality
         document.addEventListener('DOMContentLoaded', () => {
             const designerCards = document.querySelectorAll('.designer-card');
             const initialMessage = document.querySelector('.initial-message');
             const bookNowBtn = document.getElementById('bookNowBtn');
             const selectedWorkerIdInput = document.getElementById('selectedWorkerId');
+            const bookDesignerForm = document.getElementById('bookDesignerForm');
             const searchInput = document.getElementById('designerSearch');
-            const scrollableSections = document.querySelectorAll('.left-section, .right-content');
-
-            // Designer selection
+            const leftSection = document.querySelector('.left-section');
+            const rightContent = document.querySelector('.right-content');
+            let activeDesignerId = null;
+            
             designerCards.forEach(card => {
                 card.addEventListener('click', () => {
                     designerCards.forEach(c => c.classList.remove('active'));
                     card.classList.add('active');
                     
-                    const designerId = card.dataset.id;
+                    const designerId = card.getAttribute('data-id');
+                    activeDesignerId = designerId;
                     selectedWorkerIdInput.value = designerId;
                     
-                    initialMessage.style.transition = 'opacity 0.3s ease';
+                    initialMessage.style.transition = 'opacity 0.5s ease';
                     initialMessage.style.opacity = '0';
                     setTimeout(() => {
                         initialMessage.style.display = 'none';
                         document.querySelectorAll('.designer-details').forEach(detail => {
-                            detail.classList.toggle('active', detail.id === `designer-${designerId}`);
+                            detail.classList.remove('active');
                         });
+                        const selectedDesigner = document.getElementById(`designer-${designerId}`);
+                        if (selectedDesigner) {
+                            selectedDesigner.classList.add('active');
+                        }
                     }, 300);
                     
                     bookNowBtn.disabled = false;
                 });
             });
-
-            // Search functionality
-            searchInput?.addEventListener('input', () => {
-                const searchTerm = searchInput.value.toLowerCase();
-                designerCards.forEach(card => {
-                    const name = card.querySelector('h3').textContent.toLowerCase();
-                    const title = card.querySelector('p').textContent.toLowerCase();
-                    card.style.display = name.includes(searchTerm) || title.includes(searchTerm) ? '' : 'none';
+            
+            if (searchInput) {
+                searchInput.addEventListener('input', () => {
+                    const searchTerm = searchInput.value.toLowerCase();
+                    designerCards.forEach(card => {
+                        const name = card.querySelector('h3').textContent.toLowerCase();
+                        const title = card.querySelector('p').textContent.toLowerCase();
+                        card.style.display = (name.includes(searchTerm) || title.includes(searchTerm)) ? 'flex' : 'none';
+                    });
                 });
-            });
-
-            // Form validation
-            document.getElementById('bookDesignerForm')?.addEventListener('submit', (e) => {
-                if (!selectedWorkerIdInput.value) {
-                    e.preventDefault();
-                    alert('Please select an interior designer before booking.');
-                }
-            });
-
-            // Prevent scroll chaining
-            scrollableSections.forEach(section => {
-                section.addEventListener('wheel', (e) => {
-                    const delta = e.deltaY;
-                    const { scrollTop, scrollHeight, clientHeight } = section;
-                    if (
-                        (delta > 0 && scrollTop + clientHeight >= scrollHeight - 1) ||
-                        (delta < 0 && scrollTop <= 0)
-                    ) {
+            }
+            
+            if (bookDesignerForm) {
+                bookDesignerForm.addEventListener('submit', (e) => {
+                    if (!activeDesignerId) {
                         e.preventDefault();
-                    }
-                }, { passive: false });
-            });
-
-            // Notification panel
-            const notificationIcon = document.getElementById('notificationIcon');
-            const notificationPanel = document.getElementById('notificationPanel');
-            if (notificationIcon && notificationPanel) {
-                notificationIcon.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    notificationPanel.classList.toggle('show');
-                });
-                document.addEventListener('click', (e) => {
-                    if (!notificationPanel.contains(e.target) && !notificationIcon.contains(e.target)) {
-                        notificationPanel.classList.remove('show');
+                        alert('Please select an interior designer before booking.');
                     }
                 });
             }
+
+            // Prevent scroll chaining for left and right sections
+            [leftSection, rightContent].forEach(section => {
+                section.addEventListener('wheel', (event) => {
+                    const delta = event.deltaY;
+                    const scrollTop = section.scrollTop;
+                    const scrollHeight = section.scrollHeight;
+                    const clientHeight = section.clientHeight;
+
+                    // Prevent scrolling up when at the top or down when at the bottom
+                    if (
+                        (delta > 0 && scrollTop + clientHeight >= scrollHeight - 1) || // Scrolling down at bottom
+                        (delta < 0 && scrollTop <= 0) // Scrolling up at top
+                    ) {
+                        event.preventDefault();
+                    }
+                }, { passive: false });
+            });
         });
     </script>
 </body>
 </html>
+
+
+
+
+
+
+
+
