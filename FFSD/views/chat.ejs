@@ -410,7 +410,6 @@
                     };
                     
                     socket.emit('chatMessage', messageData);
-                    // CRITICAL FIX: Render sent message as 'sent' immediately on the sending client
                     addMessageToUI(messageData, true); 
                     messageInput.value = '';
                 }
