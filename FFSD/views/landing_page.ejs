@@ -7,16 +7,19 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"
       rel="stylesheet"
     />
     <style>
         :root {
-            --primary-blue: #4F46E5;
-            --primary-blue-dark: #3730A3;
-            --primary-blue-light: #6366F1;
-            --text-primary: #1F2937;
-            --text-secondary: #6B7280;
+            /* -------------------------------------------------- */
+            /* MODIFIED: PRIMARY COLOR PALETTE to Teal-Blue tones */
+            /* -------------------------------------------------- */
+            --primary-blue: #06B6D4; /* New Teal-Blue */
+            --primary-blue-dark: #0E7490; /* Darker Teal */
+            --primary-blue-light: #22D3EE; /* Lighter Cyan */
+            --text-primary: #0F172A; /* Darker text for better contrast */
+            --text-secondary: #475569; /* Cooler gray for secondary text */
             --text-light: #9CA3AF;
             --surface-white: #FFFFFF;
             --surface-gray: #F9FAFB;
@@ -37,8 +40,17 @@
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            /* MODIFIED: Font updated to Roboto */
+            font-family: 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+            
+            /* ---------------------------------------------------------------------------------- */
+            /* MODIFIED: Background Image with Teal Gradient Overlay (Opacity adjusted for image) */
+            /* ---------------------------------------------------------------------------------- */
+            background:
+                        url('https://images.unsplash.com/photo-1565008447742-97f6f38c985c?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1331') center/cover no-repeat fixed;
+            /* Using a new image URL that better matches the tone of your screenshot. */
+            /* ---------------------------------------------------------------------------------- */
+            
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -102,7 +114,7 @@
             font-weight: 700;
             line-height: 1.1;
             margin-bottom: 1.5rem;
-            background: linear-gradient(135deg, #ffffff 0%, #e0e7ff 100%);
+            background: linear-gradient(135deg, #011921 0%, #04113b 100%);
             background-clip: text;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -112,7 +124,7 @@
             font-size: 1.25rem;
             line-height: 1.7;
             margin-bottom: 2.5rem;
-            color: rgba(255, 255, 255, 0.9);
+            color: rgba(16, 7, 51, 0.9);
             max-width: 600px;
         }
 
@@ -407,8 +419,8 @@
         }
 
         .forgot-link:hover {
-            text-decoration: underline;
             color: var(--primary-blue-dark);
+            text-decoration: underline;
         }
 
         .submit-btn {
@@ -574,7 +586,6 @@
         .otp-input:focus {
             border-color: var(--primary-blue);
             box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
-            outline: none;
         }
 
         .resend-link {
@@ -783,7 +794,6 @@
             </div>
             
             <div class="auth-content">
-                <!-- Sign In Form -->
                 <div class="form-content active" id="signin-form">
                     <div class="form-header">
                         <h2>Welcome Back</h2>
@@ -829,7 +839,6 @@
                     </form>
                 </div>
                 
-                <!-- Enhanced Sign Up Form -->
                 <div class="form-content" id="signup-form">
                     <div class="form-header">
                         <h2>Create Account</h2>
@@ -838,7 +847,6 @@
                     
                     <form onsubmit="handleSignUp(event)">
                         <div class="signup-columns">
-                            <!-- User Type Selection (Full Width) -->
                             <div class="form-group user-type-selection">
                                 <label for="user-type">User Type</label>
                                 <select id="user-type" class="form-control" required>
@@ -850,7 +858,6 @@
                                 <div class="validation-error" id="user-type-error"></div>
                             </div>
 
-                            <!-- Customer Fields -->
                             <div class="customer-fields" id="customer-fields">
                                 <div class="form-group">
                                     <label for="customer-name">Full Name</label>
@@ -877,7 +884,6 @@
                                 </div>
                             </div>
 
-                            <!-- Company Fields -->
                             <div class="company-fields" id="company-fields">
                                 <div class="form-group">
                                     <label for="company-name">Company Name</label>
@@ -904,7 +910,6 @@
                                 </div>
                             </div>
 
-                            <!-- Worker Fields -->
                             <div class="worker-fields" id="worker-fields">
                                 <div class="form-group">
                                     <label for="worker-name">Full Name</label>
@@ -957,7 +962,6 @@
                                 </div>
                             </div>
                             
-                            <!-- File Upload for Company Documents -->
                             <div class="form-group file-upload-container" id="company-file-upload" style="display: none;">
                                 <label for="company-documents">Company License Upload</label>
                                 <div class="file-input-wrapper">
@@ -968,7 +972,6 @@
                                 <div class="validation-error" id="company-documents-error"></div>
                             </div>
                             
-                            <!-- File Upload for Worker Certificates -->
                             <div class="form-group file-upload-container" id="worker-file-upload" style="display: none;">
                                 <label for="worker-documents">Certificates/Licenses Upload</label>
                                 <div class="file-input-wrapper">
@@ -979,7 +982,6 @@
                                 <div class="validation-error" id="worker-documents-error"></div>
                             </div>
 
-                            <!-- Password Section (Full Width) -->
                             <div class="common-password-fields password-section" id="common-password-fields">
                                 <div class="form-group">
                                     <label for="signup-password">Password</label>
@@ -994,7 +996,6 @@
                                 </div>
                             </div>
 
-                            <!-- Terms and Conditions (Full Width) -->
                             <div class="form-group terms-section" id="terms-section" style="display: none;">
                                 <div class="checkbox-container">
                                     <input type="checkbox" id="signup-terms" required>
@@ -1018,7 +1019,6 @@
             </div>
         </div>
         
-        <!-- Forgot Password Modal -->
         <div class="modal" id="forgot-password-modal">
             <div class="modal-content">
                 <button class="close-btn" id="close-forgot-modal">×</button>
@@ -1028,14 +1028,12 @@
                         <p>Enter your email to receive a verification code</p>
                     </div>
 
-                    <!-- Email Input -->
                     <div class="form-group" id="email-step">
                         <label for="forgot-email">Email Address</label>
                         <input type="email" id="forgot-email" class="form-control" placeholder="your@email.com" required>
                         <button type="button" class="submit-btn" id="send-otp" style="margin-top: 1rem;">Send Code</button>
                     </div>
 
-                    <!-- OTP Input -->
                     <div class="form-group" id="otp-step" style="display: none;">
                         <label for="otp">Enter Verification Code</label>
                         <div class="otp-container">
@@ -1048,7 +1046,6 @@
                         <a href="#" class="resend-link" id="resend-otp">Resend Code</a>
                     </div>
 
-                    <!-- New Password Input -->
                     <div class="form-group" id="password-step" style="display: none;">
                         <label for="new-password">New Password</label>
                         <input type="password" id="new-password" class="form-control" placeholder="Enter new password" style="margin-bottom: 1rem;">
