@@ -569,10 +569,15 @@ body {
                             </div>
                             <% if (job.additionalDetails.referenceImages && job.additionalDetails.referenceImages.length > 0) { %>
                                 <div class="details-section">
-                                    <h3><i class="fas fa-images"></i> Reference Images</h3>
                                     <div class="reference-images">
                                         <% job.additionalDetails.referenceImages.forEach(image => { %>
-                                            <div class="reference-image" style="background-image: url('<%= image.url %>')"></div>
+                                            <% if(image.mimeType == 'application/pdf'){ %>
+                                                <h3>Reference Documents</h3>
+                                                <a href="<%= image.url %>" target="_blank">Document Link</a>
+                                                <% }else{ %>
+                                                <h3><i class="fas fa-images"></i> Reference Images</h3>
+                                                <div class="reference-image" "><iframe src="<%= image.url %>" alt=""></div>
+                                            <% } %>
                                         <% }); %>
                                     </div>
                                 </div>

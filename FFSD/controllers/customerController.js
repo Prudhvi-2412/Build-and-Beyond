@@ -544,7 +544,10 @@ const acceptCompanyBid = async (req, res) => {
             amount: advancePayout,
             status: 'pending' // This would be 'released' after a real payment
         });
-        
+
+        //Update the data into the construction project schemas
+
+        await UpdateOngoingProjectsSchema(bid, companyBid);
         await bid.save();
 
         // Redirect the customer to their ongoing projects page
@@ -555,6 +558,61 @@ const acceptCompanyBid = async (req, res) => {
         res.status(500).send('Server Error');
     }
 };
+
+const UpdateOngoingProjectsSchema = async (bid, companyBid) => {
+  // Determine the project's initial status
+  const initialStatus = "accepted";
+
+  // The ConstructionProjectSchema document uses the data from the accepted bid.
+  await ConstructionProjectSchema.create({
+    // --- REQUIRED FIELDS (MANDATORY for Mongoose to pass validation) ---
+    projectName: bid.projectName,
+    customerId: bid.customerId,
+    companyId: companyBid.companyId, // From companyBid
+    customerName: bid.customerName,
+    customerEmail: bid.customerEmail,
+    customerPhone: bid.customerPhone,
+    projectAddress: bid.projectAddress,
+    totalArea: bid.totalArea,
+    buildingType: bid.buildingType,
+    totalFloors: bid.totalFloors,
+
+    // --- Mapped from Bid (Optional/Complex Fields) ---
+    projectLocationPincode: bid.projectLocation, // Map to Pincode field
+    estimatedBudget: bid.estimatedBudget, // From bid
+    projectTimeline: bid.projectTimeline, // From bid
+    floors: bid.floors, // Array of sub-documents
+    specialRequirements: bid.specialRequirements,
+    accessibilityNeeds: bid.accessibilityNeeds,
+    energyEfficiency: bid.energyEfficiency,
+    siteFilepaths: bid.siteFiles, // Mapped from 'siteFiles' to 'siteFilepaths'
+
+    // --- Initial Project Status and Completion ---
+    status: initialStatus,
+    completionPercentage: 0,
+    additionalImagePaths: [],
+    recentUpdates: [],
+
+    // --- Proposal Details (Using the winning company bid) ---
+    // This object is likely REQUIRED by the business logic, if not schema definition.
+    proposal: {
+      price: companyBid.bidPrice,
+      description: "Accepted Bid Price of " + companyBid.bidPrice,
+      sentAt: companyBid.bidDate,
+    },
+
+    // --- Payment Details (Using the pre-calculated data from the updated bid) ---
+    // Since we moved the call later, we use the fully populated bid.paymentDetails
+    paymentDetails: {
+      totalAmount: bid.paymentDetails.totalAmount,
+      platformFee: bid.paymentDetails.platformFee,
+      amountPaidToCompany: bid.paymentDetails.amountPaidToCompany, // Should be 0 initially
+      paymentStatus: bid.paymentDetails.paymentStatus, // Should be 'paid' (simulated)
+      payouts: bid.paymentDetails.payouts, // Initial payout included
+    },
+  });
+};
+
 const acceptCompanyProposal = async (req, res) => {
   try {
     const { projectId } = req.params;
