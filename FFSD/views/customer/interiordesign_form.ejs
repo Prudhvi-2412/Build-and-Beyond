@@ -4,326 +4,180 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Interior Design Request Form | Build & Beyond</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: "Inter", sans-serif;
+        :root {
+            --primary: #1e293b;
+            --accent: #facc15;
+            --gray: #e2e8f0;
+            --text-secondary: #475569;
         }
 
         body {
-            background-color: #f8fafc;
-            color: #1e293b;
-            line-height: 1.6;
-            padding: 40px 20px;
+            @apply bg-gray-50 text-gray-900 min-h-screen flex items-center justify-center p-4;
         }
 
         .container {
-            max-width: 900px;
-            margin: 0 auto;
-            background: white;
-            padding: 40px;
-            border-radius: 16px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+            @apply max-w-3xl mx-auto bg-white p-8 rounded-2xl shadow-lg;
         }
 
-        /* Page Title */
         .page-title {
-            text-align: center;
-            margin-bottom: 30px;
+            @apply text-center mb-8;
         }
 
         .page-title h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: #1e293b;
-            margin-bottom: 15px;
+            @apply text-2xl md:text-3xl font-bold text-primary;
         }
 
         .page-title .underline {
-            width: 120px;
-            height: 4px;
-            background: linear-gradient(to right, #facc15, #1e293b);
-            margin: 0 auto;
+            @apply w-24 h-1 bg-gradient-to-r from-accent to-primary mx-auto mt-2 rounded;
         }
 
-        /* Form Sections */
         .section {
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid #e2e8f0;
+            @apply mb-6 pb-6 border-b border-gray-200;
         }
 
         .section-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: #1e293b;
-            margin-bottom: 20px;
-            position: relative;
+            @apply text-xl font-semibold text-primary mb-4 relative;
         }
-        
+
         .section-title::after {
+            @apply absolute bottom-0 left-0 w-12 h-1 bg-accent rounded;
             content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 60px;
-            height: 4px;
-            background: #facc15;
-            border-radius: 2px;
         }
 
         .form-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
+            @apply grid gap-4 md:grid-cols-2;
         }
 
         .form-group {
-            margin-bottom: 15px;
+            @apply mb-4;
         }
-        
+
         label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-            color: #475569;
+            @apply block mb-2 font-medium text-text-secondary;
         }
-        
+
+        label.required::after {
+            content: '*';
+            @apply text-accent ml-1;
+        }
+
         input, select, textarea {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #e2e8f0;
-            border-radius: 8px;
-            font-size: 1rem;
-            color: #1e293b;
-            background-color: #fff;
-            transition: all 0.3s ease;
-        }
-        
-        input:focus, select:focus, textarea:focus {
-            outline: none;
-            border-color: #facc15;
-            box-shadow: 0 0 0 3px rgba(250, 204, 21, 0.2);
+            @apply w-full p-3 border-2 border-gray rounded-lg text-primary bg-white focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/20 transition-all;
         }
 
         textarea {
-            min-height: 100px;
-            resize: vertical;
+            @apply min-h-[100px] resize-y;
         }
 
         select {
-            height: 48px;
-        }
-        
-        /* Required asterisk */
-        .form-group label[for]:after {
-            content: "*";
-            color: #facc15;
-            margin-left: 4px;
+            @apply h-12;
         }
 
-        /* Radio Buttons */
         .room-selector {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 15px;
-            margin-top: 10px;
+            @apply grid gap-3 sm:grid-cols-2 md:grid-cols-3 mt-2;
         }
 
         .room-option input[type="radio"] {
-            display: none;
-        }
-        
-        .room-option label {
-            display: block;
-            padding: 15px;
-            background: #f1f5f9;
-            border: 2px solid #e2e8f0;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            text-align: center;
-            color: #64748b;
-        }
-        
-        .room-option input[type="radio"]:checked + label {
-            border-color: #facc15;
-            background: rgba(250, 204, 21, 0.1);
-            color: #1e293b;
-            font-weight: 600;
+            @apply hidden;
         }
 
-        .room-option input[type="radio"]:focus + label {
-            box-shadow: 0 0 0 3px rgba(250, 204, 21, 0.2);
+        .room-option label {
+            @apply block p-3 bg-gray-50 border-2 border-gray-200 rounded-lg text-center text-text-secondary cursor-pointer hover:bg-gray-100 transition-all;
+        }
+
+        .room-option input[type="radio"]:checked + label {
+            @apply border-accent bg-accent/10 text-primary font-semibold;
         }
 
         .dimension-inputs {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-        
-        .dimension-inputs .dimension-unit {
-            flex-grow: 0;
-            width: 100px;
+            @apply flex gap-2 items-center;
         }
 
-        /* File Upload */
+        .dimension-inputs .dimension-unit {
+            @apply w-24;
+        }
+
         .file-upload {
-            position: relative;
+            @apply mt-2;
         }
-        
+
         .file-upload-label {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 120px;
-            border: 2px dashed #cbd5e1;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-align: center;
-            background-color: #f1f5f9;
-            color: #64748b;
-        }
-        
-        .file-upload-label:hover {
-            border-color: #facc15;
-            background: #e2e8f0;
+            @apply flex flex-col items-center justify-center h-28 border-2 border-dashed border-gray-300 rounded-lg bg-gray-50 text-text-secondary cursor-pointer hover:border-accent hover:bg-gray-100 transition-all;
         }
 
         .file-upload-label i {
-            font-size: 24px;
-            margin-bottom: 10px;
+            @apply text-2xl mb-2;
         }
 
         .file-upload input[type="file"] {
-            display: none;
+            @apply hidden;
         }
-        
+
         .image-section {
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 20px;
-            background: #f1f5f9;
+            @apply p-4 border border-gray-200 rounded-lg bg-gray-50 mb-4;
         }
 
         .image-section h3 {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: #1e293b;
-            margin-bottom: 10px;
+            @apply text-base font-semibold text-primary mb-2;
         }
 
         .image-section p {
-            color: #64748b;
-            font-size: 0.9rem;
-            margin-bottom: 15px;
-        }
-        
-        .preview-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 15px;
-        }
-        
-        .preview-item {
-            position: relative;
-            width: 100px;
-            height: 100px;
-            border-radius: 4px;
-            overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
-        
-        .preview-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        
-        .preview-item .remove-btn {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            width: 24px;
-            height: 24px;
-            background: #ef4444;
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 14px;
-            line-height: 1;
-            border: none;
-        }
-        
-        /* Submit Button */
-        .btn-submit {
-            background-color: #facc15;
-            color: #1e293b;
-            border: none;
-            border-radius: 50px;
-            padding: 15px 40px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            display: block;
-            margin: 30px auto 0;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-        
-        .btn-submit:hover {
-            background-color: #eab308;
-            transform: translateY(-3px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-        }
-        
-        /* Message sections */
-        .success-message, .error-message {
-            display: none;
-            text-align: center;
-            padding: 20px;
-            border-radius: 8px;
-            margin-top: 20px;
-            font-weight: 500;
-        }
-        
-        .success-message {
-            background: #d1fae5;
-            color: #065f46;
-        }
-        
-        .error-message {
-            background: #fee2e2;
-            color: #991b1b;
+            @apply text-sm text-text-secondary mb-3;
         }
 
-        /* Responsive Design */
-        @media (max-width: 768px) {
+        .preview-container {
+            @apply flex flex-wrap gap-3 mt-3;
+        }
+
+        .preview-item {
+            @apply relative w-24 h-24 rounded overflow-hidden shadow-sm;
+        }
+
+        .preview-item img {
+            @apply w-full h-full object-cover;
+        }
+
+        .preview-item .remove-btn {
+            @apply absolute top-1 right-1 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center text-sm cursor-pointer hover:bg-red-600 transition-all;
+        }
+
+        .btn-submit {
+            @apply bg-accent text-primary px-8 py-3 rounded-full font-semibold hover:bg-yellow-500 hover:shadow-lg transition-all block mx-auto mt-6;
+        }
+
+        .success-message, .error-message {
+            @apply hidden text-center p-4 rounded-lg mt-4 font-medium;
+        }
+
+        .success-message {
+            @apply bg-green-100 text-green-800;
+        }
+
+        .error-message {
+            @apply bg-red-100 text-red-800;
+        }
+
+        @media (max-width: 640px) {
             .container {
-                padding: 20px;
+                @apply p-4;
             }
+
+            .form-grid, .room-selector {
+                @apply grid-cols-1;
+            }
+
             .page-title h1 {
-                font-size: 2rem;
+                @apply text-xl;
             }
+
             .section-title {
-                font-size: 1.3rem;
-            }
-            .form-grid {
-                grid-template-columns: 1fr;
+                @apply text-lg;
             }
         }
     </style>
@@ -334,50 +188,52 @@
             <h1>Interior Design Request Form</h1>
             <div class="underline"></div>
         </div>
-        
+
         <form id="designRequestForm" enctype="multipart/form-data" action="/design_submit" method="post">
             <input type="hidden" id="workerId" name="workerId" value="">
 
+            <!-- Customer Details -->
             <div class="section">
                 <h2 class="section-title">Customer Details</h2>
                 <div class="form-grid">
                     <div class="form-group">
-                        <label for="projectName">Project Name*</label>
-                        <input type="text" id="projectName" name="projectName" required>
+                        <label for="projectName" class="required">Project Name</label>
+                        <input type="text" id="projectName" name="projectName" required aria-required="true">
                     </div>
                     <div class="form-group">
-                        <label for="fullName">Full Name*</label>
-                        <input type="text" id="fullName" name="fullName" required>
+                        <label for="fullName" class="required">Full Name</label>
+                        <input type="text" id="fullName" name="fullName" required aria-required="true">
                     </div>
                     <div class="form-group">
-                        <label for="email">Email Address*</label>
-                        <input type="email" id="email" name="email" required>
+                        <label for="email" class="required">Email Address</label>
+                        <input type="email" id="email" name="email" required aria-required="true">
                     </div>
                     <div class="form-group">
-                        <label for="phone">Phone Number*</label>
-                        <input type="tel" id="phone" name="phone" required>
+                        <label for="phone" class="required">Phone Number</label>
+                        <input type="tel" id="phone" name="phone" required aria-required="true" pattern="[0-9]{10,}" title="Please enter a valid phone number">
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="address">Home Address*</label>
-                    <input type="text" id="address" name="address" required>
+                    <label for="address" class="required">Home Address</label>
+                    <input type="text" id="address" name="address" required aria-required="true">
                 </div>
             </div>
-            
+
+            <!-- Project Details -->
             <div class="section">
                 <h2 class="section-title">Project Details</h2>
                 <div class="form-group">
-                    <label for="roomType">Room Type*</label>
+                    <label for="roomType" class="required">Room Type</label>
                     <div class="room-selector" id="roomTypeSelector">
                         <div class="room-option">
-                            <input type="radio" id="kitchen" name="roomType" value="Kitchen" required>
+                            <input type="radio" id="kitchen" name="roomType" value="Kitchen" required aria-required="true">
                             <label for="kitchen">Kitchen</label>
                         </div>
                         <div class="room-option">
                             <input type="radio" id="livingRoom" name="roomType" value="Living Room">
                             <label for="livingRoom">Living Room</label>
                         </div>
-                        <div class="room-option">
+                        <div class="form-group">
                             <input type="radio" id="bedroom" name="roomType" value="Bedroom">
                             <label for="bedroom">Bedroom</label>
                         </div>
@@ -395,23 +251,23 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="form-grid">
                     <div class="form-group">
-                        <label for="roomSize">Room Size*</label>
+                        <label for="roomSize" class="required">Room Size</label>
                         <div class="dimension-inputs">
-                            <input type="number" id="roomLength" name="roomLength" placeholder="Length" min="1" step="0.01" required>
+                            <input type="number" id="roomLength" name="roomLength" placeholder="Length" min="1" step="0.01" required aria-required="true">
                             <span>×</span>
-                            <input type="number" id="roomWidth" name="roomWidth" placeholder="Width" min="1" step="0.01" required>
+                            <input type="number" id="roomWidth" name="roomWidth" placeholder="Width" min="1" step="0.01" required aria-required="true">
                             <select id="dimensionUnit" name="dimensionUnit" class="dimension-unit">
                                 <option value="feet">feet</option>
                                 <option value="meters">meters</option>
                             </select>
                         </div>
-                        <p style="color: #64748b; font-size: 14px; margin-top: 5px;">Please enter the approximate dimensions of your room</p>
+                        <p class="text-sm text-text-secondary mt-1">Enter approximate room dimensions</p>
                     </div>
                     <div class="form-group">
-                        <label for="ceilingHeight">Ceiling Height (Optional)</label>
+                        <label for="ceilingHeight">Ceiling Height (optional)</label>
                         <div class="dimension-inputs">
                             <input type="number" id="ceilingHeight" name="ceilingHeight" placeholder="Height" min="1" step="0.01">
                             <select id="heightUnit" name="heightUnit" class="dimension-unit">
@@ -421,11 +277,11 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="form-group">
-                    <label for="designPreference">Design Preference (Optional)</label>
+                    <label for="designPreference">Design Preference (optional)</label>
                     <select id="designPreference" name="designPreference">
-                        <option value="">Select a style (optional)</option>
+                        <option value="">Select a style</option>
                         <option value="Modern">Modern</option>
                         <option value="Traditional">Traditional</option>
                         <option value="Scandinavian">Scandinavian</option>
@@ -436,47 +292,48 @@
                         <option value="Contemporary">Contemporary</option>
                     </select>
                 </div>
-                
+
                 <div class="form-group">
-                    <label for="projectDescription">Project Description (Optional)</label>
-                    <textarea id="projectDescription" name="projectDescription" rows="4" placeholder="Tell us more about your vision for this space..."></textarea>
+                    <label for="projectDescription">Project Description (optional)</label>
+                    <textarea id="projectDescription" name="projectDescription" placeholder="Tell us more about your vision for this space..."></textarea>
                 </div>
             </div>
-            
+
+            <!-- Upload Photos -->
             <div class="section">
                 <h2 class="section-title">Upload Photos</h2>
                 <div class="image-section">
                     <h3>Current Room Photos</h3>
-                    <p>Upload photos of your current space to help our designers understand its layout, dimensions, and style.</p>
+                    <p class="text-sm text-text-secondary">Upload photos of your current space to help our designers understand its layout and style.</p>
                     <div class="file-upload">
                         <label class="file-upload-label" for="currentRoomImages">
                             <i class="fa-solid fa-cloud-arrow-up"></i>
                             <span>Upload current room photos</span>
-                            <small>(Max 3 images)</small>
+                            <small>(Max 3 images, JPG/PNG)</small>
                         </label>
-                        <input type="file" id="currentRoomImages" name="currentRoomImages" accept="image/*" multiple>
+                        <input type="file" id="currentRoomImages" name="currentRoomImages" accept="image/jpeg,image/png" multiple>
                     </div>
                     <div class="preview-container" id="currentRoomPreview"></div>
                 </div>
-                
+
                 <div class="image-section">
                     <h3>Design Inspiration</h3>
-                    <p>Share images of designs, colors, or furniture styles you like to help us understand your preferences.</p>
+                    <p class="text-sm text-text-secondary">Share images of designs, colors, or furniture styles you like to help us understand your preferences.</p>
                     <div class="file-upload">
                         <label class="file-upload-label" for="inspirationImages">
                             <i class="fa-solid fa-cloud-arrow-up"></i>
                             <span>Upload inspiration images</span>
-                            <small>(Max 3 images)</small>
+                            <small>(Max 3 images, JPG/PNG)</small>
                         </label>
-                        <input type="file" id="inspirationImages" name="inspirationImages" accept="image/*" multiple>
+                        <input type="file" id="inspirationImages" name="inspirationImages" accept="image/jpeg,image/png" multiple>
                     </div>
                     <div class="preview-container" id="inspirationPreview"></div>
                 </div>
             </div>
-            
+
             <button type="submit" class="btn-submit">Submit Request</button>
         </form>
-        
+
         <div class="success-message" id="successMessage">
             <h2>Request Submitted Successfully!</h2>
             <p>One of our designers will contact you within 48 hours to discuss your project.</p>
@@ -487,47 +344,64 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize workerId from URL
             const urlParams = new URLSearchParams(window.location.search);
             const workerId = urlParams.get('workerId');
-            
             if (workerId) {
                 document.getElementById('workerId').value = workerId;
             }
-            
+
+            // File upload handling
             const fileInputs = ['currentRoomImages', 'inspirationImages'];
             fileInputs.forEach(inputId => {
                 const input = document.getElementById(inputId);
                 const previewContainer = document.getElementById(inputId.replace('Images', 'Preview'));
                 
-                input.addEventListener('change', function(event) {
+                input?.addEventListener('change', (event) => {
                     const maxFiles = 3;
-                    let files = Array.from(this.files);
+                    const maxFileSize = 5 * 1024 * 1024; // 5MB
+                    const allowedTypes = ['image/jpeg', 'image/png'];
+                    const files = Array.from(event.target.files);
 
                     if (files.length > maxFiles) {
                         alert(`You can only upload a maximum of ${maxFiles} images.`);
-                        this.value = ''; // Clear selected files
+                        input.value = '';
                         previewContainer.innerHTML = '';
                         return;
                     }
 
-                    previewContainer.innerHTML = ''; // Clear previous previews
-                    files.forEach(file => {
+                    previewContainer.innerHTML = '';
+                    files.forEach((file, index) => {
+                        if (file.size > maxFileSize) {
+                            alert(`File ${file.name} exceeds 5MB limit.`);
+                            return;
+                        }
+                        if (!allowedTypes.includes(file.type)) {
+                            alert(`File ${file.name} is not a valid type (JPG, PNG only).`);
+                            return;
+                        }
+
+                        const previewItem = document.createElement('div');
+                        previewItem.className = 'preview-item';
+                        const removeButton = document.createElement('button');
+                        removeButton.className = 'remove-btn';
+                        removeButton.textContent = '×';
+                        removeButton.setAttribute('aria-label', `Remove ${file.name}`);
+
+                        removeButton.addEventListener('click', () => {
+                            const dt = new DataTransfer();
+                            files.filter(f => f !== file).forEach(f => dt.items.add(f));
+                            input.files = dt.files;
+                            previewContainer.removeChild(previewItem);
+                        });
+
                         const reader = new FileReader();
-                        reader.onload = function(e) {
-                            const previewItem = document.createElement('div');
-                            previewItem.className = 'preview-item';
-                            previewItem.innerHTML = `<img src="${e.target.result}" alt="Preview">
-                                                     <div class="remove-btn">×</div>`;
-                            
-                            previewItem.querySelector('.remove-btn').addEventListener('click', function() {
-                                previewItem.remove();
-                                // To update the file list, you'd need a more complex DataTransfer object logic
-                                // which is not available directly on input.files.
-                                // A simpler approach for this form is to clear and re-add all files,
-                                // or to let the server handle filtering. For this front-end code,
-                                // we'll just handle the visual removal.
-                            });
+                        reader.onload = (e) => {
+                            const img = document.createElement('img');
+                            img.src = e.target.result;
+                            img.alt = file.name;
+                            previewItem.append(img, removeButton);
                             previewContainer.appendChild(previewItem);
                         };
                         reader.readAsDataURL(file);
@@ -535,75 +409,70 @@
                 });
             });
 
-            // Sync units
+            // Sync dimension units
             const dimensionUnit = document.getElementById('dimensionUnit');
             const heightUnit = document.getElementById('heightUnit');
-            
-            dimensionUnit.addEventListener('change', function() {
-                heightUnit.value = this.value;
-            });
-            
-            heightUnit.addEventListener('change', function() {
-                dimensionUnit.value = this.value;
-            });
+            dimensionUnit?.addEventListener('change', () => heightUnit.value = dimensionUnit.value);
+            heightUnit?.addEventListener('change', () => dimensionUnit.value = heightUnit.value);
 
-            // Form submission
+            // Form submission with validation
             const form = document.getElementById('designRequestForm');
             const successMessage = document.getElementById('successMessage');
             const errorMessage = document.getElementById('errorMessage');
             const errorText = document.getElementById('errorText');
 
-            form.addEventListener('submit', async function(e) {
+            form.addEventListener('submit', async (e) => {
                 e.preventDefault();
-                
                 let allValid = true;
-                const requiredFields = form.querySelectorAll('[required]');
-                requiredFields.forEach(field => {
+
+                // Validate required fields
+                form.querySelectorAll('[required]').forEach(field => {
                     if (!field.value.trim()) {
                         allValid = false;
-                        field.style.borderColor = '#e74c3c';
+                        field.classList.add('border-red-500');
                     } else {
-                        field.style.borderColor = '#ddd';
+                        field.classList.remove('border-red-500');
                     }
                 });
-                
+
+                // Validate room type
                 const roomTypeSelected = form.querySelector('input[name="roomType"]:checked');
+                const roomTypeSelector = document.getElementById('roomTypeSelector');
                 if (!roomTypeSelected) {
                     allValid = false;
-                    document.getElementById('roomTypeSelector').style.borderColor = '#e74c3c';
+                    roomTypeSelector.classList.add('border-red-500');
                 } else {
-                    document.getElementById('roomTypeSelector').style.borderColor = 'transparent';
+                    roomTypeSelector.classList.remove('border-red-500');
                 }
-                
+
                 if (!allValid) {
-                    errorMessage.style.display = 'block';
+                    errorMessage.classList.remove('hidden');
                     errorText.textContent = 'Please fill in all required fields.';
+                    successMessage.classList.add('hidden');
                     return;
                 }
-                
+
                 try {
                     const formData = new FormData(form);
-                    
-                    const response = await fetch('/design_request', {
+                    const response = await fetch('/design_submit', {
                         method: 'POST',
                         body: formData,
                     });
-                    
+
                     const result = await response.json();
-                    
                     if (response.ok) {
-                        form.style.display = 'none';
-                        if (successMessage) successMessage.style.display = 'block';
-                        if (errorMessage) errorMessage.style.display = 'none';
+                        form.classList.add('hidden');
+                        successMessage.classList.remove('hidden');
+                        errorMessage.classList.add('hidden');
                     } else {
-                        if (errorMessage) errorMessage.style.display = 'block';
-                        if (errorText) errorText.textContent = result.error || 'An error occurred. Please try again.';
-                        if (successMessage) successMessage.style.display = 'none';
+                        errorMessage.classList.remove('hidden');
+                        errorText.textContent = result.error || 'An error occurred. Please try again.';
+                        successMessage.classList.add('hidden');
                     }
                 } catch (error) {
-                    if (errorMessage) errorMessage.style.display = 'block';
-                    if (errorText) errorText.textContent = 'Network error. Please check your connection and try again.';
-                    if (successMessage) successMessage.style.display = 'none';
+                    errorMessage.classList.remove('hidden');
+                    errorText.textContent = 'Network error. Please check your connection and try again.';
+                    successMessage.classList.add('hidden');
                 }
             });
         });
