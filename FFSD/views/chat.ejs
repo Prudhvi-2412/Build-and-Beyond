@@ -142,6 +142,7 @@
 
         .message-wrapper.received {
             justify-content: flex-start;
+            align-items: flex-end; /* Align avatar and bubble bottom */
         }
 
         .message-bubble {
@@ -293,6 +294,11 @@
             <% messages.forEach(msg => { %>
                 <% const isMyMessage = msg.sender.toString() === userId.toString(); %>
                 <div class="message-wrapper <%= isMyMessage ? 'sent' : 'received' %>">
+                    <% if (!isMyMessage) { %>
+                        <div class="user-avatar" style="width: 30px; height: 30px; margin-right: 8px; flex-shrink: 0;">
+                            <%= otherUserName.charAt(0).toUpperCase() %>
+                        </div>
+                    <% } %>
                     <div class="message-bubble">
                         <%= msg.message %>
                         <span class="message-time">
@@ -331,6 +337,8 @@
             const roomId = '<%= roomId %>';
             const userId = '<%= userId %>';
             const userRole = '<%= userRole %>';
+            // Get other user's initial for avatar
+            const otherUserNameInitial = '<%= otherUserName.charAt(0).toUpperCase() %>';
 
             const scrollToBottom = () => {
                 chatMessages.scrollTop = chatMessages.scrollHeight;
@@ -339,19 +347,31 @@
             socket.emit('joinRoom', { roomId, userId, userRole });
             scrollToBottom();
 
-            const addMessageToUI = (messageData) => {
-                const isMyMessage = messageData.sender === userId;
+            // CRITICAL FIX: Add isMyMessage parameter to correctly align messages
+            const addMessageToUI = (messageData, isMyMessage = false) => {
+                const wrapperClass = isMyMessage ? 'sent' : 'received';
                 
                 const messageWrapper = document.createElement('div');
                 messageWrapper.classList.add('message-wrapper');
-                messageWrapper.classList.add(isMyMessage ? 'sent' : 'received');
+                messageWrapper.classList.add(wrapperClass);
                 
                 const time = new Date(messageData.createdAt).toLocaleTimeString([], { 
                     hour: '2-digit', 
                     minute: '2-digit' 
                 });
 
+                let avatarHtml = '';
+                if (!isMyMessage) {
+                    // Add the other user's avatar for received messages
+                    avatarHtml = `
+                        <div class="user-avatar" style="width: 30px; height: 30px; margin-right: 8px; flex-shrink: 0;">
+                            ${otherUserNameInitial}
+                        </div>
+                    `;
+                }
+
                 messageWrapper.innerHTML = `
+                    ${avatarHtml}
                     <div class="message-bubble">
                         ${messageData.message}
                         <span class="message-time">${time}</span>
@@ -362,8 +382,9 @@
                 scrollToBottom();
             };
 
+            // When a message is received from the server (i.e., from the OTHER user)
             socket.on('message', (messageData) => {
-                addMessageToUI(messageData);
+                addMessageToUI(messageData, false); // Always render received messages as 'received'
             });
 
             socket.on('userStatus', (status) => {
@@ -382,13 +403,15 @@
                     const messageData = {
                         roomId,
                         sender: userId,
+                        // CRITICAL: Ensure correct model is passed for saving to DB
                         senderModel: userRole === 'customer' ? 'Customer' : 'Worker',
                         message,
                         createdAt: new Date().toISOString()
                     };
                     
                     socket.emit('chatMessage', messageData);
-                    addMessageToUI(messageData);
+                    // CRITICAL FIX: Render sent message as 'sent' immediately on the sending client
+                    addMessageToUI(messageData, true); 
                     messageInput.value = '';
                 }
             };
