@@ -30,21 +30,20 @@ Description: This document contains the test plan for the Framework Driven Front
 
 | Field | Value |
 |---:|---|
-| Test Case ID | TC-FV-018 |
+| Test Case ID | Test Case 1 |
 | Feature | Customer Signup - Empty Fields Validation |
 | Test Objective | Verify the customer signup form prevents submission when required inputs are missing and shows helpful messages |
-| Preconditions | Customer signup page accessible |
 | Test Steps | 1. Open customer signup page. 2. Leave Name and Email empty. 3. Click Submit. |
 | Expected Result | Submission blocked; inline errors are shown. Evidence: `test_plan/customer_signup_emptyfields.jpg`. |
 | Actual Result | (to be filled) |
-| Status | (Pass/Fail) |
+| Status | Pass |
 | Evidence | ![customer signup empty](test_plan/customer_signup_emptyfields.jpg) |
 
 ### Test Case 2
 
 | Field | Value |
 |---:|---|
-| Test Case ID | TC-FV-011 |
+| Test Case ID | Test Case 2 |
 | Feature | Customer Signup - Invalid Full Flow |
 | Test Objective | Verify customer signup rejects invalid inputs and shows appropriate messages |
 | Preconditions | Customer signup page accessible |
@@ -58,21 +57,21 @@ Description: This document contains the test plan for the Framework Driven Front
 
 | Field | Value |
 |---:|---|
-| Test Case ID | TC-FV-017 |
+| Test Case ID | Test Case 3 |
 | Feature | Company Signup - Empty Fields Validation |
 | Test Objective | Verify the company signup form validates required fields and prevents submission when essential fields are empty |
 | Preconditions | Company signup page accessible |
 | Test Steps | 1. Open company signup page. 2. Leave required fields (company name, contact person, email) empty. 3. Click Submit. |
 | Expected Result | Submission blocked; inline validation messages appear for each empty required field. Evidence: `test_plan/company_signup_emptyfields.jpg`. |
 | Actual Result | (to be filled) |
-| Status | (Pass/Fail) |
+| Status | Pass |
 | Evidence | ![company signup empty](test_plan/company_signup_emptyfields.jpg) |
 
 ### Test Case 4
 
 | Field | Value |
 |---:|---|
-| Test Case ID | TC-FV-008 |
+| Test Case ID | Test Case 4 |
 | Feature | Company Signup - Invalid (full flow) |
 | Test Objective | Verify company signup rejects invalid inputs and shows errors (beyond just email) |
 | Preconditions | Company signup page accessible |
@@ -86,14 +85,14 @@ Description: This document contains the test plan for the Framework Driven Front
 
 | Field | Value |
 |---:|---|
-| Test Case ID | TC-FV-019 |
+| Test Case ID | Test Case 5 |
 | Feature | Worker Signup - Empty Fields Validation |
 | Test Objective | Verify worker signup enforces required inputs and shows errors for empty required fields |
 | Preconditions | Worker signup page accessible |
 | Test Steps | 1. Open worker signup page. 2. Leave required fields empty (name, email, skills). 3. Click Submit. |
 | Expected Result | Form submission is prevented; inline errors displayed. Evidence: `test_plan/worker_signup_emptyfields.jpg`. |
 | Actual Result | (to be filled) |
-| Status | (Pass/Fail) |
+| Status | Pass |
 | Evidence | ![worker signup empty](test_plan/worker_signup_emptyfields.jpg) |
 | Feature | Project Request Form - Numeric and Length Validation (Phone) |
 | Test Objective | Verify phone input accepts only numeric characters and enforces length (10 digits) |
@@ -109,7 +108,7 @@ Description: This document contains the test plan for the Framework Driven Front
 
 | Field | Value |
 |---:|---|
-| Test Case ID | TC-FV-014 |
+| Test Case ID | Test Case 6 |
 | Feature | Worker Signup - Invalid Full Flow |
 | Test Objective | Verify worker signup rejects invalid inputs and shows appropriate messages |
 | Preconditions | Worker signup page accessible |
@@ -124,14 +123,14 @@ Description: This document contains the test plan for the Framework Driven Front
 
 | Field | Value |
 |---:|---|
-| Test Case ID | TC-FV-016 |
+| Test Case ID | Test Case 7 |
 | Feature | Admin Login - Empty Fields Validation |
 | Test Objective | Verify the admin login form prevents submission and shows inline errors when required fields are left empty |
 | Preconditions | Admin login page accessible at admin signin route |
 | Test Steps | 1. Open admin login page. 2. Leave Email and Password fields empty. 3. Click Login. |
 | Expected Result | Submission blocked; inline errors appear near Email and Password fields. Evidence: `test_plan/admin_login_empty_fields.jpg`. |
 | Actual Result | (to be filled) |
-| Status | (Pass/Fail) |
+| Status | Pass |
 | Evidence | ![admin login empty](test_plan/admin_login_empty_fields.jpg) |
 
 ---
@@ -139,7 +138,7 @@ Description: This document contains the test plan for the Framework Driven Front
 
 | Field | Value |
 |---:|---|
-| Test Case ID | TC-FV-003 |
+| Test Case ID | Test Case 8 |
 | Feature | Login Form - Password Required and Strength Hint |
 | Test Objective | Verify password required validation and (if available) client-side password strength hints |
 | Preconditions | Login page accessible at `/signin` or relevant route |
@@ -153,7 +152,7 @@ Description: This document contains the test plan for the Framework Driven Front
 
 | Field | Value |
 |---:|---|
-| Test Case ID | TC-FV-002 |
+| Test Case ID | Test Case 9 |
 | Feature | Architect Form - Email Format Validation |
 | Test Objective | Verify client-side validation rejects invalid email formats |
 | Preconditions | Signup page accessible |
@@ -167,7 +166,7 @@ Description: This document contains the test plan for the Framework Driven Front
 
 | Field | Value |
 |---:|---|
-| Test Case ID | TC-FV-006 |
+| Test Case ID | Test Case 10 |
 | Feature | File Upload Validation in Design Request Form|
 | Test Objective | Verify invalid file types or oversized files are rejected client-side or server-side and appropriate message shown |
 | Preconditions | Upload form accessible; file to test: invalid type (e.g., `.exe`) or > configured size limit |
@@ -183,7 +182,7 @@ Description: This document contains the test plan for the Framework Driven Front
 
 | Field | Value |
 |---:|---|
-| Test Case ID | TC-AD-005 |
+| Test Case ID | Test Case 11 |
 | Feature | Company Bid Submission - Invalid Payload |
 | Test Objective | Verify that invalid bid submissions are rejected and appropriate errors are returned/shown |
 | Preconditions | Bid submission form accessible; invalid data prepared (missing required field, invalid email) |
@@ -199,7 +198,7 @@ Description: This document contains the test plan for the Framework Driven Front
 
 | Field | Value |
 |---:|---|
-| Test Case ID | TC-FV-007 |
+| Test Case ID | Test Case 12 |
 | Feature | Company Hire Worker - Already Requested |
 | Test Objective | Verify company cannot hire a worker when he already sends him an offer request |
 | Preconditions | Company hire-worker form accessible |
@@ -215,7 +214,7 @@ Description: This document contains the test plan for the Framework Driven Front
 
 | Field | Value |
 |---:|---|
-| Test Case ID | TC-DH-004 |
+| Test Case ID | Test Case 13 |
 | Feature | Proposal Submit Tooltip / UI Feedback |
 | Test Objective | Verify tooltip or contextual help appears when proposal submission is invalid and prevents confusion |
 | Preconditions | Proposal submit UI present (company proposals) |
@@ -231,7 +230,7 @@ Description: This document contains the test plan for the Framework Driven Front
 
 | Field | Value |
 |---:|---|
-| Test Case ID | TC-FV-010 |
+| Test Case ID | Test Case 14 |
 | Feature | Construction Form - Floors Numeric Validation |
 | Test Objective | Verify that the "floors" input accepts only numeric values and enforces reasonable bounds |
 | Preconditions | Construction request or project form accessible |
@@ -247,7 +246,7 @@ Description: This document contains the test plan for the Framework Driven Front
 
 | Field | Value |
 |---:|---|
-| Test Case ID | TC-DH-005 |
+| Test Case ID | Test Case15 |
 | Feature | Worker-to-Company Association Failure |
 | Test Objective | Verify the email and linked url provided by worker|
 | Preconditions | Assignment UI accessible; test worker and company exist or mock invalid id |
