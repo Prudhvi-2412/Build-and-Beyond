@@ -147,7 +147,7 @@ Description: This document contains the test plan for the Framework Driven Front
 | Expected Result | Login is blocked; an error near password field appears. If password strength UI exists, test it separately by entering `abc` (weak) and `Test@1234` (strong). |
 | Actual Result | (to be filled) |
 | Status | Pass |
-| Evidence | ![signin invalid](test_plan/admin_login_invalid.png) ![signin invalid2](test_plan/signin_invalid.png) |
+| Evidence | ![signin invalid](test_plan/admin_login_invalid.png) |
 
 ### Test Case 9
 
