@@ -1,5 +1,7 @@
-const { Worker, ArchitectHiring, DesignRequest, Company, CompanytoWorker, WorkerToCompany, ConstructionProjectSchema } = require('../models');
+const { Worker, ArchitectHiring, DesignRequest, Company, CompanytoWorker, WorkerToCompany, ConstructionProjectSchema} = require('../models');
 const mongoose = require("mongoose");
+// Add this line (or integrate if you have a models index)
+const ChatRoom = require('../models/chatModel');
 const { findOrCreateChatRoom } = require('./chatController'); // NEW: Import the chat utility
 const bcrypt = require('bcrypt');
 // controllers/workerController.js
@@ -629,7 +631,7 @@ const getMyCompany = async (req, res) => {
 
         // If no offer, check for accepted applications to companies, add field selection
         if (!acceptedRequest) {
-            acceptedRequest = await WorkerToCompany.findOne({ workerId: workerId, status: 'Accepted' }).populate('companyId', 'companyName location').lean();
+            acceptedRequest = await WorkerToCompany.findOne({ workerId: workerId, status: 'accepted' }).populate('companyId', 'companyName location').lean();
             if (acceptedRequest) {
                 acceptedRequest.company = acceptedRequest.companyId; // Normalize the company field
             }
@@ -646,26 +648,37 @@ const getMyCompany = async (req, res) => {
         // Custom chat room creation for company hiring to avoid issues with utility function for 'hiring' type
         let chatId = null;
         try {
-            const participants = [workerId, company._id].sort((a, b) => a.toString().localeCompare(b.toString()));
-            let chatRoom = await ChatRoom.findOne({ 
-                participants: { 
-                    $all: participants, 
-                    $size: 2 
-                } 
-            }).lean();
+            // Step 1: Use the acceptedRequest._id as the 'projectId' for the hiring association
+            const projectId = acceptedRequest._id;
 
+            // Step 2: Try to find existing chat room using the association as 'project'
+            let chatRoom = await ChatRoom.findOne({
+                projectId: projectId,  // Use association ID as projectId
+                projectType: 'hiring'
+            }).populate('messages.sender');  // Optional: Populate for full messages
+
+            // Step 3: Create if doesn't exist
             if (!chatRoom) {
-                const roomId = `company_hiring_${participants.join('_')}`;
+                const roomId = `company-hiring-${projectId}`;  // Unique string using association ID
+
                 chatRoom = new ChatRoom({
-                    roomId,
-                    participants,
-                    type: 'company_hiring'
+                    roomId,                          // Required: Unique ID
+                    workerId: workerId,              // Required: Logged-in worker
+                    companyId: company._id,          // Optional but set for company chats
+                    projectId: projectId,            // Required: Use hiring association as 'project'
+                    projectType: 'hiring'            // Required: For hiring/company context
+                    // messages: []  // Optional: Starts empty
                 });
+
                 await chatRoom.save();
-                chatId = roomId;
+                console.log('New company chat room created:', roomId);
             } else {
-                chatId = chatRoom.roomId;
+                console.log('Existing company chat room found:', chatRoom.roomId);
             }
+
+            // Step 4: Set chatId for template
+            chatId = chatRoom.roomId;
+
         } catch (chatError) {
             console.error('Error setting up company chat room:', chatError);
             // Fallback to null, no hang

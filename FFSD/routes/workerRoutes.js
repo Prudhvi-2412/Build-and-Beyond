@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-
+const mongoose = require('mongoose');
 // Import all necessary functions from the worker controller
 const { 
     getJobs, 
