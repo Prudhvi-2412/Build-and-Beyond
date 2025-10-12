@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-
+const mongoose = require('mongoose');
 // Import all necessary functions from the worker controller
 const { 
     getJobs, 
@@ -20,7 +20,9 @@ const {
     postProjectUpdate,
     markProjectAsCompleted,
     submitProposal,
-    updatePassword
+    updatePassword,
+    getMyCompany,
+    leaveCompany
 } = require('../controllers/workerController');
 
 const isAuthenticated = require('../middlewares/auth');
@@ -32,6 +34,8 @@ router.get('/workerjoin_company', isAuthenticated, getJoinCompany);
 router.get('/workersettings', isAuthenticated, getSettings);
 router.get('/worker_edit', isAuthenticated, getEditProfile); // Protected this route
 router.get('/workerdashboard', isAuthenticated, getDashboard);
+router.get('/worker/my-company', isAuthenticated, getMyCompany);
+
 
 // --- API and Form Submission Routes ---
 router.get('/api/workers/:id', isAuthenticated, getWorkerById);
@@ -58,4 +62,5 @@ router.post('/worker/project-update', isAuthenticated, upload.single('updateImag
 router.post('/worker/project-complete', isAuthenticated, markProjectAsCompleted);
 router.post('/worker/submit-proposal', isAuthenticated, submitProposal);
 router.post('/worker/password/update', isAuthenticated, updatePassword);
+router.post('/worker/leave-company', isAuthenticated, leaveCompany);
 module.exports = router;

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Company</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --danger-color: #e74c3c;
+            --background-color: #f5f7fa;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+            --text-light: #7f8c8d;
+            --border-color: #e0e0e0;
+            --shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+        }
+        body {
+            font-family: "Poppins", sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+        }
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 2rem auto;
+        }
+        .company-header {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            padding: 2rem;
+            display: flex;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        .company-header-info {
+            flex-grow: 1;
+        }
+        .company-header-info h1 {
+            font-size: 2rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+        .company-header-info .location {
+            color: var(--text-light);
+            margin-bottom: 1rem;
+        }
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+        }
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            border: none;
+            cursor: pointer;
+        }
+        .btn-chat {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+        .btn-chat:hover {
+            background-color: var(--primary-color);
+        }
+        .btn-leave {
+            background-color: var(--danger-color);
+            color: white;
+        }
+        .btn-leave:hover {
+            background-color: #c0392b;
+        }
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        .project-card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            padding: 1.5rem;
+            transition: var(--transition);
+        }
+        .project-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+        .project-card h3 {
+            font-size: 1.25rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+        .project-card .status {
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+    </style>
+</head>
+<body>
+    <%- include('worker_navbar') %>
+    <div class="container">
+        <% if (company) { %>
+            <div class="company-header">
+                <div class="company-header-info">
+                    <h1><%= company.companyName %></h1>
+                    <p class="location"><%= company.location.city %></p>
+                    <div class="header-actions">
+                        <a href="/chat/<%= chatId %>" class="btn btn-chat">
+                            <i class="fas fa-comment-dots"></i> Chat with Company
+                        </a>
+                        <form action="/worker/leave-company" method="POST" onsubmit="return confirm('Are you sure you want to leave this company?');">
+                            <button type="submit" class="btn btn-leave">
+                                <i class="fas fa-sign-out-alt"></i> Leave Company
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <h2 class="section-title">Ongoing Projects</h2>
+            <div class="project-grid">
+                <% if (projects && projects.length > 0) { %>
+                    <% projects.forEach(project => { %>
+                        <div class="project-card">
+                            <h3><%= project.projectName %></h3>
+                            <p class="status">Status: <%= project.status %></p>
+                        </div>
+                    <% }); %>
+                <% } else { %>
+                    <p>This company has no ongoing projects.</p>
+                <% } %>
+            </div>
+        <% } else { %>
+            <h1>You have not joined a company yet.</h1>
+        <% } %>
+    </div>
+</body>
+</html>

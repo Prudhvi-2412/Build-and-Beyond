@@ -40,7 +40,7 @@
 | :--- | :--- | :--- |
 | **Database** | **MongoDB** | Used to store all application data in a structured, flexible format. |
 | **Backend** | **Node.js / Express** | Used for the server-side logic and API development. |
-| **Frontend** | *\[HTML, CSS, JavaScript, React, etc.\]* | Used for building the user interface. |
+| **Frontend** | *\[EJS,HTML, CSS, JavaScript, React, etc.\]* | Used for building the user interface. |
 
 ---
 

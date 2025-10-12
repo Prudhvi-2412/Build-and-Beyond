@@ -188,8 +188,10 @@
     }
 
     @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
+      from { opacity: 0;
+      }
+      to { opacity: 1;
+      }
     }
 
     .search-bar {
@@ -243,7 +245,8 @@
     }
 
     @keyframes spin {
-      to { transform: rotate(360deg); }
+      to { transform: rotate(360deg);
+      }
     }
 
     .card {
@@ -806,7 +809,7 @@
       </div>
       <a href="/worker_edit"><button class="btn btn-outline">Edit Profile</button></a>
     </div>
-    
+     
     <div class="profile-stats">
       <div class="stat-box">
         <div class="stat-number">12</div>
@@ -835,9 +838,7 @@
     </ul>
     
     <div class="tab-content">
-      <!-- Join a Company Tab -->
-<!-- Join a Company Tab -->
-<div id="join-company" class="tab-pane active">
+      <div id="join-company" class="tab-pane active">
   <div class="search-bar">
     <input type="text" class="search-input" placeholder="Search for construction companies by name, projects, or location...">
     <button class="search-button">Search</button>
@@ -857,6 +858,7 @@
         <span class="company-specializations"><%= company.specialization.join(",") %></span>
         <span class="company-openings"><%= company.currentOpenings.join(",") %></span>
         <span class="company-description"><%= company.aboutCompany %></span>
+        
         <span class="company-benefits"><%= company.whyJoinUs%></span>
         <% if (company.whyJoinUs) { %>
           <span class="company-why-join"><%= company.whyJoinUs %></span>
@@ -876,13 +878,16 @@
       </div>
       <div class="card-footer">
         <button class="btn btn-primary view-details" data-company-id="<%= company._id %>">View Details</button>
-        <button class="btn btn-primary apply-now" data-company-id="<%= company._id %>">Apply Now</button>
+        <% if (isEmployed) { %>
+            <button class="btn btn-primary" disabled title="You are already employed by a company.">Apply Now</button>
+        <% } else { %>
+            <button class="btn btn-primary apply-now" data-company-id="<%= company._id %>">Apply Now</button>
+        <% } %>
       </div>
     </div>
   <% }) %>
 </div>
 
-<!-- Company Details Modal -->
 <div id="companyModal" class="modal">
   <div class="modal-content">
     <span class="close-modal">×</span>
@@ -897,7 +902,7 @@
             <div class="detail-label">Location:</div>
             <div class="detail-value" id="modalLocation"></div>
           </div>
-          <div class="detail-row">
+           <div class="detail-row">
             <div class="detail-label">Company Size:</div>
             <div class="detail-value" id="modalSize"></div>
           </div>
@@ -905,7 +910,7 @@
             <div class="detail-label">Founded:</div>
             <div class="detail-value" id="modalFounded"></div>
           </div>
-          <div class="detail-row">
+           <div class="detail-row">
             <div class="detail-label">Specializations:</div>
             <div class="detail-value" id="modalSpecializations"></div>
           </div>
@@ -913,7 +918,7 @@
             <div class="detail-label">Current Openings:</div>
             <div class="detail-value" id="modalOpenings"></div>
           </div>
-        </div>
+         </div>
       </div>
       
       <div class="company-description">
@@ -927,12 +932,12 @@
       </div>
     </div>
     <div class="modal-footer">
-      <button id="modalApplyButton" class="btn btn-primary btn-large">Apply Now</button>
+      <button 
+      id="modalApplyButton" class="btn btn-primary btn-large">Apply Now</button>
     </div>
   </div>
 </div>
       
-      <!-- Accept Offers Tab -->
       <div id="accept-offers" class="tab-pane">
       <h2>Your Current Offers</h2>
         <p>Companies that have invited you to join their team</p>
@@ -940,8 +945,8 @@
   <% if (offers && offers.length > 0) { %>
     <% offers.forEach(offer => { %>
       <div class="card">
-        <h3><%= offer.name %></h3>
-        <p><strong>Position:</strong> <%= offer.position %></p>
+        <h3><%= offer.company.companyName %></h3>
+         <p><strong>Position:</strong> <%= offer.position %></p>
         <p><strong>Location:</strong> <%= offer.location %></p>
         <p><strong>Salary Range:</strong> ₹<%= offer.salary.toLocaleString('en-IN') %></p>
         <div class="card-footer">
@@ -949,7 +954,7 @@
             <button type="submit" class="btn btn-outline">Decline</button>
           </form>
           <form action="/offers/<%= offer._id %>/accept" method="POST" style="display: inline;">
-            <button type="submit" class="btn btn-primary">Accept Offer</button>
+             <button type="submit" class="btn btn-primary">Accept Offer</button>
           </form>
         </div>
       </div>
@@ -958,13 +963,13 @@
     <div class="empty-state">
       <div class="empty-state-icon">📭</div>
       <h3>No Offers Yet</h3>
-      <p>You don't have any offers at the moment. Continue applying to companies and showcasing your skills!</p>
+      <p>You don't have any offers at the moment.
+ Continue applying to companies and showcasing your skills!</p>
     </div>
     <% } %>
   
   </div>
 
-      <!-- Join Requests Tab -->
       <div id="join-requests" class="tab-pane">
   <h2>Companies you requested to join</h2>
   <p>Track the status of your applications to join companies</p>
@@ -973,7 +978,7 @@
     <% jobApplications.forEach(application => { %>
       <div class="card">
         <span class="status-badge status-<%= application.status.toLowerCase() %>">
-          <%= application.status %>
+           <%= application.status %>
         </span>
         <h3><%= application.compName %></h3>
         <p><strong>Position:</strong> <%= application.positionApplying %></p>
@@ -992,9 +997,7 @@
     </div>
   </div>
 
-  <!-- Application Form Modal -->
-<!-- Application Modal -->
-<div id="applicationModal" class="modal">
+  <div id="applicationModal" class="modal">
   <div class="modal-content application-modal">
     <span class="close-modal">×</span>
     <div class="modal-header">
@@ -1002,68 +1005,63 @@
     </div>
     <div class="modal-body">
       <form id="jobApplicationForm" class="form-container" enctype="multipart/form-data" method="post">
-        <!-- Hidden company ID field -->
         <input type="hidden" id="companyId" name="companyId" value="">
         
-        <!-- 1. Personal Information -->
         <div class="form-section">
           <h3 class="form-section-title">Personal Information</h3>
           <div class="form-row">
             <div class="form-group">
               <label for="fullName" class="form-label">Full Name *</label>
-              <input type="text" class="form-input" id="fullName" name="fullName" required>
+               <input type="text" class="form-input" id="fullName" name="fullName" required>
             </div>
             <div class="form-group">
               <label for="email" class="form-label">Email Address *</label>
               <input type="email" class="form-input" id="email" name="email" required>
             </div>
-          </div>
+           </div>
           <div class="form-row">
             <div class="form-group">
               <label for="location" class="form-label">Current Location/City *</label>
               <input type="text" class="form-input" id="location" name="location" required>
             </div>
             <div class="form-group">
-              <label for="linkedin" class="form-label">LinkedIn Profile</label>
+               <label for="linkedin" class="form-label">LinkedIn Profile</label>
               <input type="url" class="form-input" id="linkedin" name="linkedin" placeholder="https://">
             </div>
           </div>
         </div>
 
-        <!-- 2. Professional Details -->
         <div class="form-section">
           <h3 class="form-section-title">Professional Details</h3>
           <div class="form-row">
-            <div class="form-group">
+             <div class="form-group">
               <label for="experience" class="form-label">Years of Experience *</label>
               <input type="number" class="form-input" id="experience" name="experience" min="0" required>
             </div>
             <div class="form-group">
               <label for="expectedSalary" class="form-label">Expected Salary (₹ per month) *</label>
-              <input type="number" class="form-input" id="expectedSalary" name="expectedSalary" required>
+               <input type="number" class="form-input" id="expectedSalary" name="expectedSalary" required>
             </div>
           </div>
           <div class="form-row">
             <div class="form-group full-width">
               <label for="positionApplying" class="form-label">Position Applying For *</label>
               <input type="text" class="form-input" id="positionApplying" name="positionApplying" required>
-            </div>
+             </div>
           </div>
         </div>
 
-        <!-- 3. Skills & Expertise -->
         <div class="form-section">
           <h3 class="form-section-title">Skills & Specialties</h3>
           <div class="form-row">
             <div class="form-group full-width">
-              <label for="primarySkills" class="form-label">Primary Skills/Specialties *</label>
+               <label for="primarySkills" class="form-label">Primary Skills/Specialties *</label>
               <input type="text" class="form-input" id="primarySkills" name="primarySkills" placeholder="e.g., Sustainable Design, BIM, Urban Planning" required>
               <p class="form-hint">Separate multiple skills with commas</p>
             </div>
           </div>
         </div>
 
-        <!-- 4. Work Experience -->
         <div class="form-section">
           <h3 class="form-section-title">Work Experience</h3>
           <div class="form-row">
@@ -1072,22 +1070,21 @@
               <textarea class="form-textarea" id="workExperience" name="workExperience" required></textarea>
             </div>
           </div>
-        </div>
+         </div>
 
-        <!-- 5. Attachments -->
         <div class="form-section">
           <h3 class="form-section-title">Attachments</h3>
           <div class="form-row">
             <div class="form-group full-width">
               <label class="form-label">Resume/CV (PDF) *</label>
               <div class="form-file-upload" id="resumeUpload">
-                <div class="form-file-icon">📄</div>
+                 <div class="form-file-icon">📄</div>
                 <div class="form-file-label">Click to upload your resume (PDF)</div>
                 <input type="file" class="form-file-input" id="resume" name="resume" accept=".pdf" required>
               </div>
             </div>
           </div>
-        </div>
+         </div>
 
         <div class="form-section">
           <div class="checkbox-group">
@@ -1097,7 +1094,8 @@
         </div>
 
         <div class="form-actions">
-          <button type="button" class="btn btn-outline close-form">Cancel</button>
+          <button type="button" 
+          class="btn btn-outline close-form">Cancel</button>
           <button type="submit" class="btn btn-primary">Submit Application</button>
         </div>
       </form>
@@ -1106,267 +1104,146 @@
 </div>
 
   <script>
-  const resumeInput = document.getElementById('resume');
-  const resumeLabel = resumeInput.previousElementSibling; // the <span class="form-file-label">
-
-  resumeInput.addEventListener('change', function() {
-    if (this.files && this.files.length > 0) {
-      resumeLabel.textContent = this.files[0].name;  // show filename
-    } else {
-      resumeLabel.textContent = 'Click or drag & drop your resume (PDF/DOC)';
-    }
-  });
-  // Wait for DOM to be fully loaded
-document.addEventListener('DOMContentLoaded', function() {
-  // Get modal elements
-  const applicationModal = document.getElementById('applicationModal');
-  const companyModal = document.getElementById('companyModal');
-  const applicationCompanyName = document.getElementById('applicationCompanyName');
-  
-  // Get all "View Details" buttons
-  const viewDetailsButtons = document.querySelectorAll('.view-details');
-  
-  // Get all "Apply Now" buttons from company cards
-  const applyButtons = document.querySelectorAll('.apply-now');
-  
-  // Get the "Apply Now" button from the company details modal
-  const modalApplyButton = document.getElementById('modalApplyButton');
-  
-  // Get all modal close buttons
-  const closeButtons = document.querySelectorAll('.close-modal');
-  const cancelButton = document.querySelector('.close-form');
-  
-  // Tab functionality
-  const tabs = document.querySelectorAll('.nav-link');
-  tabs.forEach(tab => {
-    tab.addEventListener('click', function() {
-      tabs.forEach(t => t.classList.remove('active'));
-      this.classList.add('active');
-      const tabPanes = document.querySelectorAll('.tab-pane');
-      tabPanes.forEach(pane => pane.classList.remove('active'));
-      const tabId = this.getAttribute('data-tab');
-      document.getElementById(tabId).classList.add('active');
-    });
-  });
-
-  // Function to open the application modal with company info
-  function openApplicationModal(companyId, companyName) {
-    // Set the company name in the application modal header
-    applicationCompanyName.textContent = `Apply to ${companyName}`;
-    
-    // Set a hidden field for the company ID (you might need to add this to your form)
-    const companyIdField = document.createElement('input');
-    companyIdField.type = 'hidden';
-    companyIdField.name = 'companyId';
-    companyIdField.value = companyId;
-    
-    // Add or replace the hidden field in the form
-    const existingField = document.querySelector('input[name="companyId"]');
-    if (existingField) {
-      existingField.value = companyId;
-    } else {
-      document.getElementById('jobApplicationForm').prepend(companyIdField);
-    }
-    
-    // Set the form action with the company ID
-    document.getElementById('jobApplicationForm').action = `/worker_request/${companyId}`;
-    
-    // Show the application modal
-    applicationModal.style.display = 'block';
-    
-    // Close company details modal if it's open
-    companyModal.style.display = 'none';
-  }
-  
-  // Handle "View Details" button clicks
-  viewDetailsButtons.forEach(button => {
-    button.addEventListener('click', function() {
-      const companyId = this.getAttribute('data-company-id');
-      const card = this.closest('.card');
-      const companyData = card.querySelector('.company-data');
-      
-      // Populate modal with company data
-      const modalCompanyName = document.getElementById('modalCompanyName');
-      modalCompanyName.textContent = companyData.querySelector('.company-name').textContent;
-      modalCompanyName.setAttribute('data-company-id', companyId);
-      
-      document.getElementById('modalDescription').textContent = companyData.querySelector('.company-description').textContent;
-      document.getElementById('modalLocation').textContent = companyData.querySelector('.company-location').textContent;
-      document.getElementById('modalSize').textContent = companyData.querySelector('.company-size').textContent;
-      document.getElementById('modalFounded').textContent = companyData.querySelector('.company-founded').textContent;
-      document.getElementById('modalSpecializations').textContent = companyData.querySelector('.company-specializations').textContent.split(',').join(', ');
-      document.getElementById('modalOpenings').textContent = companyData.querySelector('.company-openings').textContent.split(',').join(', ');
-      
-      // Handle logo if available
-      const logoElement = companyData.querySelector('.company-logo');
-      if (logoElement) {
-        document.getElementById('modalCompanyLogo').src = logoElement.textContent;
-        document.getElementById('modalCompanyLogo').alt = companyData.querySelector('.company-name').textContent + " Logo";
-      } else {
-        document.getElementById('modalCompanyLogo').src = "https://via.placeholder.com/120";
-        document.getElementById('modalCompanyLogo').alt = "Company Logo";
-      }
-      
-      // Handle benefits - create list items
-      const benefitsElement = companyData.querySelector('.company-benefits');
-      const benefitsList = document.getElementById('modalBenefits');
-      
-      // Clear previous benefits
-      benefitsList.innerHTML = '';
-      
-      if (benefitsElement && benefitsElement.textContent) {
-        const benefits = benefitsElement.textContent.split(',');
-        benefits.forEach(benefit => {
-          if (benefit.trim()) {
-            const li = document.createElement('li');
-            li.textContent = benefit.trim();
-            benefitsList.appendChild(li);
-          }
-        });
-      } else {
-        const li = document.createElement('li');
-        li.textContent = 'Information not available';
-        benefitsList.appendChild(li);
-      }
-      
-      // Set apply button data
-      document.getElementById('modalApplyButton').setAttribute('data-company-id', companyId);
-      
-      // Show the modal
-      companyModal.style.display = 'block';
-    });
-  });
-  
-  // Event listeners for "Apply Now" buttons in company cards
-  applyButtons.forEach(button => {
-    button.addEventListener('click', function() {
-      const companyId = this.getAttribute('data-company-id');
-      const companyCard = this.closest('.card');
-      const companyName = companyCard.querySelector('.company-name').textContent;
-      
-      openApplicationModal(companyId, companyName);
-    });
-  });
-  
-  // Event listener for "Apply Now" button in company details modal
-  if (modalApplyButton) {
-    modalApplyButton.addEventListener('click', function() {
-      const companyId = this.getAttribute('data-company-id');
-      const companyName = document.querySelector('#modalCompanyName').textContent;
-      
-      openApplicationModal(companyId, companyName);
-    });
-  }
-  
-  // Close modals when close button is clicked
-  closeButtons.forEach(button => {
-    button.addEventListener('click', function() {
-      const modal = this.closest('.modal');
-      modal.style.display = 'none';
-    });
-  });
-  
-  // Close application modal when cancel button is clicked
-  if (cancelButton) {
-    cancelButton.addEventListener('click', function() {
-      applicationModal.style.display = 'none';
-    });
-  }
-  
-  // Close modals when clicking outside
-  window.addEventListener('click', function(event) {
-    if (event.target === applicationModal) {
-      applicationModal.style.display = 'none';
-    } else if (event.target === companyModal) {
-      companyModal.style.display = 'none';
-    }
-  });
-  
-  // File upload UI enhancement
-  const resumeUpload = document.getElementById('resumeUpload');
-  const resumeInput = document.getElementById('resume');
-  
-  if (resumeUpload && resumeInput) {
-    resumeUpload.addEventListener('click', function() {
-      resumeInput.click();
-    });
-    
-    resumeInput.addEventListener('change', function() {
-      const fileName = this.files[0] ? this.files[0].name : 'No file selected';
-      const fileLabel = resumeUpload.querySelector('.form-file-label');
-      
-      if (fileLabel) {
-        fileLabel.textContent = fileName;
-      }
-      
-      // Add a visual indicator that file is selected
-      if (this.files[0]) {
-        resumeUpload.classList.add('file-selected');
-      } else {
-        resumeUpload.classList.remove('file-selected');
-      }
-    });
-  }
-  
-  // Form validation
-  const jobApplicationForm = document.getElementById('jobApplicationForm');
-  
-  if (jobApplicationForm) {
-    jobApplicationForm.addEventListener('submit', function(event) {
-      const requiredFields = this.querySelectorAll('[required]');
-      let isValid = true;
-      
-      requiredFields.forEach(field => {
-        if (!field.value.trim()) {
-          isValid = false;
-          field.classList.add('error');
-        } else {
-          field.classList.remove('error');
+    document.addEventListener('DOMContentLoaded', function() {
+        // Resume file input handling
+        const resumeInput = document.getElementById('resume');
+        if (resumeInput) {
+            const resumeLabel = document.querySelector('#resumeUpload .form-file-label');
+            resumeInput.addEventListener('change', function() {
+                if (this.files && this.files.length > 0) {
+                    if (resumeLabel) resumeLabel.textContent = this.files[0].name;
+                } else {
+                    if (resumeLabel) resumeLabel.textContent = 'Click to upload your resume (PDF)';
+                }
+            });
         }
-      });
-      
-      if (!isValid) {
-        event.preventDefault();
-        alert('Please fill in all required fields marked with *');
-      }
-    });
-  }
-  
-  // Search functionality
-  const searchInput = document.querySelector('.search-input');
-  const searchButton = document.querySelector('.search-button');
-  const companyCards = document.querySelectorAll('.card');
-  
-  if (searchInput && searchButton) {
-    function performSearch() {
-      const searchTerm = searchInput.value.toLowerCase();
-      
-      companyCards.forEach(card => {
-        const companyData = card.querySelector('.company-data');
-        const companyName = companyData.querySelector('.company-name').textContent.toLowerCase();
-        const companyLocation = companyData.querySelector('.company-location').textContent.toLowerCase();
-        const companySpecializations = companyData.querySelector('.company-specializations').textContent.toLowerCase();
-        const companyOpenings = companyData.querySelector('.company-openings').textContent.toLowerCase();
         
-        if (companyName.includes(searchTerm) || 
-            companyLocation.includes(searchTerm) || 
-            companySpecializations.includes(searchTerm) || 
-            companyOpenings.includes(searchTerm)) {
-          card.style.display = 'block';
-        } else {
-          card.style.display = 'none';
+        // Get modal elements
+        const applicationModal = document.getElementById('applicationModal');
+        const companyModal = document.getElementById('companyModal');
+        const applicationCompanyName = document.getElementById('applicationCompanyName');
+        const viewDetailsButtons = document.querySelectorAll('.view-details');
+        const applyButtons = document.querySelectorAll('.apply-now');
+        const modalApplyButton = document.getElementById('modalApplyButton');
+        const closeButtons = document.querySelectorAll('.close-modal');
+        const cancelButton = document.querySelector('.close-form');
+        
+        // Tab functionality
+        const tabs = document.querySelectorAll('.nav-link');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', function() {
+                tabs.forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active'));
+                document.getElementById(this.getAttribute('data-tab')).classList.add('active');
+            });
+        });
+
+        // Function to open the application modal
+        function openApplicationModal(companyId, companyName) {
+            applicationCompanyName.textContent = `Apply to ${companyName}`;
+            const companyIdField = document.getElementById('companyId');
+            if (companyIdField) {
+                companyIdField.value = companyId;
+            }
+            document.getElementById('jobApplicationForm').action = `/worker_request/${companyId}`;
+            applicationModal.style.display = 'block';
+            companyModal.style.display = 'none';
         }
-      });
-    }
-    
-    searchButton.addEventListener('click', performSearch);
-    searchInput.addEventListener('keyup', function(event) {
-      if (event.key === 'Enter') {
-        performSearch();
-      }
+
+        // Handle "View Details" button clicks
+        viewDetailsButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const companyId = this.getAttribute('data-company-id');
+                const card = this.closest('.card');
+                const companyData = card.querySelector('.company-data');
+                
+                document.getElementById('modalCompanyName').textContent = companyData.querySelector('.company-name').textContent;
+                document.getElementById('modalDescription').textContent = companyData.querySelector('.company-description').textContent;
+                document.getElementById('modalLocation').textContent = companyData.querySelector('.company-location').textContent;
+                document.getElementById('modalSize').textContent = companyData.querySelector('.company-size').textContent;
+                document.getElementById('modalFounded').textContent = companyData.querySelector('.company-founded').textContent;
+                document.getElementById('modalSpecializations').textContent = companyData.querySelector('.company-specializations').textContent;
+                document.getElementById('modalOpenings').textContent = companyData.querySelector('.company-openings').textContent;
+
+                const benefitsList = document.getElementById('modalBenefits');
+                benefitsList.innerHTML = '';
+                const benefitsText = companyData.querySelector('.company-benefits')?.textContent;
+                if (benefitsText) {
+                    benefitsText.split(',').forEach(benefit => {
+                        if (benefit.trim()) {
+                            const li = document.createElement('li');
+                            li.textContent = benefit.trim();
+                            benefitsList.appendChild(li);
+                        }
+                    });
+                } else {
+                    const li = document.createElement('li');
+                    li.textContent = 'Information not available';
+                    benefitsList.appendChild(li);
+                }
+                
+                modalApplyButton.setAttribute('data-company-id', companyId);
+                companyModal.style.display = 'block';
+            });
+        });
+
+        // Handle "Apply Now" button clicks
+        applyButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const companyId = this.getAttribute('data-company-id');
+                const companyName = this.closest('.card').querySelector('.company-name').textContent;
+                openApplicationModal(companyId, companyName);
+            });
+        });
+
+        if (modalApplyButton) {
+            modalApplyButton.addEventListener('click', function() {
+                const companyId = this.getAttribute('data-company-id');
+                const companyName = document.getElementById('modalCompanyName').textContent;
+                openApplicationModal(companyId, companyName);
+            });
+        }
+        
+        // Modal closing functionality
+        closeButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                this.closest('.modal').style.display = 'none';
+            });
+        });
+
+        if (cancelButton) {
+            cancelButton.addEventListener('click', function() {
+                applicationModal.style.display = 'none';
+            });
+        }
+        
+        window.addEventListener('click', function(event) {
+            if (event.target === applicationModal) applicationModal.style.display = 'none';
+            if (event.target === companyModal) companyModal.style.display = 'none';
+        });
+
+        // Form validation
+        const jobApplicationForm = document.getElementById('jobApplicationForm');
+        if (jobApplicationForm) {
+            jobApplicationForm.addEventListener('submit', function(event) {
+                let isValid = true;
+                this.querySelectorAll('[required]').forEach(field => {
+                    if (!field.value.trim()) {
+                        isValid = false;
+                        field.style.borderColor = 'red';
+                    } else {
+                        field.style.borderColor = '';
+                    }
+                });
+                if (!isValid) {
+                    event.preventDefault();
+                    alert('Please fill in all required fields.');
+                }
+            });
+        }
     });
-  }
-});
 </script>
+
 </body>
 </html>

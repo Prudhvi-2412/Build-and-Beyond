@@ -1,48 +1,33 @@
 const express = require('express');
 const router = express.Router();
-const multer = require('multer');
+const multer = require('multer');  // Ensure this is imported
 const { getDashboard, getOngoingProjects, getProjectRequests, updateProjectStatusController, 
     getHiring, getSettings, getBids, getCompanyRevenue, 
-    createHireRequest, updateCompanyProfile, handleWorkerRequest, submitBidController, submitProjectProposal} = require('../controllers/companyController');
-const isAuthenticated = require('../middlewares/auth'); // Assuming 'auth' is the middleware name
+    createHireRequest, updateCompanyProfile, handleWorkerRequest, submitBidController, submitProjectProposal, getEmployees} = require('../controllers/companyController');
+const isAuthenticated = require('../middlewares/auth');
+
+// Create a Multer instance (no storage needed since no file uploads)
 const upload = multer();
-// Company dashboard and main pages
-router.get('/companydashboard', isAuthenticated, getDashboard); // Company dashboard view
-router.get('/companyongoing_projects', isAuthenticated, getOngoingProjects); // Ongoing projects for company
-router.get('/project_requests', isAuthenticated, getProjectRequests); // Project requests page
-// This is the new route you need to add
+
+router.get('/companydashboard', isAuthenticated, getDashboard);
+router.get('/companyongoing_projects', isAuthenticated, getOngoingProjects);
+router.get('/project_requests', isAuthenticated, getProjectRequests);
 router.patch('/api/projects/:projectId/:status', isAuthenticated, updateProjectStatusController);
-router.get('/companyhiring', isAuthenticated, getHiring); // Hiring page for company
+router.get('/companyhiring', isAuthenticated, getHiring);
 
-// START: ADD THIS NEW ROUTE
-router.post('/companytoworker', isAuthenticated, createHireRequest);
-// END: ADD THIS NEW ROUTE
+// FIXED: Add upload.any() middleware here to parse FormData
+router.post('/companytoworker', isAuthenticated, upload.any(), createHireRequest);
 
-router.get('/companysettings', isAuthenticated, getSettings); // Company settings page
-router.get('/companybids', isAuthenticated, getBids); // Company bids page
-router.get('/companyrevenue', isAuthenticated, getCompanyRevenue); // Company revenue page
-// Accept a bid → Create ongoing project
-
-
-
-// Placeholder for additional routes (e.g., revenue form if different from revenue view)
+router.get('/companysettings', isAuthenticated, getSettings);
+router.get('/companybids', isAuthenticated, getBids);
+router.get('/companyrevenue', isAuthenticated, getCompanyRevenue);
+router.get('/my-employees', isAuthenticated, getEmployees);
 router.get('/revenue_form', isAuthenticated, (req, res) => {
-  res.render('company/revenue_form'); // Placeholder, update controller if needed
+  res.render('company/revenue_form');
 });
-
 router.patch('/worker-request/:requestId', isAuthenticated, handleWorkerRequest);
-
-router.post(
-    '/update-company-profile', 
-    isAuthenticated, 
-    upload.any(), // Use multer to handle the form data
-    updateCompanyProfile
-);
-
-// Customer accepts a company's bid
-// Customer accepts company bid - creates ongoing project
+router.post('/update-company-profile', isAuthenticated, upload.any(), updateCompanyProfile);
 router.post('/submit-bid', isAuthenticated, submitBidController);
 router.post('/company/submit-proposal', isAuthenticated, submitProjectProposal);
-// Add more routes as per companyController functions or requirements
 
 module.exports = router;
