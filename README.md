@@ -9,13 +9,14 @@
 * **Worker Hiring (Rebuild/Renovation):** Easily contact and hire specialized workers like **Architects** and **Interior Designers** for specific renovation projects (e.g., rebuilding a bedroom or bathroom).
 * **Project Detailing & Deal Making:** Customers can provide detailed specifications for their project, set a target price, and finalize the deal directly on the platform.
 * **Design Gallery:** Access a gallery of professional **designs** for inspiration and reference.
-* **Secure Chat:** After an offer is accepted, customers can **chat** directly with the selected workers to discuss project details and progress.
-* **🆕 Project Updates Page:** Customers can view a dedicated page featuring **regular project updates** (including photos, progress reports, etc.) posted by the workers and companies they have hired.
+* **Secure Chat:** After an offer is accepted, customers can **chat** directly with the selected **workers or companies** to discuss project details and progress.
+* **Project Updates Page:** Customers can view a dedicated page featuring **regular project updates** (including photos, progress reports, etc.) posted by the **companies** they have hired.
 
 ### 👷 Company & Worker Features
 * **Tender Participation:** Construction companies can view and bid on customer tenders for large-scale construction projects.
-* **Project Update Submission:** Companies and Workers are responsible for **regularly updating** the progress of their ongoing projects for customer viewing.
-* **Worker Management:** Companies can view a **list of all workers** (Architects and Interior Designers) currently hired under their profile.
+* **Company Project Update Submission:** Companies are responsible for **regularly updating** the progress of their ongoing projects for customer viewing.
+* **Worker Project Update Submission:** Workers are responsible for **regularly updating** the progress of their ongoing projects for customer viewing.
+* **Worker Management (Company):** Companies can view a **list of all workers** (Architects and Interior Designers) currently hired under their profile.
 * **Worker Hiring (Company):** Companies can **send job offers** to individual workers (Architects/Interior Designers) to hire them for their firm.
 * **Company Application (Worker):** Workers can **send requests** to companies to join their team.
 * **Offer Management:** Accept or decline offers and job requests from both customers and companies.
@@ -54,12 +55,12 @@ You will need the following software installed on your machine:
 
 1.  **Clone the repository:**
     ```bash
-    git clone https://github.com/kadiamyeshwanth/FDFED
+    git clone [https://github.com/kadiamyeshwanth/FDFED](https://github.com/kadiamyeshwanth/FDFED)
     ```
 
 2.  **Navigate into the project directory:**
     ```bash
-    # Assuming your setup places the app within a specific path
+    # Move into the cloned repository folder
     cd FDFED
     ```
 
