@@ -1,129 +1,674 @@
-`test_plan.md`
 
-## 1. Sign Up Test Cases
+# FFSD Mid-Review — Test Plan
 
-| Case | Input | Expected Result | Actual Result | Status | Screenshot |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| **Invalid** | `Type: Customer`,`Full Name: Sai Manideep`, `Email: saimanideep@gmailcom` ,`Date of Birth: 15-01-2025`,`Password : 123`|`Error Message : "Please enter a valid email address`, `You must be atleast 18 years old`,`Password must be atleast 6 characters`|`Error Message : "Please enter a valid email address`,`You must be atleast 18 years old`,`Password must be atleast 6 characters` | Passed | ![Invalid Signup Case](test_plan/signup_valid.png) |
-| **Valid** | `Type: Customer`,`Full Name: Sai Manideep`, `Email: saimanideep@gmail.com` ,`Date of Birth: 30-09-2005`,`Password : Sai123@` | Account created successfully. | A "Login successful" message is shown. | Passed | ![Valid Signup Case](test_plan/signup_valid_case.png) |
+Project Title: Build & Beyond
+
+Group No: 38
+
+Frontend Framework: HTML + CSS +EJS
+
+Backend: Node.js + Express + MongoDB
+
+Description: This document contains the test plan for the Framework Driven Front-End Development (FFSD) mid-review submission. The tests focus on three areas required by the assignment: form validations (DOM-based), dynamic HTML implementation (dynamic rendering of components/lists/cards), and asynchronous data handling (fetch/axios). Evidence (screenshots) are placed in the `/test_plsn/` folder inside the zip submission.
+---
+
+## Test Environment
+
+| Item | Details |
+|---|---|
+| Browsers | Google Chrome vlatest, Mozilla Firefox latest, Microsoft Edge latest |
+| OS | Windows 10/11 |
+| Backend | Node.js 14+ (as used in project) with local MongoDB or MongoDB Atlas |
+| Tools | Postman (for manual API checks), Chrome DevTools, VS Code |
+| Evidence folder | `/test_plan/` (screenshots) |
 
 ---
 
-## 2. Sign In Test Cases
+## Test Cases: Form Validation (DOM)
 
-| Case | Input | Expected Result | Actual Result | Status | Screenshot |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| **Invalid** | `Email: gautam.thota@example.com`, `Password: dlufgsiudfi` | Error message: "Invalid email or password". | A red banner with the text "Invalid email or password" is displayed. | Passed | ![Invalid Signin Case](test_plan/signin_invalid_case.png) |
-| **Valid** | `Email: gautam.thota@example.com`, `Password: 123456` | User successfully authenticated. | A green banner with "Login successful" is displayed. | Passed | ![Valid Signin Case](test_plan/signin_valid_case.png) |
+All form tests assume the app is running locally at http://localhost:4000
 
----
+### Test Case - 1
 
-## 3. Profile Update Test Cases
+| Field | Value |
+|---:|---|
+| Test Case ID | TC-FV-001 |
+| Feature | Signup / Registration Form - Required Fields |
+| Test Objective | Verify that required fields are validated client-side and appropriate error messages appear when omitted |
+| Preconditions | App running, signup page accessible at `/signup` or relevant route |
+| Test Steps | 1. Open signup page. 2. Leave "Name" empty. 3. Fill other fields with valid values (Email: `ismaimanideep.p@gmail.com`, Password: `Test@1234`, Phone: `9876543210`). 4. Click Submit. |
+| Expected Result | Submission is blocked; an inline error message appears near the "Name" field and form does not submit to server. |
+| Actual Result | (to be filled during execution) |
+| Status | (Pass/Fail) |
+| Evidence | (none) |
 
-| Case | Input | Expected Result | Actual Result | Status | Screenshot |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| **Invalid** | `Phone: 2355` | Alert message: "Please enter a valid 10-digit Indian phone number starting with 9, 8, 7, or 6." | A JavaScript alert appears. | Passed | ![Invalid Profile Case](test_plan/profile_invalid_case.png) |
-| **Valid** | `Phone: 7869408765` | Profile updated successfully. | A JavaScript alert appears saying: "Profile updated successfully!". | Passed | ![Valid Profile Case](test_plan/profile_valid_case.png) |
+### Test Case - 2
 
----
+| Field | Value |
+|---:|---|
+| Test Case ID | TC-FV-002 |
+| Feature | Signup / Registration Form - Email Format Validation |
+| Test Objective | Verify client-side validation rejects invalid email formats |
+| Preconditions | Signup page accessible |
+| Test Steps | 1. Open signup page. 2. Enter Name: `K Prudhvi` 3. Enter Email: `prudhvi16321` (invalid). 4. Enter Password: `Test@1234`. 5. Click Submit. |
+| Expected Result | Inline validation shows "Enter a valid email" and submission is blocked. |
+| Actual Result | (to be filled) |
+| Status | (Pass/Fail) |
+| Evidence | ![architect email invalid](test_plan/architect_email_invalid.png) |
 
-## 4. Payment Test Cases
+### Test Case - 3
 
-| Case | Input | Expected Result | Actual Result | Status | Screenshot |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| **Invalid** | `Expiry: 23/34` | Alert message: "Invalid month. Please enter a value between 01 and 12." | A JavaScript alert appears. | Passed | ![Invalid Payment Case](test_plan/payment_invalid_case.png) |
-| **Valid** | `Expiry: 12/34` | The form passes validation. | The form submits successfully. | Passed | ![Valid Payment Case](test_plan/payment_valid_case.png) |
+| Field | Value |
+|---:|---|
+| Test Case ID | TC-FV-003 |
+| Feature | Login Form - Password Required and Strength Hint |
+| Test Objective | Verify password required validation and (if available) client-side password strength hints |
+| Preconditions | Login page accessible at `/signin` or relevant route |
+| Test Steps | 1. Open login page. 2. Enter Email: `kadiamyeshwanth@gmail.com`. 3. Leave Password blank. 4. Click Login. |
+| Expected Result | Login is blocked; an error near password field appears. If password strength UI exists, test it separately by entering `abc` (weak) and `Test@1234` (strong). |
+| Actual Result | (to be filled) |
+| Status | (Pass/Fail) |
+| Evidence | ![signin invalid](test_plan/admin_login_invalid.png) ![signin invalid2](test_plan/signin_invalid.png) |
 
----
+### Test Case - 4
 
-## 5. Sign Up Test Cases for Shopmanager
-
-| Case | Input | Expected Result | Actual Result | Status | Screenshot |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| **Invalid** | `Name: Jeevan`, `Email: jeevankumar.vendor@gmail.com`, `Contact Number:9456521365`,`password:12345678`,`confirm password:12345678`,`Store name:Wholesale`,`Store Location:Warangal` | error message: "Please enter a valid 10-digit phone number and Please enter a valid Gmail address(e.g.,example@gmail.com)". | A error message is shown. | Passed | ![Invalid Signup Case](./test_plan/store_signup_invaid.png) |
-| **Valid** | `Name: Jeevan`, `Email: jeevankumar.vendor@gmaill.com`, `Contact Number:94565213657`,`password:12345678`,`confirm password:12345678`,`Store name:Wholesale`,`Store Location:Warangal` | Account created successfully. | A "Login successful" message is shown. | Passed | ![Valid Signup Case](./test_plan/store_signup_valid.png) |
-
----
-
-## 6. Sign In Test Cases for Shopmanager
-
-| Case | Input | Expected Result | Actual Result | Status | Screenshot |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| **Invalid** | `Email: veda.prakash.vendor@gmaqil.com`, `Password: 12345678`,`Role : Store Manager`| Error message: "Invalid email or password". | A red banner with the text "Invalid email or password" is displayed. | Passed | ![Invalid Signin Case](./test_plan/shop_manager_login_invalid.png) |
-| **Valid** | `Email: veda.prakash.vendor@gmail.com`, `Password: 12345678`,`Role : Store Manager`| User successfully authenticated. | A green banner with "Login successful" is displayed. | Passed | ![Valid Signin Case](./test_plan/shop_manager_login_valid.png) |
-
----
-
-## 7. Profile Update Test Cases for Shopmanager
-
-| Case | Input | Expected Result | Actual Result | Status | Screenshot |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| **Invalid** | `Email: veda.prakasah.vendor@gmaail.com` | Alert message: "Please use a Valid email from  a valid provider" | A JavaScript alert appears. | Passed | ![Invalid Profile Case](./test_plan/shop_manager_profile_edit_invalid.png) |
-| **Valid** | `Email: veda.prakasah.vendor@gmail.com` | Profile updated successfully. | A JavaScript alert appears saying: "Profile updated successfully!". | Passed | ![Valid Profile Case](./test_plan/shop_manager_profile_edit_valid.png) |
-
----
-
-## 8. Add New product Test Cases
-
-| Case | Input | Expected Result | Actual Result | Status | Screenshot |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| **Invalid** | `Productname:Pet Scraching Poll`,`Category:Toys`,`Pet Type:Cat`,`Stock Satus:In Stock`,`Description:New Stock`,`Size:medium`,`Regular Price:400`,`Sale price:500`,`Stock Quantity:15` | error message: "Sale price must be less than regular price" | A error message is shown | Passed | ![Invalid Add product Case](./test_plan/adding_product_invalid.png) |
-| **Valid** |  `Productname:Pet Scraching Poll`,`Category:Toys`,`Pet Type:Cat`,`Stock Satus:In Stock`,`Description:New Stock`,`Size:medium`,`Regular Price:400`,`Sale price:350`,`Stock Quantity:15` | Product should be added | Product added successfully. | Passed | ![Valid Add product Case](./test_plan/adding_product_valid.png) |
-
----
-
-## Event Manager Signup Test Cases
-
-| Case | Input | Expected Result | Actual Result | Status | Screenshot |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| **Invalid** | `Name: J` | Error message: "Name must be at least 2 characters long". | Error message is shown under the name field. | Passed | ![Invalid Name Case](test_plan/eventManager_signup_invalid_case.png) |
-| **Valid** | `Name`: John Doe <br> `Contact`: 9876543210 <br> `Email`: john.doe@gmail.com <br> `Password`: password123 <br> `Confirm Password`: password123 <br> `Company`: Doe Events <br> `Location`: Delhi <br> `Terms`: Checked | Form submits successfully and shows a success message. | A "Signup successful! Redirecting..." message is shown. | Passed | ![Valid Signup Case](test_plan/eventManager_signup_invalid_case.png) |
-
-## Sign In Test Cases
-
-| Case | Input | Expected Result | Actual Result | Status | Screenshot |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| **Invalid** | `Email: john.doe@gmail.co` <br> `Password: wrongpassword` | Error message: "Invalid email or password". | A red banner with "Invalid email or password" is shown. | Passed | ![Invalid Signin Case](/test_plan/eventManager_signin_invalid_case.png) |
-| **Valid** | `Email: john.doe@gmail.com` <br> `Password: correctpassword` | User is successfully authenticated and redirected. | A green banner with "Login successful" is shown. | Passed | ![Valid Signin Case](/test_plan//eventManager_signin_valid_case.png) |
-
-## Create New Event Test Cases
-
-| Case | Input | Expected Result | Actual Result | Status | Screenshot |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| **Invalid** | `Event Name`: Annual Pet Gala <br> `Date and Time`: October 01, 2025, 12:00 pm| Alert message: "⚠️ Please select a future date and time for your event." | A JavaScript alert appears with the future date error. | Passed | ![Invalid Event Date](/test_plan/create_event_invalid_case.png) |
-| **Valid** | `Event Name`: Annual Pet Gala <br> `Date and Time`: October 25, 2025, 10:00 AM <br> (All other fields validly filled) | Alert message: "🎉 Event created successfully!" followed by a page reload. | A success alert is shown, and the page reloads. | Passed | ![Valid Event Case](/test_plan/create_event_valid_case.png) |
-
-# Test Plan for Happy Tails Platform
-
-## 1. Event Manager Profile Test Cases
-
-| Case | Input | Expected Result | Actual Result | Status | Screenshot |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| **Invalid** | `Email`: john.doe@gmail.co | Alert message: "Please enter a valid Gmail address." | A JavaScript alert appears with the validation error. | Passed | ![Invalid Profile Email](/test_plan/eventManager_profile_invalid_email_case.png) |
-| **Valid** | All fields filled with valid data. | Profile updates successfully without errors. | The modal closes and the profile information is updated on the dashboard. | Passed | ![Valid Profile Update](/test_plan/eventManager_profile_valid_email_case.png) |
-
----
-## 3. Update Existing Event Test Cases
-
-| Case | Input | Expected Result | Actual Result | Status | Screenshot |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| **Invalid** | `Date`: October 1, 2025 | Alert message: "Please select a future date and time for your event." | A JavaScript alert appears with the future date error. | Passed | ![Invalid Event Update Date](/test_plan/update_event_invalid_date_case.png) |
-| **Valid** | All fields updated with valid data. | The event details are saved successfully without any errors. | The form is saved and the event information is updated. | Passed | ![Valid Event Update](/test_plan/update_event_valid_case.png) |
+| Field | Value |
+|---:|---|
+| Test Case ID | TC-FV-004 |
+| Feature | Project Request Form - Numeric and Length Validation (Phone) |
+| Test Objective | Verify phone input accepts only numeric characters and enforces length (10 digits) |
+| Preconditions | Project request form accessible |
+| Test Steps | 1. Open project request form. 2. Enter Phone: `abcd1234` 3. Click Submit. 4. Enter Phone: `987654321` (9 digits) 5. Click Submit. 6. Enter Phone: `9876543210` (10 digits). Click Submit. |
+| Expected Result | Non-numeric input rejected; 9-digit input triggers validation error; 10-digit accepted and submission proceeds. |
+| Actual Result | (to be filled) |
+| Status | (Pass/Fail) |
+| Evidence | (none) |
 
 ---
 
-## 4. Edit Attendee Test Cases
+## Test Cases: Dynamic HTML Implementation
 
-| Case | Input | Expected Result | Actual Result | Status | Screenshot |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| **Invalid** | `Phone No`: 123456789 | Alert message: "Please enter a valid 10-digit phone number." | A JavaScript alert appears with the phone number validation error. | Passed | ![Invalid Attendee Phone](/test_plan/edit_attendee_invalid_phone_case.png) |
-| **Valid** | `Name`: akshay <br> `Phone No`: 1234567890 | Attendee information is saved successfully. | The modal closes and the attendee list shows the updated information. | Passed | ![Valid Attendee Edit](/test_plan/edit_attendee_valid_case.png) |
+These check dynamic rendering, list updates, and component loading without full page reloads.
+
+### Test Case - 1
+
+| Field | Value |
+|---:|---|
+| Test Case ID | TC-DH-001 |
+| Feature | Dynamic Project List Rendering |
+| Test Objective | Verify that newly added projects appear immediately in the project list (DOM) without manual refresh |
+| Preconditions | User is authenticated, Projects page accessible at `/projects` |
+| Test Steps | 1. Open Projects page. 2. Note current count of project cards. 3. Use "Add Project" form and submit valid project: Title: `Test Renovation`, Customer Email: `prudhvi16321@gmail.com`, Phone: `9876543210`, Description: `Quick test project`. 4. Observe project list. |
+| Expected Result | New project card appears at top of list and total count increments by 1 dynamically. |
+| Actual Result | (to be filled) |
+| Status | (Pass/Fail) |
+| Evidence | (none) |
+
+### Test Case - 2
+
+| Field | Value |
+|---:|---|
+| Test Case ID | TC-DH-002 |
+| Feature | Dynamic Search / Filter |
+| Test Objective | Verify client-side search/filter updates the displayed list in real-time |
+| Preconditions | Projects or Workers list page accessible with multiple items loaded |
+| Test Steps | 1. Open list page. 2. Type `architect` into search/filter input. 3. Observe list update. |
+| Expected Result | List filters to show only items matching `architect` without full page reload. |
+| Actual Result | (to be filled) |
+| Status | (Pass/Fail) |
+| Evidence | (none) |
+
+### Test Case - 3
+
+| Field | Value |
+|---:|---|
+| Test Case ID | TC-DH-003 |
+| Feature | Expand/Collapse Details (component state) |
+| Test Objective | Verify clicking a project/worker card toggles an expanded details panel using DOM class toggles or React state |
+| Preconditions | Projects or Workers list loaded |
+| Test Steps | 1. Open Projects list. 2. Click "More" or card to expand details. 3. Click again to collapse. |
+| Expected Result | Details panel expands and collapses smoothly; aria attributes update if implemented. |
+| Actual Result | (to be filled) |
+| Status | (Pass/Fail) |
+| Evidence | (none) |
 
 ---
 
-## 5. Book Event Test Cases (User View)
+## Test Cases: Async Data Handling (fetch / axios)
 
-| Case | Input | Expected Result | Actual Result | Status | Screenshot |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| **Invalid** | `Email Address`: akshay@gmail | Alert message: "Please enter a valid email address." | A JavaScript alert appears with the email validation error. | Passed | ![Invalid Booking Email](/test_plan/book_event_invalid_case.png) |
-| **Valid** | All personal and booking details filled correctly. | The user proceeds to the payment page without validation errors. | The form is validated, and the "Proceed to Payment" button becomes active. | Passed | ![Valid Booking Form](/test_plan/book_event_valid_case.png) |
+Note: Use the same sample data as above where applicable. Tests cover data submission (POST), retrieval (GET), and deletion (DELETE). Ensure backend server and DB are reachable for integration testing.
+
+### Test Case - 1
+
+| Field | Value |
+|---:|---|
+| Test Case ID | TC-AD-001 |
+| Feature | Create Project (POST) |
+| Test Objective | Verify client sends POST request and UI updates after successful response |
+| Preconditions | API endpoint POST `/api/projects` available; user authenticated if required |
+| Test Steps | 1. Open Add Project form. 2. Enter Title: `Async Create Test` 3. Customer Email: `prudhvi16321@gmail.com` 4. Phone: `9876543210` 5. Submit form. 6. Inspect Network tab for POST; confirm 201/200 response; confirm UI shows new project. |
+| Expected Result | POST request returns success (200/201) with project payload; UI updates to include created project. Screenshot saved to `/network_evidence/TC-AD-001_post_success.png`. |
+| Actual Result | (to be filled) |
+| Status | (Pass/Fail) |
+| Evidence | ![post success placeholder](test_plan/company_bid_submission_valid.png) |
+
+### Test Case - 2
+
+| Field | Value |
+|---:|---|
+| Test Case ID | TC-AD-002 |
+| Feature | Retrieve Projects (GET) |
+| Test Objective | Verify GET request returns a list and the front-end renders it correctly |
+| Preconditions | API endpoint GET `/api/projects` available and returns data |
+| Test Steps | 1. Open Projects page. 2. Open Network tab. 3. Trigger list load/refresh. 4. Observe GET request and response payload. |
+| Expected Result | GET returns 200 with JSON array; UI renders each item as a card/list row. Save response screenshot `/network_evidence/TC-AD-002_get_list.png`. |
+| Actual Result | (to be filled) |
+| Status | (Pass/Fail) |
+| Evidence | (none) |
+
+### Test Case - 3
+
+| Field | Value |
+|---:|---|
+| Test Case ID | TC-AD-003 |
+| Feature | Delete Project (DELETE) |
+| Test Objective | Verify client sends DELETE request and the UI removes the item without full refresh |
+| Preconditions | At least one project exists; endpoint DELETE `/api/projects/:id` available |
+| Test Steps | 1. Open Projects list. 2. Note a project's id or click Delete on a project card. 3. Confirm deletion in UI (if confirmation modal). 4. Observe Network tab for DELETE request and response code. |
+| Expected Result | DELETE returns 200/204 and UI removes card dynamically. Save screenshot `/network_evidence/TC-AD-003_delete_success.png`. |
+| Actual Result | (to be filled) |
+| Status | (Pass/Fail) |
+| Evidence | (none) |
+
+### Test Case - 4
+
+| Field | Value |
+|---:|---|
+| Test Case ID | TC-AD-004 |
+| Feature | Error Handling for Failed Requests |
+| Test Objective | Verify UI shows error state when fetch/axios returns 4xx/5xx or network failure |
+| Preconditions | Simulate server error (e.g., stop backend or mock 500) |
+| Test Steps | 1. Stop backend or force endpoint to return 500. 2. Trigger GET or POST. 3. Observe UI error message and console/logs. |
+| Expected Result | UI displays a user-friendly error message and doesn't crash; retry option visible if implemented. Screenshot to `/network_evidence/TC-AD-004_error.png`. |
+| Actual Result | (to be filled) |
+| Status | (Pass/Fail) |
+| Evidence | (none) |
+
+---
+
+## Evidence
+
+Evidence screenshots are in test_plan
+
+---
+
+## Mapped Evidence (screenshots in `test_plan/`)
+
+The table below maps the screenshots found in the `test_plan/` folder to existing test cases where applicable. If no existing test case matches a screenshot, a new, focused test case has been added immediately after the mapping table and references the screenshot filename as evidence.
+
+| Screenshot filename | Matches existing TC? | Mapped Test Case ID | Short description |
+|---|---:|---|---|
+| admin_login_invalid.png | Yes | TC-FV-003 | Login form — invalid password/email validation (Actual Result evidence)
+| admin_login_valid.png | No (added) | TC-FV-005 | Admin login successful (evidence of successful auth)
+| architect_email_invalid.png | Yes | TC-FV-002 | Email format validation for architect signup
+| architect_file_upload_invalid.png | No (added) | TC-FV-006 | Architect file upload validation failure (invalid file type/size)
+| company_bid_submission_invalid.png | No (added) | TC-AD-005 | Company bid submission — invalid payload / server-side rejection
+| company_bid_submission_valid.png | No (added) | TC-AD-006 | Company bid submission — successful POST and UI update
+| company_hire_worker_invalid.png | No (added) | TC-FV-007 | Hiring form — invalid input or missing required fields when hiring a worker
+| company_proposal_submit_tooltip_invalid.png | No (added) | TC-DH-004 | Dynamic UI tooltip shown on invalid proposal submission
+| company_signup_invalid.png | Partially | TC-FV-002 / TC-FV-008 | Company signup invalid email/field errors (reuse email validation TC + new TC-FV-008 for full signup flow)
+| company_signup_valid.png | No (added) | TC-FV-009 | Company signup success (valid data) |
+| construction_email_invalid.png | Yes | TC-FV-002 | Email validation for construction request forms
+| construction_floors_invalid.png | No (added) | TC-FV-010 | Numeric/length validation for "floors" field in construction form
+| customer_signup_invalid.png | Partially | TC-FV-002 | Customer signup invalid email (reuse email validation TC). See TC-FV-011 for full signup invalid case.
+| customer_signup_valid.png | No (added) | TC-FV-012 | Customer signup success (valid data) |
+| signin_invalid.png | Yes | TC-FV-003 | Sign-in invalid credentials evidence
+| signin_valid.png | No (added) | TC-FV-013 | Sign-in success evidence |
+| workertocompany_invalid.png | No (added) | TC-DH-005 | Dynamic association: assigning worker to company failed (UI/network evidence) |
+| worker_signup_invalid.png | Partially | TC-FV-002 | Worker signup invalid email (reuse email validation TC). See TC-FV-014 for full signup invalid case.
+| worker_signup_valid.png | No (added) | TC-FV-015 | Worker signup success (valid data) |
+
+---
+
+## Added Test Cases (linked to screenshots in `test_plan/`)
+
+### TC-FV-005
+
+| Field | Value |
+|---:|---|
+| Test Case ID | TC-FV-005 |
+| Feature | Admin Login - Successful Authentication |
+| Test Objective | Verify admin can login with valid credentials and is redirected to the admin dashboard |
+| Preconditions | Admin account exists (Email: `admin@example.com`, Password: `Test@1234`), backend running |
+| Test Steps | 1. Open admin login page. 2. Enter Email: `admin@example.com`. 3. Enter Password: `Test@1234`. 4. Click Login. 5. Observe Network tab and landing page. |
+| Expected Result | Login returns 200, session/cookie set, and admin dashboard loads. Evidence: `admin_login_valid.png`. |
+| Actual Result | (to be filled) |
+| Status | (Pass/Fail) |
+| Evidence | ![admin login valid](test_plan/admin_login_valid.png) |
+
+### TC-FV-006
+
+| Field | Value |
+|---:|---|
+| Test Case ID | TC-FV-006 |
+| Feature | File Upload Validation (Architect or Worker Files) |
+| Test Objective | Verify invalid file types or oversized files are rejected client-side or server-side and appropriate message shown |
+| Preconditions | Upload form accessible; file to test: invalid type (e.g., `.exe`) or > configured size limit |
+| Test Steps | 1. Open upload form on architect profile. 2. Choose `malicious.exe` or very large file. 3. Click Upload. 4. Observe UI and Network tab. |
+| Expected Result | Upload prevented/returns 4xx; inline error message shown. Evidence: `architect_file_upload_invalid.png`. |
+| Actual Result | (to be filled) |
+| Status | (Pass/Fail) |
+| Evidence | ![architect file upload invalid](test_plan/architect_file_upload_invalid.png) |
+
+### TC-AD-005
+
+| Field | Value |
+|---:|---|
+| Test Case ID | TC-AD-005 |
+| Feature | Company Bid Submission - Invalid Payload |
+| Test Objective | Verify that invalid bid submissions are rejected and appropriate errors are returned/shown |
+| Preconditions | Bid submission form accessible; invalid data prepared (missing required field, invalid email) |
+| Test Steps | 1. Open bid submission form. 2. Enter invalid data (e.g., missing bid amount). 3. Click Submit. 4. Observe Network tab and UI. |
+| Expected Result | POST returns 4xx with error payload; UI displays validation error. Evidence: `company_bid_submission_invalid.png`. |
+| Actual Result | (to be filled) |
+| Status | (Pass/Fail) |
+| Evidence | ![company bid invalid](test_plan/company_bid_submission_invalid.png) |
+
+### TC-AD-006
+
+| Field | Value |
+|---:|---|
+| Test Case ID | TC-AD-006 |
+| Feature | Company Bid Submission - Successful |
+| Test Objective | Verify successful bid submission updates server and UI shows confirmation |
+| Preconditions | Valid bid data ready (example: Company: `BuildCo`, Amount: `50000`, Contact Email: `ismaimanideep.p@gmail.com`) |
+| Test Steps | 1. Fill bid form with valid data. 2. Click Submit. 3. Observe Network tab for POST and UI confirmation. |
+| Expected Result | POST returns 200/201 and UI shows success message or the new bid in list. Evidence: `company_bid_submission_valid.png`. |
+| Actual Result | (to be filled) |
+| Status | (Pass/Fail) |
+| Evidence | ![company bid valid](test_plan/company_bid_submission_valid.png) |
+
+### TC-FV-007
+
+| Field | Value |
+|---:|---|
+| Test Case ID | TC-FV-007 |
+| Feature | Company Hire Worker - Required Fields |
+| Test Objective | Verify company cannot hire a worker when required fields are missing and appropriate inline errors are shown |
+| Preconditions | Company hire-worker form accessible |
+| Test Steps | 1. Open hire-worker modal/form. 2. Leave required fields empty. 3. Click Hire. 4. Observe UI. |
+| Expected Result | Submission blocked and error message shown. Evidence: `company_hire_worker_invalid.png`. |
+| Actual Result | (to be filled) |
+| Status | (Pass/Fail) |
+| Evidence | ![company hire worker invalid](test_plan/company_hire_worker_invalid.png) |
+
+### TC-DH-004
+
+| Field | Value |
+|---:|---|
+| Test Case ID | TC-DH-004 |
+| Feature | Proposal Submit Tooltip / UI Feedback |
+| Test Objective | Verify tooltip or contextual help appears when proposal submission is invalid and prevents confusion |
+| Preconditions | Proposal submit UI present (company proposals) |
+| Test Steps | 1. Trigger proposal submit with invalid data. 2. Observe tooltip/help text. 3. Capture screenshot. |
+| Expected Result | Tooltip shown explaining missing fields or next steps. Evidence: `company_proposal_submit_tooltip_invalid.png`. |
+| Actual Result | (to be filled) |
+| Status | (Pass/Fail) |
+| Evidence | ![proposal tooltip invalid](test_plan/company_proposal_submit_tooltip_invalid.png) |
+
+### TC-FV-008
+
+| Field | Value |
+|---:|---|
+| Test Case ID | TC-FV-008 |
+| Feature | Company Signup - Invalid (full flow) |
+| Test Objective | Verify company signup rejects invalid inputs and shows errors (beyond just email) |
+| Preconditions | Company signup page accessible |
+| Test Steps | 1. Open company signup. 2. Enter invalid or missing fields (e.g., no company name). 3. Submit. |
+| Expected Result | Inline validation and/or server response reject submission. Evidence: `company_signup_invalid.png`. |
+| Actual Result | (to be filled) |
+| Status | (Pass/Fail) |
+| Evidence | ![company signup invalid](test_plan/company_signup_invalid.png) |
+
+### TC-FV-009
+
+| Field | Value |
+|---:|---|
+| Test Case ID | TC-FV-009 |
+| Feature | Company Signup - Success |
+| Test Objective | Verify a company can signup with valid inputs and is redirected or shown success message |
+| Preconditions | Company signup page accessible; valid sample company data available |
+| Test Steps | 1. Fill in valid company data (Company: `BuildCo`, Contact: `Polu Avinash Reddy`, Email: `avinashreddypolu27@gmail.com`). 2. Submit. |
+| Expected Result | Signup succeeds (201/200) and company profile/dashboard available. Evidence: `company_signup_valid.png`. |
+| Actual Result | (to be filled) |
+| Status | (Pass/Fail) |
+| Evidence | ![company signup valid](test_plan/company_signup_valid.png) |
+
+### TC-FV-010
+
+| Field | Value |
+|---:|---|
+| Test Case ID | TC-FV-010 |
+| Feature | Construction Form - Floors Numeric Validation |
+| Test Objective | Verify that the "floors" input accepts only numeric values and enforces reasonable bounds |
+| Preconditions | Construction request or project form accessible |
+| Test Steps | 1. Enter `two` or `-1` into floors field. 2. Submit. 3. Enter `5` and submit. |
+| Expected Result | Non-numeric/invalid values rejected; valid numeric accepted. Evidence: `construction_floors_invalid.png`. |
+| Actual Result | (to be filled) |
+| Status | (Pass/Fail) |
+| Evidence | ![construction floors invalid](test_plan/construction_floors_invalid.png) |
+
+### TC-FV-011
+
+| Field | Value |
+|---:|---|
+| Test Case ID | TC-FV-011 |
+| Feature | Customer Signup - Invalid Full Flow |
+| Test Objective | Verify customer signup rejects invalid inputs and shows appropriate messages |
+| Preconditions | Customer signup page accessible |
+| Test Steps | 1. Open customer signup. 2. Enter invalid data (e.g., missing name, invalid email `user@invalid`). 3. Submit. |
+| Expected Result | Submission blocked; errors shown. Evidence: `customer_signup_invalid.png`. |
+| Actual Result | (to be filled) |
+| Status | (Pass/Fail) |
+| Evidence | ![customer signup invalid](test_plan/customer_signup_invalid.png) |
+
+### TC-FV-012
+
+| Field | Value |
+|---:|---|
+| Test Case ID | TC-FV-012 |
+| Feature | Customer Signup - Success |
+| Test Objective | Verify customer signup succeeds with valid data |
+| Preconditions | Customer signup page accessible |
+| Test Steps | 1. Fill customer signup with valid values (Name: `K Prudhvi`, Email: `prudhvi16321@gmail.com`, Phone: `9876543210`). 2. Submit. |
+| Expected Result | Signup succeeds and user lands on dashboard/profile. Evidence: `customer_signup_valid.png`. |
+| Actual Result | (to be filled) |
+| Status | (Pass/Fail) |
+| Evidence | ![customer signup valid](test_plan/customer_signup_valid.png) |
+
+### TC-FV-013
+
+| Field | Value |
+|---:|---|
+| Test Case ID | TC-FV-013 |
+| Feature | Sign-in Success |
+| Test Objective | Verify user can sign in with valid credentials |
+| Preconditions | User account exists |
+| Test Steps | 1. Open sign-in page. 2. Enter valid credentials. 3. Submit. |
+| Expected Result | User authenticated and redirected. Evidence: `signin_valid.png`. |
+| Actual Result | (to be filled) |
+| Status | (Pass/Fail) |
+| Evidence | ![signin valid](test_plan/signin_valid.png) |
+
+### TC-DH-005
+
+| Field | Value |
+|---:|---|
+| Test Case ID | TC-DH-005 |
+| Feature | Worker-to-Company Association Failure |
+| Test Objective | Verify UI/Network behavior when assigning a worker to a company fails (e.g., invalid ID or server error) |
+| Preconditions | Assignment UI accessible; test worker and company exist or mock invalid id |
+| Test Steps | 1. Attempt to assign worker to company with invalid data. 2. Observe network response and UI. |
+| Expected Result | UI shows error and does not leave stale state. Evidence: `workertocompany_invalid.png`. |
+| Actual Result | (to be filled) |
+| Status | (Pass/Fail) |
+| Evidence | ![worker to company invalid](test_plan/workertocompany_invalid.png) |
+
+### TC-FV-014
+
+| Field | Value |
+|---:|---|
+| Test Case ID | TC-FV-014 |
+| Feature | Worker Signup - Invalid Full Flow |
+| Test Objective | Verify worker signup rejects invalid inputs and shows appropriate messages |
+| Preconditions | Worker signup page accessible |
+| Test Steps | 1. Populate worker signup with invalid email or missing required fields. 2. Submit. |
+| Expected Result | Submission blocked and errors displayed. Evidence: `worker_signup_invalid.png`. |
+| Actual Result | (to be filled) |
+| Status | (Pass/Fail) |
+| Evidence | ![worker signup invalid](test_plan/worker_signup_invalid.png) |
+
+### TC-FV-015
+
+| Field | Value |
+|---:|---|
+| Test Case ID | TC-FV-015 |
+| Feature | Worker Signup - Success |
+| Test Objective | Verify worker can sign up successfully with valid inputs |
+| Preconditions | Worker signup page accessible |
+| Test Steps | 1. Fill worker data (Name, Email: `isaimanideep.p@gmail.com`, Skills). 2. Submit. |
+| Expected Result | Signup succeeds and worker profile created. Evidence: `worker_signup_valid.png`. |
+| Actual Result | (to be filled) |
+| Status | (Pass/Fail) |
+| Evidence | ![worker signup valid](test_plan/worker_signup_valid.png) |
+
+
+---
+
+## Mapped Evidence (screenshots in `test_plan/`)
+
+The table below maps the screenshots found in the `test_plan/` folder to existing test cases where applicable. If no existing test case matches a screenshot, a new, focused test case has been added immediately after the mapping table and references the screenshot filename as evidence.
+
+| Screenshot filename | Matches existing TC? | Mapped Test Case ID | Short description |
+|---|---:|---|---|
+| admin_login_invalid.png | Yes | TC-FV-003 | Login form — invalid password/email validation (Actual Result evidence)
+| admin_login_valid.png | No (added) | TC-FV-005 | Admin login successful (evidence of successful auth)
+| architect_email_invalid.png | Yes | TC-FV-002 | Email format validation for architect signup
+| architect_file_upload_invalid.png | No (added) | TC-FV-006 | Architect file upload validation failure (invalid file type/size)
+| company_bid_submission_invalid.png | No (added) | TC-AD-005 | Company bid submission — invalid payload / server-side rejection
+| company_bid_submission_valid.png | No (added) | TC-AD-006 | Company bid submission — successful POST and UI update
+| company_hire_worker_invalid.png | No (added) | TC-FV-007 | Hiring form — invalid input or missing required fields when hiring a worker
+| company_proposal_submit_tooltip_invalid.png | No (added) | TC-DH-004 | Dynamic UI tooltip shown on invalid proposal submission
+| company_signup_invalid.png | Partially | TC-FV-002 / TC-FV-008 | Company signup invalid email/field errors (reuse email validation TC + new TC-FV-008 for full signup flow)
+| company_signup_valid.png | No (added) | TC-FV-009 | Company signup success (valid data) |
+| construction_email_invalid.png | Yes | TC-FV-002 | Email validation for construction request forms
+| construction_floors_invalid.png | No (added) | TC-FV-010 | Numeric/length validation for "floors" field in construction form
+| customer_signup_invalid.png | Partially | TC-FV-002 | Customer signup invalid email (reuse email validation TC). See TC-FV-011 for full signup invalid case.
+| customer_signup_valid.png | No (added) | TC-FV-012 | Customer signup success (valid data) |
+| signin_invalid.png | Yes | TC-FV-003 | Sign-in invalid credentials evidence
+| signin_valid.png | No (added) | TC-FV-013 | Sign-in success evidence |
+| workertocompany_invalid.png | No (added) | TC-DH-005 | Dynamic association: assigning worker to company failed (UI/network evidence) |
+| worker_signup_invalid.png | Partially | TC-FV-002 | Worker signup invalid email (reuse email validation TC). See TC-FV-014 for full signup invalid case.
+| worker_signup_valid.png | No (added) | TC-FV-015 | Worker signup success (valid data) |
+
+---
+
+## Added Test Cases (linked to screenshots in `test_plan/`)
+
+### TC-FV-005
+
+| Field | Value |
+|---:|---|
+| Test Case ID | TC-FV-005 |
+| Feature | Admin Login - Successful Authentication |
+| Test Objective | Verify admin can login with valid credentials and is redirected to the admin dashboard |
+| Preconditions | Admin account exists (Email: `admin@example.com`, Password: `Test@1234`), backend running |
+| Test Steps | 1. Open admin login page. 2. Enter Email: `admin@example.com`. 3. Enter Password: `Test@1234`. 4. Click Login. 5. Observe Network tab and landing page. |
+| Expected Result | Login returns 200, session/cookie set, and admin dashboard loads. Evidence: `admin_login_valid.png`. |
+| Actual Result | (to be filled) |
+| Status | (Pass/Fail) |
+
+### TC-FV-006
+
+| Field | Value |
+|---:|---|
+| Test Case ID | TC-FV-006 |
+| Feature | File Upload Validation (Architect or Worker Files) |
+| Test Objective | Verify invalid file types or oversized files are rejected client-side or server-side and appropriate message shown |
+| Preconditions | Upload form accessible; file to test: invalid type (e.g., `.exe`) or > configured size limit |
+| Test Steps | 1. Open upload form on architect profile. 2. Choose `malicious.exe` or very large file. 3. Click Upload. 4. Observe UI and Network tab. |
+| Expected Result | Upload prevented/returns 4xx; inline error message shown. Evidence: `architect_file_upload_invalid.png`. |
+| Actual Result | (to be filled) |
+| Status | (Pass/Fail) |
+
+### TC-AD-005
+
+| Field | Value |
+|---:|---|
+| Test Case ID | TC-AD-005 |
+| Feature | Company Bid Submission - Invalid Payload |
+| Test Objective | Verify that invalid bid submissions are rejected and appropriate errors are returned/shown |
+| Preconditions | Bid submission form accessible; invalid data prepared (missing required field, invalid email) |
+| Test Steps | 1. Open bid submission form. 2. Enter invalid data (e.g., missing bid amount). 3. Click Submit. 4. Observe Network tab and UI. |
+| Expected Result | POST returns 4xx with error payload; UI displays validation error. Evidence: `company_bid_submission_invalid.png`. |
+| Actual Result | (to be filled) |
+| Status | (Pass/Fail) |
+
+### TC-AD-006
+
+| Field | Value |
+|---:|---|
+| Test Case ID | TC-AD-006 |
+| Feature | Company Bid Submission - Successful |
+| Test Objective | Verify successful bid submission updates server and UI shows confirmation |
+| Preconditions | Valid bid data ready (example: Company: `BuildCo`, Amount: `50000`, Contact Email: `ismaimanideep.p@gmail.com`) |
+| Test Steps | 1. Fill bid form with valid data. 2. Click Submit. 3. Observe Network tab for POST and UI confirmation. |
+| Expected Result | POST returns 200/201 and UI shows success message or the new bid in list. Evidence: `company_bid_submission_valid.png`. |
+| Actual Result | (to be filled) |
+| Status | (Pass/Fail) |
+
+### TC-FV-007
+
+| Field | Value |
+|---:|---|
+| Test Case ID | TC-FV-007 |
+| Feature | Company Hire Worker - Required Fields |
+| Test Objective | Verify company cannot hire a worker when required fields are missing and appropriate inline errors are shown |
+| Preconditions | Company hire-worker form accessible |
+| Test Steps | 1. Open hire-worker modal/form. 2. Leave required fields empty. 3. Click Hire. 4. Observe UI. |
+| Expected Result | Submission blocked and error message shown. Evidence: `company_hire_worker_invalid.png`. |
+| Actual Result | (to be filled) |
+| Status | (Pass/Fail) |
+
+### TC-DH-004
+
+| Field | Value |
+|---:|---|
+| Test Case ID | TC-DH-004 |
+| Feature | Proposal Submit Tooltip / UI Feedback |
+| Test Objective | Verify tooltip or contextual help appears when proposal submission is invalid and prevents confusion |
+| Preconditions | Proposal submit UI present (company proposals) |
+| Test Steps | 1. Trigger proposal submit with invalid data. 2. Observe tooltip/help text. 3. Capture screenshot. |
+| Expected Result | Tooltip shown explaining missing fields or next steps. Evidence: `company_proposal_submit_tooltip_invalid.png`. |
+| Actual Result | (to be filled) |
+| Status | (Pass/Fail) |
+
+### TC-FV-008
+
+| Field | Value |
+|---:|---|
+| Test Case ID | TC-FV-008 |
+| Feature | Company Signup - Invalid (full flow) |
+| Test Objective | Verify company signup rejects invalid inputs and shows errors (beyond just email) |
+| Preconditions | Company signup page accessible |
+| Test Steps | 1. Open company signup. 2. Enter invalid or missing fields (e.g., no company name). 3. Submit. |
+| Expected Result | Inline validation and/or server response reject submission. Evidence: `company_signup_invalid.png`. |
+| Actual Result | (to be filled) |
+| Status | (Pass/Fail) |
+
+### TC-FV-009
+
+| Field | Value |
+|---:|---|
+| Test Case ID | TC-FV-009 |
+| Feature | Company Signup - Success |
+| Test Objective | Verify a company can signup with valid inputs and is redirected or shown success message |
+| Preconditions | Company signup page accessible; valid sample company data available |
+| Test Steps | 1. Fill in valid company data (Company: `BuildCo`, Contact: `Polu Avinash Reddy`, Email: `avinashreddypolu27@gmail.com`). 2. Submit. |
+| Expected Result | Signup succeeds (201/200) and company profile/dashboard available. Evidence: `company_signup_valid.png`. |
+| Actual Result | (to be filled) |
+| Status | (Pass/Fail) |
+
+### TC-FV-010
+
+| Field | Value |
+|---:|---|
+| Test Case ID | TC-FV-010 |
+| Feature | Construction Form - Floors Numeric Validation |
+| Test Objective | Verify that the "floors" input accepts only numeric values and enforces reasonable bounds |
+| Preconditions | Construction request or project form accessible |
+| Test Steps | 1. Enter `two` or `-1` into floors field. 2. Submit. 3. Enter `5` and submit. |
+| Expected Result | Non-numeric/invalid values rejected; valid numeric accepted. Evidence: `construction_floors_invalid.png`. |
+| Actual Result | (to be filled) |
+| Status | (Pass/Fail) |
+
+### TC-FV-011
+
+| Field | Value |
+|---:|---|
+| Test Case ID | TC-FV-011 |
+| Feature | Customer Signup - Invalid Full Flow |
+| Test Objective | Verify customer signup rejects invalid inputs and shows appropriate messages |
+| Preconditions | Customer signup page accessible |
+| Test Steps | 1. Open customer signup. 2. Enter invalid data (e.g., missing name, invalid email `user@invalid`). 3. Submit. |
+| Expected Result | Submission blocked; errors shown. Evidence: `customer_signup_invalid.png`. |
+| Actual Result | (to be filled) |
+| Status | (Pass/Fail) |
+
+### TC-FV-012
+
+| Field | Value |
+|---:|---|
+| Test Case ID | TC-FV-012 |
+| Feature | Customer Signup - Success |
+| Test Objective | Verify customer signup succeeds with valid data |
+| Preconditions | Customer signup page accessible |
+| Test Steps | 1. Fill customer signup with valid values (Name: `K Prudhvi`, Email: `prudhvi16321@gmail.com`, Phone: `9876543210`). 2. Submit. |
+| Expected Result | Signup succeeds and user lands on dashboard/profile. Evidence: `customer_signup_valid.png`. |
+| Actual Result | (to be filled) |
+| Status | (Pass/Fail) |
+
+### TC-FV-013
+
+| Field | Value |
+|---:|---|
+| Test Case ID | TC-FV-013 |
+| Feature | Sign-in Success |
+| Test Objective | Verify user can sign in with valid credentials |
+| Preconditions | User account exists |
+| Test Steps | 1. Open sign-in page. 2. Enter valid credentials. 3. Submit. |
+| Expected Result | User authenticated and redirected. Evidence: `signin_valid.png`. |
+| Actual Result | (to be filled) |
+| Status | (Pass/Fail) |
+
+### TC-DH-005
+
+| Field | Value |
+|---:|---|
+| Test Case ID | TC-DH-005 |
+| Feature | Worker-to-Company Association Failure |
+| Test Objective | Verify UI/Network behavior when assigning a worker to a company fails (e.g., invalid ID or server error) |
+| Preconditions | Assignment UI accessible; test worker and company exist or mock invalid id |
+| Test Steps | 1. Attempt to assign worker to company with invalid data. 2. Observe network response and UI. |
+| Expected Result | UI shows error and does not leave stale state. Evidence: `workertocompany_invalid.png`. |
+| Actual Result | (to be filled) |
+| Status | (Pass/Fail) |
+
+### TC-FV-014
+
+| Field | Value |
+|---:|---|
+| Test Case ID | TC-FV-014 |
+| Feature | Worker Signup - Invalid Full Flow |
+| Test Objective | Verify worker signup rejects invalid inputs and shows appropriate messages |
+| Preconditions | Worker signup page accessible |
+| Test Steps | 1. Populate worker signup with invalid email or missing required fields. 2. Submit. |
+| Expected Result | Submission blocked and errors displayed. Evidence: `worker_signup_invalid.png`. |
+| Actual Result | (to be filled) |
+| Status | (Pass/Fail) |
+
+### TC-FV-015
+
+| Field | Value |
+|---:|---|
+| Test Case ID | TC-FV-015 |
+| Feature | Worker Signup - Success |
+| Test Objective | Verify worker can sign up successfully with valid inputs |
+| Preconditions | Worker signup page accessible |
+| Test Steps | 1. Fill worker data (Name, Email: `isaimanideep.p@gmail.com`, Skills). 2. Submit. |
+| Expected Result | Signup succeeds and worker profile created. Evidence: `worker_signup_valid.png`. |
+| Actual Result | (to be filled) |
+| Status | (Pass/Fail) |
+
+
+---
