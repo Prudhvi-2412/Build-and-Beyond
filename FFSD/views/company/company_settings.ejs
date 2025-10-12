@@ -574,7 +574,7 @@
                                 <% company.customerProfile.teamMembers.forEach((member, index) => { %>
                                     <div class="team-member">
                                         <div style="display: flex; align-items: center; margin-bottom: 0.5rem;">
-                                            <img src="<%= member.image %>" alt="Team Member" data-type="member" data-index="<%= index %>" style="margin-right: 1rem;">
+                                            <img src="<%= member.image %>" alt="Team Member" data-type="member" data-index="<%= index %>" style="margin-right: 1rem; width: 15vw;">
                                             <input type="file" id="member<%= index %>Image" name="memberImage_<%= index %>" style="display: none;" onchange="updateImagePreview(this)">
                                             <button type="button" class="btn btn-secondary" onclick="document.getElementById('member<%= index %>Image').click()">Change Image</button>
                                         </div>
@@ -591,7 +591,7 @@
                                 <% company.customerProfile.completedProjects.forEach((project, index) => { %>
                                 <div class="project-item">
                                     <div style="display: flex; align-items: center; margin-bottom: 0.5rem;">
-                                        <img src="<%= project.image %>" alt="Project" data-type="project" data-index="<%= index %>" style="margin-right: 1rem;">
+                                        <img src="<%= project.image %>" alt="Project" data-type="project" data-index="<%= index %>" style="margin-right: 1rem;width: 15vw;">
                                         <input type="file" id="project<%= index %>Image" name="projectImage_<%= index %>" style="display: none;" onchange="updateImagePreview(this)">
                                         <button type="button" class="btn btn-secondary" onclick="document.getElementById('project<%= index %>Image').click()">Change Image</button>
                                     </div>
