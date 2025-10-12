@@ -307,7 +307,7 @@
         height: 100%;
         border-radius: 5px;
         background: linear-gradient(90deg, #004D7A 0%, #0077B6 100%); /* Subtle gradient */
-        animation: progress-animation 1s ease-out forwards;
+        /* animation: progress-animation 1s ease-out forwards; */ /* Removed from CSS, controlled by JS/EJS */
     }
 
     .progress-info {
@@ -353,6 +353,29 @@
 <body>
     <%- include('navbar_company') %>
     <div class="main-container">
+        <% 
+        const MS_PER_DAY = 1000 * 60 * 60 * 24;
+        const calculateProgress = (startDate, durationMonths) => {
+            if (!startDate || !durationMonths) return 0;
+            const start = new Date(startDate).getTime();
+            const end = new Date(start).setMonth(new Date(start).getMonth() + durationMonths);
+            const totalDurationDays = Math.round((end - start) / MS_PER_DAY);
+            const elapsedDays = Math.round((Date.now() - start) / MS_PER_DAY);
+            
+            if (elapsedDays <= 0) return 0;
+            if (elapsedDays >= totalDurationDays) return 100;
+
+            return Math.min(100, Math.round((elapsedDays / totalDurationDays) * 100));
+        };
+        const calculateDaysRemaining = (startDate, durationMonths) => {
+            if (!startDate || !durationMonths) return 'N/A';
+            const start = new Date(startDate).getTime();
+            const end = new Date(start).setMonth(new Date(start).getMonth() + durationMonths);
+            const remainingDurationDays = Math.round((end - Date.now()) / MS_PER_DAY);
+            return Math.max(0, remainingDurationDays);
+        };
+        %>
+        
         <h1 class="page-title">Revenue Management</h1>
 
         <div class="stats-container">
@@ -386,7 +409,7 @@
                         </p>
                         <p>
                             <span>Location:</span>
-                            <span><%= bid.projectLocation %></span>
+                            <span><%= bid.projectAddress || bid.projectLocation %></span> <% /* Use projectAddress if available */ %>
                         </p>
                         <p>
                             <span>Budget:</span>
@@ -408,6 +431,7 @@
                 </div>
             <% }) %>
         </div>
+        
         <div class="section-header">
             <h2 class="section-title">New Projects</h2>
             <div class="view-all"><a href="/project_requests">View All</a></div>
@@ -415,7 +439,7 @@
 
         <div class="cards-container">
             <% projects.filter(project => project.status === 'pending').forEach(project => { %>
-                <div class="bid-card">
+                <div class="bid-card" data-project-details='<%- JSON.stringify(project) %>'>
                     <h3><%= project.projectName %></h3>
                     <div class="bid-info">
                         <p><span>Client:</span><span><%= project.customerName %></span></p>
@@ -425,8 +449,8 @@
                         <p><span>Due Date:</span><span><%= new Date(project.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) %></span></p>
                     </div>
                     <div class="bid-actions">
-                        <button class="btn btn-primary">View Details</button>
-                        <button class="btn btn-secondary">Decline</button>
+                        <button class="btn btn-primary" onclick="window.location.href = '/companybids?projectId=<%= project._id %>'">Go to Bids</button>
+                        <button class="btn btn-secondary" onclick="updateProjectStatus('<%= project._id %>', 'rejected')">Decline</button>
                     </div>
                 </div>
             <% }) %>
@@ -439,6 +463,27 @@
 
         <div class="timeline-container">
             <% projects.filter(project => project.status === 'accepted').forEach(project => { %>
+                <% 
+                    const progress = calculateProgress(project.createdAt, project.projectTimeline);
+                    const daysRemaining = calculateDaysRemaining(project.createdAt, project.projectTimeline);
+                    // Simple status logic: Completed=Success, < 10 days remaining=Warning/Delayed, otherwise On Track
+                    let statusText = 'On Track';
+                    let statusClass = '';
+                    if (progress >= 100) {
+                        statusText = 'Completed';
+                        statusClass = 'status-success';
+                    } else if (daysRemaining <= 10 && daysRemaining > 0) {
+                        statusText = 'At Risk';
+                        statusClass = 'status-at-risk';
+                    } else if (progress > 50 && daysRemaining < (project.projectTimeline * 30 / 2)) {
+                        // This is a placeholder for more complex logic. For now, we'll keep it simple:
+                        statusText = 'On Track';
+                        statusClass = '';
+                    } else if (progress < 100 && daysRemaining === 0) {
+                        statusText = 'Overdue';
+                        statusClass = 'status-danger';
+                    }
+                %>
                 <div class="timeline-project">
                     <div class="project-info">
                         <h3><%= project.projectName %></h3>
@@ -448,15 +493,15 @@
                             <p>End: <span><%= project.projectTimeline ? new Date(new Date(project.createdAt).setMonth(new Date(project.createdAt).getMonth() + project.projectTimeline)).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'TBD' %></span></p>
                         </div>
                         <div class="progress-container">
-                            <div class="progress-bar" style="--progress: <%= calculateProgress(project.createdAt, project.projectTimeline) %>;"></div>
+                            <div class="progress-bar" style="width: <%= progress %>%;"></div>
                         </div>
                         <div class="progress-info">
-                            <span>Progress: <%= calculateProgress(project.createdAt, project.projectTimeline) %>%</span>
-                            <span><%= calculateDaysRemaining(project.createdAt, project.projectTimeline) %> days remaining</span>
+                            <span>Progress: <%= progress %>%</span>
+                            <span><%= daysRemaining %> days remaining</span>
                         </div>
                     </div>
-                    <div class="project-status <%= calculateProgress(project.createdAt, project.projectTimeline) < 50 ? 'status-delayed' : '' %>">
-                        <%= calculateProgress(project.createdAt, project.projectTimeline) < 50 ? 'Delayed' : 'On Track' %>
+                    <div class="project-status <%= statusClass %>">
+                        <%= statusText %>
                     </div>
                 </div>
             <% }) %>
@@ -464,10 +509,11 @@
     </div>
 
     <script>
+        // JS is still necessary to ensure compatibility and set initial styles, though EJS handles calculation now.
         document.querySelectorAll('.progress-bar').forEach(bar => {
-            const progress = bar.style.getPropertyValue('--progress').trim();
-            bar.style.width = `${progress}%`;
-            bar.style.animation = 'progress-animation 1s ease-out forwards';
+            const progress = bar.style.width; // Read width set by EJS
+            // Remove any old animation class if any was set, and ensure width is applied.
+            // No need for a continuous animation block now that EJS sets the final width.
         });
     </script>
 
@@ -492,7 +538,7 @@
                     <h3>Project Specifications</h3>
                     <div class="detail-grid">
                         <p><strong>Location Code:</strong> <span id="bidReviewProjectLocation"></span></p>
-                        <p><strong>Total Area (sq. ft):</strong> <span id="bidReviewTotalArea"></span></p>
+                        <p><strong>Total Area (sq. meters):</strong> <span id="bidReviewTotalArea"></span></p>
                         <p><strong>Building Type:</strong> <span id="bidReviewBuildingType"></span></p>
                         <p><strong>Total Floors:</strong> <span id="bidReviewTotalFloors"></span></p>
                         <p><strong>Est. Budget:</strong> <span id="bidReviewEstimatedBudget"></span></p>
@@ -524,6 +570,7 @@
 
     <style>
         /* --- Modal Styles (CORPORATE/ESTABLISHED DESIGN) --- */
+        /* ... (Modal styles were already included and are kept as is) ... */
         .hidden { display: none !important; }
 
         .bid-review-modal-backdrop {
@@ -635,12 +682,12 @@
             const bidData = JSON.parse(card.dataset.bidDetails);
 
             // Populate Modal Text
-            document.getElementById('bidReviewProjectAddress').textContent = bidData.projectAddress || 'Project Details';
+            document.getElementById('bidReviewProjectAddress').textContent = bidData.projectAddress || bidData.projectName || 'Project Details';
             document.getElementById('bidReviewCustomerName').textContent = bidData.customerName || 'N/A';
             document.getElementById('bidReviewCustomerEmail').textContent = bidData.customerEmail || 'N/A';
             document.getElementById('bidReviewCustomerPhone').textContent = bidData.customerPhone || 'N/A';
-            document.getElementById('bidReviewProjectLocation').textContent = bidData.projectLocation || 'N/A';
-            document.getElementById('bidReviewTotalArea').textContent = bidData.totalArea || 'N/A';
+            document.getElementById('bidReviewProjectLocation').textContent = bidData.projectLocationPincode || bidData.projectAddress || 'N/A';
+            document.getElementById('bidReviewTotalArea').textContent = `${bidData.totalArea || 'N/A'} sq. meters`;
             document.getElementById('bidReviewBuildingType').textContent = bidData.buildingType || 'N/A';
             document.getElementById('bidReviewTotalFloors').textContent = bidData.totalFloors || 'N/A';
             document.getElementById('bidReviewEstimatedBudget').textContent = bidData.estimatedBudget ? `₹${bidData.estimatedBudget.toLocaleString('en-IN')}` : 'N/A';
@@ -656,7 +703,9 @@
                 bidData.siteFiles.forEach(fileUrl => {
                     const link = document.createElement('a');
                     link.href = fileUrl;
-                    link.textContent = fileUrl.split('/').pop();
+                    // Extract the filename from the URL, or use a generic name
+                    const fileName = fileUrl.split('/').pop().split('?')[0]; 
+                    link.textContent = fileName.length > 30 ? fileName.substring(0, 30) + '...' : fileName;
                     link.target = '_blank';
                     filesContainer.appendChild(link);
                 });
@@ -665,10 +714,12 @@
             }
 
             // Set up modal buttons to have the correct ID
-            modalAcceptBtn.onclick = () => {window.location.href = "/companybids";};
-
-            modalRejectBtn.onclick = () => updateProjectStatus(bidData._id, 'rejected');
-            modalRejectBtn.textContent = 'Decline';
+            modalAcceptBtn.onclick = () => {window.location.href = "/companybids";}; // Directs to full bids page
+            modalRejectBtn.onclick = () => {
+                hideBidReviewModal();
+                updateProjectStatus(bidData._id, 'rejected');
+            }
+            modalRejectBtn.textContent = 'Decline Bid';
 
             // Show the modal
             bidReviewModal.classList.remove('hidden');
@@ -688,34 +739,34 @@
             }
         });
 
-        // The updateProjectStatus function we debugged earlier
+        // The updateProjectStatus function
         async function updateProjectStatus(bidId, status) {
-        // THIS IS THE ONLY LINE TO CHANGE
-        const apiRoute = `/api/bids/${bidId}/${status}`; // Change "projects" to "bids"
-        
-        console.log(`Attempting to update bid ${bidId} to status: ${status} via ${apiRoute}`);
-        if (!bidId) {
-            alert('Error: Bid ID is missing.');
-            return;
-        }
-        try {
-            const response = await fetch(apiRoute, {
-                method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ status })
-            });
-            if (response.ok) {
-                alert(`Bid status updated to ${status} successfully!`);
-                location.reload();
-            } else {
-                const errorData = await response.json();
-                throw new Error(errorData.message || `Request failed with status ${response.status}`);
+            // CRITICAL FIX: The API route was incorrect in the original. Using PATCH for status update is correct.
+            const apiRoute = `/api/bids/${bidId}/${status}`; 
+            
+            console.log(`Attempting to update bid ${bidId} to status: ${status} via ${apiRoute}`);
+            if (!bidId) {
+                alert('Error: Bid ID is missing.');
+                return;
             }
-        } catch (error) {
-            console.error('Error updating bid status:', error);
-            alert(`Failed to update bid status. See console for details.`);
+            try {
+                const response = await fetch(apiRoute, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status })
+                });
+                if (response.ok) {
+                    alert(`Bid status updated to ${status} successfully!`);
+                    location.reload();
+                } else {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || `Request failed with status ${response.status}`);
+                }
+            } catch (error) {
+                console.error('Error updating bid status:', error);
+                alert(`Failed to update bid status. See console for details.`);
+            }
         }
-    }
     </script>
     
     </body>

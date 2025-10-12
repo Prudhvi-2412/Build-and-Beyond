@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Worker Dashboard</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         :root {
@@ -40,18 +40,46 @@
         .dashboard-header {
             margin-bottom: 2rem;
             display: flex;
+            flex-wrap: wrap;
             justify-content: space-between;
             align-items: center;
+            gap: 1rem;
         }
         .dashboard-title {
             font-size: 2rem;
             font-weight: 600;
             color: var(--primary-color);
         }
+        .search-bar {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            max-width: 300px;
+            width: 100%;
+        }
+        .search-bar input {
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            width: 100%;
+            font-size: 0.9rem;
+        }
+        .search-bar button {
+            padding: 0.75rem;
+            background-color: var(--secondary-color);
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .search-bar button:hover {
+            background-color: var(--primary-color);
+        }
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
             margin-bottom: 2.5rem;
         }
         .stat-card {
@@ -67,13 +95,13 @@
             box-shadow: 0 8px 20px rgba(0,0,0,0.1);
         }
         .stat-card h3 {
-            font-size: 1rem;
+            font-size: 0.9rem;
             color: var(--text-light);
             margin-bottom: 0.5rem;
             font-weight: 500;
         }
         .stat-card .stat-value {
-            font-size: 2.25rem;
+            font-size: 2rem;
             font-weight: 600;
             color: var(--primary-color);
         }
@@ -82,14 +110,22 @@
         }
         .section-header {
             display: flex;
+            flex-wrap: wrap;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 1.5rem;
+            gap: 1rem;
         }
         .section-title {
             font-size: 1.5rem;
             font-weight: 600;
             color: var(--primary-color);
+        }
+        .filter-dropdown {
+            padding: 0.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 0.9rem;
         }
         .view-all-link {
             color: var(--secondary-color);
@@ -104,7 +140,7 @@
         .cards-container {
             display: grid;
             grid-auto-flow: column;
-            grid-auto-columns: minmax(320px, 1fr);
+            grid-auto-columns: minmax(300px, 1fr);
             gap: 1.5rem;
             overflow-x: auto;
             padding-bottom: 1.5rem;
@@ -122,6 +158,11 @@
             transition: var(--transition);
             display: flex;
             flex-direction: column;
+            min-height: 300px;
+        }
+        .card.loading {
+            opacity: 0.7;
+            pointer-events: none;
         }
         .card:hover {
             transform: translateY(-5px);
@@ -183,7 +224,9 @@
             font-weight: 600;
             transition: var(--transition);
             text-decoration: none;
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
         }
         .btn-primary {
             background-color: var(--secondary-color);
@@ -199,12 +242,41 @@
             padding: 2rem;
             background-color: #f9fafb;
             border-radius: 12px;
-            grid-column: 1 / -1; /* Make it span the full width of the container */
+            grid-column: 1 / -1;
         }
         .no-data h4 {
             color: var(--text-color);
             margin-bottom: 0.5rem;
             font-size: 1.2rem;
+        }
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .dashboard-title {
+                font-size: 1.5rem;
+            }
+            .stats-grid {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            }
+            .stat-card .stat-value {
+                font-size: 1.5rem;
+            }
+            .cards-container {
+                grid-auto-columns: minmax(250px, 1fr);
+            }
+            .search-bar {
+                max-width: 100%;
+            }
+        }
+        @media (max-width: 480px) {
+            .container {
+                padding: 1rem;
+            }
+            .section-title {
+                font-size: 1.25rem;
+            }
+            .cards-container {
+                grid-auto-columns: minmax(200px, 1fr);
+            }
         }
     </style>
 </head>
@@ -214,6 +286,10 @@
         <div class="container">
             <div class="dashboard-header">
                 <h1 class="dashboard-title">Welcome, <%= workerName %></h1>
+                <div class="search-bar">
+                    <input type="text" placeholder="Search jobs, companies, or offers..." aria-label="Search">
+                    <button><i class="fas fa-search"></i></button>
+                </div>
             </div>
 
             <div class="stats-grid">
@@ -227,19 +303,27 @@
                 </div>
                 <div class="stat-card">
                     <h3>Availability</h3>
-                    <div class="stat-value" style="font-size: 1.75rem; text-transform: capitalize;"><%= user.availability %></div>
+                    <div class="stat-value" style="font-size: 1.5rem; text-transform: capitalize;"><%= user.availability %></div>
                 </div>
             </div>
 
             <section class="card-section">
                 <div class="section-header">
                     <h2 class="section-title">Recent Offers</h2>
-                    <a href="/workerjoin_company" class="view-all-link">View All</a>
+                    <div>
+                        <select class="filter-dropdown" aria-label="Filter offers">
+                            <option value="all">All Offers</option>
+                            <option value="full-time">Full-Time</option>
+                            <option value="part-time">Part-Time</option>
+                            <option value="contract">Contract</option>
+                        </select>
+                        <a href="/workerjoin_company" class="view-all-link">View All</a>
+                    </div>
                 </div>
                 <div class="cards-container">
                     <% if (offers && offers.length) { %>
                         <% offers.forEach(offer => { %>
-                            <div class="card">
+                            <div class="card<%= offer.isLoading ? ' loading' : '' %>">
                                 <div class="card-header">
                                     <h3 class="card-company"><%= offer.company.companyName %></h3>
                                     <p class="card-location"><i class="fas fa-map-marker-alt"></i> <%= offer.location || 'Not specified' %></p>
@@ -258,7 +342,7 @@
                                     </div>
                                 </div>
                                 <div class="card-actions">
-                                    <a href="/workerjoin_company" class="btn btn-primary">View Offer</a>
+                                    <a href="/workerjoin_company" class="btn btn-primary"><i class="fas fa-eye"></i> View Offer</a>
                                 </div>
                             </div>
                         <% }) %>
@@ -274,12 +358,20 @@
             <section class="card-section">
                 <div class="section-header">
                     <h2 class="section-title">Companies You Can Join</h2>
-                    <a href="/workerjoin_company" class="view-all-link">View All</a>
+                    <div>
+                        <select class="filter-dropdown" aria-label="Filter companies">
+                            <option value="all">All Industries</option>
+                            <option value="tech">Technology</option>
+                            <option value="finance">Finance</option>
+                            <option value="healthcare">Healthcare</option>
+                        </select>
+                        <a href="/workerjoin_company" class="view-all-link">View All</a>
+                    </div>
                 </div>
                 <div class="cards-container">
                     <% if (companies && companies.length) { %>
                         <% companies.forEach(company => { %>
-                            <div class="card">
+                            <div class="card<%= company.isLoading ? ' loading' : '' %>">
                                 <div class="card-header">
                                     <h3 class="card-company"><%= company.companyName %></h3>
                                     <p class="card-location"><i class="fas fa-map-marker-alt"></i> <%= company.location.city || 'Not specified' %></p>
@@ -298,12 +390,15 @@
                                     </div>
                                 </div>
                                 <div class="card-actions">
-                                    <a href="/workerjoin_company" class="btn btn-primary">Apply Now</a>
+                                    <a href="/workerjoin_company" class="btn btn-primary"><i class="fas fa-briefcase"></i> Apply Now</a>
                                 </div>
                             </div>
                         <% }) %>
                     <% } else { %>
-                        <p class="no-data">No companies available.</p>
+                        <div class="no-data">
+                            <h4>No Companies Available</h4>
+                            <p>Explore opportunities as they become available.</p>
+                        </div>
                     <% } %>
                 </div>
             </section>
@@ -311,12 +406,20 @@
             <section class="card-section">
                 <div class="section-header">
                     <h2 class="section-title">New Jobs</h2>
-                    <a href="/workerjobs" class="view-all-link">View All</a>
+                    <div>
+                        <select class="filter-dropdown" aria-label="Filter jobs">
+                            <option value="all">All Jobs</option>
+                            <option value="full-time">Full-Time</option>
+                            <option value="part-time">Part-Time</option>
+                            <option value="freelance">Freelance</option>
+                        </select>
+                        <a href="/workerjobs" class="view-all-link">View All</a>
+                    </div>
                 </div>
                 <div class="cards-container">
                     <% if (jobs && jobs.length) { %>
                         <% jobs.forEach(job => { %>
-                            <div class="card">
+                            <div class="card<%= job.isLoading ? ' loading' : '' %>">
                                 <div class="card-header">
                                     <h3 class="card-company"><%= job.projectName %></h3>
                                     <p class="card-location"><i class="fas fa-map-marker-alt"></i> <%= job.address || 'Not specified' %></p>
@@ -335,7 +438,7 @@
                                     </div>
                                 </div>
                                 <div class="card-actions">
-                                    <a href="/workerjobs" class="btn btn-primary">View Details</a>
+                                    <a href="/workerjobs" class="btn btn-primary"><i class="fas fa-info-circle"></i> View Details</a>
                                 </div>
                             </div>
                         <% }) %>
@@ -349,5 +452,32 @@
             </section>
         </div>
     </main>
+    <script>
+        // Basic search functionality (client-side filtering example)
+        const searchInput = document.querySelector('.search-bar input');
+        searchInput?.addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const cards = document.querySelectorAll('.card');
+            cards.forEach(card => {
+                const title = card.querySelector('.card-company')?.textContent.toLowerCase();
+                const description = card.querySelector('.card-description')?.textContent.toLowerCase();
+                if (title?.includes(searchTerm) || description?.includes(searchTerm)) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+
+        // Filter dropdown functionality
+        document.querySelectorAll('.filter-dropdown').forEach(dropdown => {
+            dropdown.addEventListener('change', function() {
+                const filterValue = this.value;
+                // Implement filtering logic here (e.g., fetch filtered data or hide/show cards)
+                console.log(`Filtering by: ${filterValue}`);
+                // You can add AJAX calls or client-side filtering based on filterValue
+            });
+        });
+    </script>
 </body>
 </html>
