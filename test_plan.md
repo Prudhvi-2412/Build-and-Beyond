@@ -235,9 +235,9 @@ Description: This document contains the test plan for the Framework Driven Front
 |---:|---|
 | Test Case ID | Test Case - 1 |
 | Feature | Fetch Error - 1 |
-| Test Objective | Verify client sends POST request and UI updates after successful response |
-| Expected Result | POST request returns success (200/201) with project payload; UI updates to include created project. Screenshot saved to `/network_evidence/TC-AD-001_post_success.png`. |
-| Actual Result | (to be filled) |
+| Test Objective | Sign in page fetch error when typing wrong username/password |
+| Expected Result | |
+| Actual Result | |
 | Status | Pass |
 | Evidence | ![post success placeholder](test_plan/company_bid_submission_valid.png) |
 
