@@ -426,7 +426,6 @@
                     </div>
                     <div class="bid-actions">
                         <button class="btn btn-primary" onclick="showBidReviewModal(this)">View Details</button>
-                        <button class="btn btn-secondary" onclick="updateProjectStatus('<%= bid._id %>', 'rejected')">Decline</button>
                     </div>
                 </div>
             <% }) %>
@@ -561,7 +560,6 @@
                 </div>
             </div>
             <div class="bid-review-modal-footer">
-                <button id="modalRejectBtn" class="btn btn-secondary"></button>
                 <button id="modalAcceptBtn" class="btn btn-primary" >Go to Bids</button>
             </div>
         </div>
@@ -675,7 +673,6 @@
         const bidReviewModal = document.getElementById('bidReviewModal');
         const bidReviewModalCloseBtn = document.getElementById('bidReviewModalCloseBtn');
         const modalAcceptBtn = document.getElementById('modalAcceptBtn');
-        const modalRejectBtn = document.getElementById('modalRejectBtn');
 
         function showBidReviewModal(buttonElement) {
             const card = buttonElement.closest('.bid-card');
@@ -713,6 +710,7 @@
                 filesContainer.textContent = 'No files attached.';
             }
 
+<<<<<<< HEAD
             // Set up modal buttons to have the correct ID
             modalAcceptBtn.onclick = () => {window.location.href = "/companybids";}; // Directs to full bids page
             modalRejectBtn.onclick = () => {
@@ -722,6 +720,9 @@
             modalRejectBtn.textContent = 'Decline Bid';
 
             // Show the modal
+=======
+            modalAcceptBtn.onclick = () => {window.location.href = "/companybids";};
+>>>>>>> f9190e1430e5536508465ae72404a048bc70b072
             bidReviewModal.classList.remove('hidden');
             setTimeout(() => bidReviewModal.classList.add('visible'), 10);
         }

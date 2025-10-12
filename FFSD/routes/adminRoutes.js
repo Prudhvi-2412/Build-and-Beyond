@@ -19,29 +19,29 @@ const {
   getBidDetail,
   getJobApplicationDetail
 } = require('../controllers/adminController');
-const auth = require('../middlewares/auth');
+const authadmin = require('../middlewares/authadmin');
 
 // Admin dashboard route (protected)
 router.get('/admindashboard', getAdminDashboard);
 
 // Delete routes
-router.delete('/admin/delete-customer/:id', auth, deleteCustomer);
-router.delete('/admin/delete-company/:id', auth, deleteCompany);
-router.delete('/admin/delete-worker/:id', auth, deleteWorker);
-router.delete('/admin/delete-architectHiring/:id', auth, deleteArchitectHiring);
-router.delete('/admin/delete-constructionProject/:id', auth, deleteConstructionProject);
-router.delete('/admin/delete-designRequest/:id', auth, deleteDesignRequest);
-router.delete('/admin/delete-bid/:id', auth, deleteBid);
-router.delete('/admin/delete-jobApplication/:id', auth, deleteJobApplication);
+router.delete('/admin/delete-customer/:id', authadmin, deleteCustomer);
+router.delete('/admin/delete-company/:id', authadmin, deleteCompany);
+router.delete('/admin/delete-worker/:id', authadmin, deleteWorker);
+router.delete('/admin/delete-architectHiring/:id', authadmin, deleteArchitectHiring);
+router.delete('/admin/delete-constructionProject/:id', authadmin, deleteConstructionProject);
+router.delete('/admin/delete-designRequest/:id', authadmin, deleteDesignRequest);
+router.delete('/admin/delete-bid/:id', authadmin, deleteBid);
+router.delete('/admin/delete-jobApplication/:id', authadmin, deleteJobApplication);
 
 // Detail view routes
-router.get('/admin/customer/:id', auth, getCustomerDetail);
-router.get('/admin/company/:id', auth, getCompanyDetail);
-router.get('/admin/worker/:id', auth, getWorkerDetail);
-router.get('/admin/architect-hiring/:id', auth, getArchitectHiringDetail);
-router.get('/admin/construction-project/:id', auth, getConstructionProjectDetail);
-router.get('/admin/design-request/:id', auth, getDesignRequestDetail);
-router.get('/admin/bid/:id', auth, getBidDetail);
-router.get('/admin/job-application/:id', auth, getJobApplicationDetail);
+router.get('/admin/customer/:id', authadmin, getCustomerDetail);
+router.get('/admin/company/:id', authadmin, getCompanyDetail);
+router.get('/admin/worker/:id', authadmin, getWorkerDetail);
+router.get('/admin/architect-hiring/:id', authadmin, getArchitectHiringDetail);
+router.get('/admin/construction-project/:id', authadmin, getConstructionProjectDetail);
+router.get('/admin/design-request/:id', authadmin, getDesignRequestDetail);
+router.get('/admin/bid/:id', authadmin, getBidDetail);
+router.get('/admin/job-application/:id', authadmin, getJobApplicationDetail);
 
 module.exports = router;
