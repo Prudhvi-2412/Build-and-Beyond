@@ -105,4 +105,4 @@ If you have any questions, feel free to contact the project maintainers.
     * **Member:** Sai Manideep Putchanutala / isaimanideep.p@gmail.com
     * **Member:** K Prudhvi Sai Ram / prudhvi16321@gmail.com
     * **Member:** Yeshwanth K / kadiamyeshwanth@gmail.com
-    * **Member:** Avinash / nun
+    * **Member:** Polu Avinash Reddy / avinashreddypolu27@gmail.com
