@@ -888,7 +888,7 @@
         // Delete Item (Projects, Requests, etc.)
         function deleteItem(type, id) {
             if (confirm(`Are you sure you want to delete this ${type}?`)) {
-                fetch(`/admin/delete-${type}/${id}`, {
+               fetch(`/admin/delete-${type}/${id}`, {
                     method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json'
