@@ -1,11 +1,11 @@
-# `test_plan.md`
+`test_plan.md`
 
 ## 1. Sign Up Test Cases
 
 | Case | Input | Expected Result | Actual Result | Status | Screenshot |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Invalid** | `Name: V`, `Email: user@ gmail.com` | Tooltip error message: "A part following '@' should not contain the symbol ' '". | A tooltip error message is shown. | Passed | ![Invalid Signup Case](test_plan/signup_invalid_case.png) |
-| **Valid** | `Name: Vi`, `Email: user@gmail.com` | Account created successfully. | A "Login successful" message is shown. | Passed | ![Valid Signup Case](test_plan/signup_valid_case.png) |
+| **Invalid** | `Type: Customer`,`Full Name: Sai Manideep`, `Email: saimanideep@gmailcom` ,`Date of Birth: 15-01-2025`,`Password : 123`|`Error Message : "Please enter a valid email address`, `You must be atleast 18 years old`,`Password must be atleast 6 characters`|`Error Message : "Please enter a valid email address`,`You must be atleast 18 years old`,`Password must be atleast 6 characters` | Passed | ![Invalid Signup Case](test_plan/signup_valid.png) |
+| **Valid** | `Type: Customer`,`Full Name: Sai Manideep`, `Email: saimanideep@gmail.com` ,`Date of Birth: 30-09-2005`,`Password : Sai123@` | Account created successfully. | A "Login successful" message is shown. | Passed | ![Valid Signup Case](test_plan/signup_valid_case.png) |
 
 ---
 
