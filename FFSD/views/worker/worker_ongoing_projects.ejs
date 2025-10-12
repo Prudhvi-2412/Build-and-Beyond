@@ -273,18 +273,6 @@
                                     <% } %>
                                 </div>
                             </div>
-                            <div class="project-body">
-                                <h4 class="section-title">Post a New Update</h4>
-                                <form action="/worker/project-update" method="POST" enctype="multipart/form-data" class="update-form">
-                                    <input type="hidden" name="projectId" value="<%= project._id %>">
-                                    <input type="hidden" name="projectType" value="<%= user && user.isArchitect ? 'architect' : 'interior' %>">
-                                    <textarea name="updateText" placeholder="Share a new update with the customer..." required></textarea>
-                                    <div class="form-actions">
-                                        <input type="file" name="updateImage" accept="image/*">
-                                        <button type="submit" class="btn btn-primary">Post Update</button>
-                                    </div>
-                                </form>
-                            </div>
                             <div class="project-footer">
                                 <form action="/worker/project-complete" method="POST" onsubmit="return confirm('Are you sure you want to mark this project as completed?');">
                                     <input type="hidden" name="projectId" value="<%= project._id %>">

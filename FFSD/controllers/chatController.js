@@ -1,72 +1,74 @@
 const ChatRoom = require('../models/chatModel');
-const { ArchitectHiring, DesignRequest, Customer, Worker } = require('../models');
+const mongoose = require('mongoose');
+const { ArchitectHiring, DesignRequest, Customer, Worker, Company, CompanytoWorker, WorkerToCompany } = require('../models');
 
-/**
- * Utility function to check if the user is authorized for the chat room.
- * This is crucial for security to ensure only the assigned customer/worker can join.
- */
+
 const authorizeChatAccess = async (roomId, userId, userRole) => {
-    // Attempt to find the chat room
     const chatRoom = await ChatRoom.findOne({ roomId }).lean();
 
     if (!chatRoom) {
         return { authorized: false, message: 'Chat room not found.' };
     }
 
-    // Check if the current user is either the customer or the worker in this room
-    const isCustomer = chatRoom.customerId.toString() === userId.toString() && userRole === 'customer';
-    const isWorker = chatRoom.workerId.toString() === userId.toString() && userRole === 'worker';
+    const isCustomer = chatRoom.customerId && chatRoom.customerId.toString() === userId.toString() && userRole === 'customer';
+    const isWorker = chatRoom.workerId && chatRoom.workerId.toString() === userId.toString() && userRole === 'worker';
+    const isCompany = chatRoom.companyId && chatRoom.companyId.toString() === userId.toString() && userRole === 'company';
 
-    if (isCustomer || isWorker) {
-        return { 
-            authorized: true, 
-            chatRoom, 
-            isCustomer, 
-            isWorker,
-            // Determine the ID of the other user for fetching their name and status
-            otherUserId: isCustomer ? chatRoom.workerId : chatRoom.customerId
+
+    if (isCustomer || isWorker || isCompany) {
+        let otherUserId, otherUserModel;
+        if(isCustomer){
+            otherUserId = chatRoom.workerId;
+            otherUserModel = 'Worker';
+        } else if (isWorker) {
+            otherUserId = chatRoom.customerId || chatRoom.companyId;
+            otherUserModel = chatRoom.customerId ? 'Customer' : 'Company';
+        } else { // isCompany
+            otherUserId = chatRoom.workerId;
+            otherUserModel = 'Worker';
+        }
+
+        return {
+            authorized: true,
+            chatRoom,
+            otherUserId,
+            otherUserModel
         };
     }
 
     return { authorized: false, message: 'Unauthorized access to this chat room.' };
 };
 
-/**
- * Renders the chat page, fetching all required data.
- */
+
 const getChatPage = async (req, res) => {
     try {
         const { roomId } = req.params;
         const userId = req.user.user_id;
-        const userRole = req.user.role; // Assuming role is available in req.user
+        const userRole = req.user.role; 
 
         if (!userId || !userRole) {
             return res.status(401).send('Unauthorized');
         }
 
-        const { authorized, message, chatRoom, isCustomer, otherUserId } = await authorizeChatAccess(roomId, userId, userRole);
+        const { authorized, message, chatRoom, otherUserId, otherUserModel } = await authorizeChatAccess(roomId, userId, userRole);
 
         if (!authorized) {
             return res.status(403).send(message);
         }
 
-        // Fetch the other user's name for the chat header
-        const OtherUserModel = isCustomer ? Worker : Customer;
-        const otherUser = await OtherUserModel.findById(otherUserId).select('name').lean();
+        const OtherUser = mongoose.model(otherUserModel);
+        const otherUser = await OtherUser.findById(otherUserId).select('name companyName').lean();
         
-        // Fetch current user's name
-        const CurrentUserModel = isCustomer ? Customer : Worker;
-        const currentUser = await CurrentUserModel.findById(userId).select('name').lean();
+        const CurrentUser = mongoose.model(userRole.charAt(0).toUpperCase() + userRole.slice(1));
+        const currentUser = await CurrentUser.findById(userId).select('name companyName').lean();
 
 
-        // Prepare initial data for the EJS template
         const chatData = {
             roomId: chatRoom.roomId,
             userId: userId.toString(),
-            userName: currentUser ? currentUser.name : 'You',
+            userName: currentUser.name || currentUser.companyName || 'You',
             userRole: userRole,
-            otherUserName: otherUser ? otherUser.name : 'Other User',
-            // Messages are already sorted by default since we only append to the array.
+            otherUserName: otherUser.name || otherUser.companyName || 'Other User',
             messages: chatRoom.messages, 
             activePage: 'chat'
         };
@@ -79,32 +81,32 @@ const getChatPage = async (req, res) => {
     }
 };
 
-/**
- * Finds or creates a chat room when an offer is accepted.
- * Returns the chat room object containing the unique roomId.
- */
+
 const findOrCreateChatRoom = async (projectId, projectType) => {
     try {
-        // Create a unique room ID based on the project ID and type
         const roomId = `room-${projectId}-${projectType}`;
         
-        let project;
+        let project, customerId, workerId, companyId;
+
         if (projectType === 'architect') {
             project = await ArchitectHiring.findById(projectId).lean();
+            if (!project || (project.status.toLowerCase() !== 'accepted')) return null;
+            customerId = project.customer;
+            workerId = project.worker;
         } else if (projectType === 'interior') {
             project = await DesignRequest.findById(projectId).lean();
+            if (!project || (project.status.toLowerCase() !== 'accepted')) return null;
+            customerId = project.customerId;
+            workerId = project.workerId;
+        } else if (projectType === 'hiring') {
+            project = await CompanytoWorker.findById(projectId).lean() || await WorkerToCompany.findById(projectId).lean();
+            if(!project || (project.status.toLowerCase() !== 'accepted')) return null;
+            companyId = project.company || project.companyId;
+            workerId = project.worker || project.workerId;
         }
 
-        // Crucial validation: must be an existing project and must be accepted
-        if (!project || (project.status.toLowerCase() !== 'accepted' && project.status !== 'Accepted')) {
-            return null;
-        }
+        if (!project) return null;
 
-        // Get the customer and worker IDs based on the project type schema structure
-        const customerId = projectType === 'architect' ? project.customer : project.customerId;
-        const workerId = projectType === 'architect' ? project.worker : project.workerId;
-
-        // Find or create the chat room document
         let chatRoom = await ChatRoom.findOne({ roomId });
         
         if (!chatRoom) {
@@ -112,6 +114,7 @@ const findOrCreateChatRoom = async (projectId, projectType) => {
                 roomId,
                 customerId,
                 workerId,
+                companyId,
                 projectId,
                 projectType,
                 messages: []
@@ -123,7 +126,6 @@ const findOrCreateChatRoom = async (projectId, projectType) => {
 
     } catch (error) {
         console.error('Error in findOrCreateChatRoom:', error);
-        // Fail silently and return null if chat room creation fails
         return null; 
     }
 };

@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const { Company, Bid, ConstructionProjectSchema, Worker, WorkerToCompany, CompanytoWorker } = require('../models');
 const { getTargetDate } = require('../utils/helpers');
+const { findOrCreateChatRoom } = require('./chatController');
+
 
 function calculateProgress(startDate, timelineString) {
  try {
@@ -228,25 +230,41 @@ const getCompanyRevenue = async (req, res) => {
 };
 
 const getHiring = async (req, res) => {
-  try {
-    const companyId = req.user.user_id;
-    const workers = await Worker.find().lean();
-    const processedWorkers = workers.map(worker => ({ ...worker, profileImage: worker.profileImage || `https://api.dicebear.com/9.x/male/svg?seed=${encodeURIComponent((worker.name || 'worker').replace(/\s+/g, ''))}&mouth=smile`, rating: worker.rating || 0 }));
-    const workerRequests = await WorkerToCompany.find({
-      companyId: companyId,
-      status: 'Pending'
-    })
-    .populate('workerId')
-    .lean();
+    try {
+        const companyId = req.user.user_id;
+        const workers = await Worker.find().lean();
+        const processedWorkers = workers.map(worker => ({ ...worker, profileImage: worker.profileImage || `https://api.dicebear.com/9.x/male/svg?seed=${encodeURIComponent((worker.name || 'worker').replace(/\s+/g, ''))}&mouth=smile`, rating: worker.rating || 0 }));
 
-    const requestedWorkersRaw = await CompanytoWorker.find({ company: companyId }).populate('worker', 'name email location profileImage').lean();
-    const requestedWorkers = requestedWorkersRaw.map(request => ({ _id: request._id, positionApplying: request.position, expectedSalary: request.salary, status: request.status, location: request.location, worker: { name: request.worker?.name || 'Unknown', email: request.worker?.email || 'N/A' } }));
-    res.render('company/hiring', { workers: processedWorkers, workerRequests, requestedWorkers });
-  } catch (err) {
-    console.error('Error loading hiring page:', err);
-    res.status(500).send('Error loading hiring page');
-  }
+        const workerRequestsRaw = await WorkerToCompany.find({
+            companyId: companyId,
+            status: 'Pending'
+        }).populate('workerId').lean();
+
+        const workerRequests = await Promise.all(workerRequestsRaw.map(async (request) => {
+            const chatRoom = await findOrCreateChatRoom(request._id, 'hiring');
+            return { ...request, chatId: chatRoom ? chatRoom.roomId : null };
+        }));
+
+        const requestedWorkersRaw = await CompanytoWorker.find({ company: companyId }).populate('worker', 'name email location profileImage').lean();
+        const requestedWorkers = requestedWorkersRaw.map(request => ({
+            _id: request._id,
+            positionApplying: request.position,
+            expectedSalary: request.salary,
+            status: request.status,
+            location: request.location,
+            worker: {
+                name: request.worker?.name || 'Unknown',
+                email: request.worker?.email || 'N/A'
+            }
+        }));
+
+        res.render('company/hiring', { workers: processedWorkers, workerRequests, requestedWorkers });
+    } catch (err) {
+        console.error('Error loading hiring page:', err);
+        res.status(500).send('Error loading hiring page');
+    }
 };
+
 
 const handleWorkerRequest = async (req, res) => {
   try {
@@ -269,6 +287,10 @@ const handleWorkerRequest = async (req, res) => {
       return res.status(404).json({ error: 'Request not found or you do not have permission.' });
     }
 
+    if (status === 'accepted') {
+        await findOrCreateChatRoom(updatedRequest._id, 'hiring');
+    }
+
     res.status(200).json({ message: `Worker request has been ${status}.`, request: updatedRequest });
 
   } catch (error) {
@@ -277,11 +299,12 @@ const handleWorkerRequest = async (req, res) => {
   }
 };
 
-// START: ADD THIS NEW FUNCTION
 const createHireRequest = async (req, res) => {
     try {
         const { position, location, salary, workerId } = req.body;
-        const companyId = req.user.user_id; // Assumes user is authenticated and user_id is the company's ID
+        console.log('Received req.body:', req.body);  // Temp log for debugging
+
+        const companyId = req.user.user_id;
 
         if (!companyId) {
             return res.status(401).json({ error: 'Unauthorized. You must be logged in.' });
@@ -291,7 +314,12 @@ const createHireRequest = async (req, res) => {
             return res.status(400).json({ error: 'Missing required fields for hire request.' });
         }
 
-        // Check if a request already exists to prevent duplicates
+        // Validate workerId is a valid ObjectId (optional but recommended)
+        if (!mongoose.Types.ObjectId.isValid(workerId)) {
+            return res.status(400).json({ error: 'Invalid worker ID.' });
+        }
+
+        // Rest of your code...
         const existingRequest = await CompanytoWorker.findOne({
             company: companyId,
             worker: workerId,
@@ -307,7 +335,7 @@ const createHireRequest = async (req, res) => {
             worker: workerId,
             position: position,
             location: location,
-            salary: salary,
+            salary: parseFloat(salary),  // Ensure salary is a number
             status: 'Pending'
         });
 
@@ -320,9 +348,8 @@ const createHireRequest = async (req, res) => {
         res.status(500).json({ error: 'An internal server error occurred while sending the request.' });
     }
 };
-// END: ADD THIS NEW FUNCTION
 
-// In controllers/companyController.js
+// In companyController.js
 
 const getSettings = async (req, res) => {
   try {
@@ -479,8 +506,28 @@ const submitProjectProposal = async (req, res) => {
     res.status(500).send('Server Error');
   }
 };
+const getEmployees = async (req, res) => {
+    try {
+        const companyId = req.user.user_id;
+        const employeesFromOffers = await CompanytoWorker.find({ company: companyId, status: 'Accepted' }).populate('worker').lean();
+        const employeesFromApps = await WorkerToCompany.find({ companyId: companyId, status: 'accepted' }).populate('workerId').lean();
+
+        const employees = [...employeesFromOffers, ...employeesFromApps.map(app => ({...app, worker: app.workerId}))];
+
+        const employeesWithChat = await Promise.all(employees.map(async (employee) => {
+            const chatRoom = await findOrCreateChatRoom(employee._id, 'hiring');
+            return { ...employee, chatId: chatRoom ? chatRoom.roomId : null };
+        }));
+
+        res.render('company/employees', { employees: employeesWithChat });
+    } catch (error) {
+        console.error('Error fetching employees:', error);
+        res.status(500).send('Server Error');
+    }
+};
+
 // Add other company controllers like revenue, etc., if needed
 
 module.exports = { getDashboard, getOngoingProjects, getProjectRequests, updateProjectStatusController, 
    getHiring, getSettings, getBids , getCompanyRevenue, createHireRequest,  
-  updateCompanyProfile, handleWorkerRequest, submitBidController, submitProjectProposal};
+  updateCompanyProfile, handleWorkerRequest, submitBidController, submitProjectProposal, getEmployees};

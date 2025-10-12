@@ -4,13 +4,13 @@ const messageSchema = new mongoose.Schema({
     sender: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
-        // Sender can be a Customer or a Worker, based on role
-        refPath: 'senderModel' 
+        // Sender can be a Customer, Worker, or Company
+        refPath: 'senderModel'
     },
     senderModel: {
         type: String,
         required: true,
-        enum: ['Customer', 'Worker']
+        enum: ['Customer', 'Worker', 'Company']
     },
     message: {
         type: String,
@@ -33,12 +33,15 @@ const chatRoomSchema = new mongoose.Schema({
     customerId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Customer',
-        required: true
     },
     workerId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Worker',
         required: true
+    },
+    companyId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Company',
     },
     projectId: {
         type: mongoose.Schema.Types.ObjectId,
@@ -46,11 +49,11 @@ const chatRoomSchema = new mongoose.Schema({
     },
     projectType: {
         type: String,
-        enum: ['architect', 'interior'],
+        enum: ['architect', 'interior', 'hiring'],
         required: true
     },
     messages: [messageSchema]
 }, { timestamps: true });
 
-// FIX: Export the existing model if it's already defined, otherwise define it.
+
 module.exports = mongoose.models.ChatRoom || mongoose.model('ChatRoom', chatRoomSchema);

@@ -1,4 +1,4 @@
-const { Worker, ArchitectHiring, DesignRequest, Company, CompanytoWorker, WorkerToCompany } = require('../models');
+const { Worker, ArchitectHiring, DesignRequest, Company, CompanytoWorker, WorkerToCompany, ConstructionProjectSchema } = require('../models');
 const mongoose = require("mongoose");
 const { findOrCreateChatRoom } = require('./chatController'); // NEW: Import the chat utility
 const bcrypt = require('bcrypt');
@@ -53,27 +53,34 @@ const getJoinCompany = async (req, res) => {
     }
     
     const user = await Worker.findById(workerId).lean();
-    // Use the filter object in the .find() method
-    const companies = await Company.find(companyFilter).lean(); 
+    // Use the filter object in the .find() method, add limit and sort to prevent loading all records
+    const companies = await Company.find(companyFilter).sort({ createdAt: -1 }).limit(100).lean(); 
     
+    // Add field selection to populate to reduce data size
     const offers = await CompanytoWorker.find({ worker: workerId, status: 'Pending' })
-                                        .populate('company')
+                                        .populate('company', 'companyName description aboutCompany location specialization size yearsInBusiness currentOpenings whyJoinUs')
+                                        .sort({ createdAt: -1 })
                                         .lean();
     const jobApplications = await WorkerToCompany.find({ workerId: workerId }).lean();
     
+    const isEmployed = await CompanytoWorker.findOne({ worker: workerId, status: 'Accepted' }) || await WorkerToCompany.findOne({ workerId: workerId, status: 'Accepted' });
+
+
     res.render('worker/workers_join_company', { 
       user, 
       companies, 
       offers, 
       jobApplications, 
       activePage: 'join',
-      query: req.query // Pass the query back to the template to pre-fill filters
+      query: req.query, // Pass the query back to the template to pre-fill filters
+      isEmployed: !!isEmployed
     });
   } catch (error) {
     console.error('Error fetching data for Join Company page:', error);
     res.status(500).send('Server error');
   }
 };
+
 
 const getSettings = async (req, res) => {
   const user = await Worker.findById(req.user.user_id);
@@ -145,6 +152,12 @@ const deleteWorkerRequest = async (req, res) => {
 // Added now
 const createWorkerRequest = async (req, res) => {
   try {
+    const workerId = req.user.user_id;
+
+    const isEmployed = await CompanytoWorker.findOne({ worker: workerId, status: 'Accepted' }) || await WorkerToCompany.findOne({ workerId: workerId, status: 'Accepted' });
+    if (isEmployed) {
+        return res.status(403).send('You are already employed and cannot apply for another company.');
+    }
     const {
       fullName,
       email,
@@ -159,7 +172,6 @@ const createWorkerRequest = async (req, res) => {
       companyId,
     } = req.body;
 
-    const workerId = req.user.user_id;
 
     // Validate required fields
     if (
@@ -331,18 +343,21 @@ const updateAvailability = async (req, res) => {
 const acceptOffer = async (req, res) => {
   try {
     const offer = await CompanytoWorker.findById(req.params.id);
-    // Security check to ensure the offer belongs to the logged-in worker
     if (!offer || offer.worker.toString() !== req.user.user_id) {
       return res.status(404).send('Offer not found or you are not authorized.');
     }
     offer.status = 'Accepted';
     await offer.save();
-    res.redirect('/workerjoin_company'); // Redirect back to the offers page
+    // Create a chat room after accepting the offer
+    await findOrCreateChatRoom(offer._id, 'hiring');
+
+    res.redirect('/worker/my-company');
   } catch (error) {
     console.error('Error accepting offer:', error);
     res.status(500).send('Server Error');
   }
 };
+
 
 // ADD THIS NEW FUNCTION TO DECLINE AN OFFER
 const declineOffer = async (req, res) => {
@@ -598,6 +613,86 @@ const updatePassword = async (req, res) => {
     res.status(500).json({ message: 'Server error while updating password.' });
   }
 };
+
+const getMyCompany = async (req, res) => {
+    try {
+        const workerId = req.user.user_id;
+        const user = await Worker.findById(workerId).lean(); // Moved up for consistency and to avoid using partial req.user
+        if (!user) {
+            return res.status(404).send('Worker not found');
+        }
+
+        let company, acceptedRequest;
+
+        // Check for accepted offers from companies, add field selection to populate
+        acceptedRequest = await CompanytoWorker.findOne({ worker: workerId, status: 'Accepted' }).populate('company', 'companyName location').lean();
+
+        // If no offer, check for accepted applications to companies, add field selection
+        if (!acceptedRequest) {
+            acceptedRequest = await WorkerToCompany.findOne({ workerId: workerId, status: 'Accepted' }).populate('companyId', 'companyName location').lean();
+            if (acceptedRequest) {
+                acceptedRequest.company = acceptedRequest.companyId; // Normalize the company field
+            }
+        }
+
+        if (!acceptedRequest) {
+            return res.render('worker/my_company', { user, company: null, projects: [], chatId: null });
+        }
+
+        company = acceptedRequest.company;
+        // Add select to limit fields fetched for projects
+        const projects = await ConstructionProjectSchema.find({ companyId: company._id, status: 'accepted' }).select('projectName status').lean();
+
+        // Custom chat room creation for company hiring to avoid issues with utility function for 'hiring' type
+        let chatId = null;
+        try {
+            const participants = [workerId, company._id].sort((a, b) => a.toString().localeCompare(b.toString()));
+            let chatRoom = await ChatRoom.findOne({ 
+                participants: { 
+                    $all: participants, 
+                    $size: 2 
+                } 
+            }).lean();
+
+            if (!chatRoom) {
+                const roomId = `company_hiring_${participants.join('_')}`;
+                chatRoom = new ChatRoom({
+                    roomId,
+                    participants,
+                    type: 'company_hiring'
+                });
+                await chatRoom.save();
+                chatId = roomId;
+            } else {
+                chatId = chatRoom.roomId;
+            }
+        } catch (chatError) {
+            console.error('Error setting up company chat room:', chatError);
+            // Fallback to null, no hang
+        }
+
+        res.render('worker/my_company', { user, company, projects, chatId });
+    } catch (error) {
+        console.error('Error fetching my company:', error);
+        res.status(500).send('Server Error');
+    }
+};
+
+const leaveCompany = async (req, res) => {
+    try {
+        const workerId = req.user.user_id;
+        const statusRegex = new RegExp('^Accepted$', 'i');
+
+        await CompanytoWorker.findOneAndDelete({ worker: workerId, status: statusRegex });
+        await WorkerToCompany.findOneAndDelete({ workerId: workerId, status: statusRegex });
+
+        return res.redirect('/worker/my-company');
+    } catch (error) {
+        console.error('Error leaving company:', error);
+        res.status(500).send('Server Error');
+    }
+};
+
 module.exports = { getJobs, getJoinCompany, getSettings, getEditProfile, getDashboard, getWorkerById, deleteWorkerRequest,
   createWorkerRequest , updateWorkerProfile,updateAvailability,acceptOffer,declineOffer, updateJobStatus ,
-  getOngoingProjects,postProjectUpdate,markProjectAsCompleted,submitProposal, updatePassword };
+  getOngoingProjects,postProjectUpdate,markProjectAsCompleted,submitProposal, updatePassword, getMyCompany, leaveCompany };
