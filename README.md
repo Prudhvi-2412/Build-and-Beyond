@@ -12,14 +12,17 @@
 * **Secure Chat:** After an offer is accepted, customers can **chat** directly with the selected **workers or companies** to discuss project details and progress.
 * **Project Updates Page:** Customers can view a dedicated page featuring **regular project updates** (including photos, progress reports, etc.) posted by the **companies** they have hired.
 
-### 👷 Company & Worker Features
-* **Tender Participation:** Construction companies can view and bid on customer tenders for large-scale construction projects.
-* **Company Project Update Submission:** Companies are responsible for **regularly updating** the progress of their ongoing projects for customer viewing.
-* **Worker Project Update Submission:** Workers are responsible for **regularly updating** the progress of their ongoing projects for customer viewing.
-* **Worker Management (Company):** Companies can view a **list of all workers** (Architects and Interior Designers) currently hired under their profile.
-* **Worker Hiring (Company):** Companies can **send job offers** to individual workers (Architects/Interior Designers) to hire them for their firm.
-* **Company Application (Worker):** Workers can **send requests** to companies to join their team.
-* **Offer Management:** Accept or decline offers and job requests from both customers and companies.
+### 🏗️ Company Features
+* **Tender Participation:** Companies can view and bid on customer tenders for large-scale construction projects.
+* **Project Update Submission:** Companies are responsible for **regularly updating** the progress of their ongoing projects for customer viewing.
+* **Worker Management:** Companies can view a **list of all workers** (Architects and Interior Designers) currently hired under their profile.
+* **Worker Hiring:** Companies can **send job offers** to individual workers (Architects/Interior Designers) to hire them for their firm.
+* **Offer Management:** Accept or decline customer tenders and worker requests to join the company.
+
+### 👨‍💼 Worker Features (Architects & Interior Designers)
+* **Project Update Submission:** Workers are responsible for **regularly updating** the progress of their ongoing projects for customer viewing.
+* **Company Application:** Workers can **send requests** to companies to join their team.
+* **Offer Management:** Accept or decline customer job offers and company job offers.
 
 ### ⚙️ Admin Features
 * **User Management:** The Admin has full visibility of **all user details** (Customer, Company, Worker).
@@ -82,7 +85,7 @@ You will need the following software installed on your machine:
     nodemon app.js
     ```
     * **Access:** Open your web browser and navigate to:
-      **`http://localhost:4000`**
+        **`http://localhost:4000`**
 
 ---
 
