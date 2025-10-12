@@ -54,13 +54,13 @@ You will need the following software installed on your machine:
 
 1.  **Clone the repository:**
     ```bash
-    git clone [Your Repository URL Here]
+    git clone https://github.com/kadiamyeshwanth/FDFED
     ```
 
 2.  **Navigate into the project directory:**
     ```bash
     # Assuming your setup places the app within a specific path
-    cd [Your Repository Name] 
+    cd FDFED
     ```
 
 3.  **Change directory to the application root (where app.js is located):**
