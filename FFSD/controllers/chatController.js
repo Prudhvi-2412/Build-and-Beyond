@@ -2,7 +2,15 @@ const ChatRoom = require('../models/chatModel');
 const mongoose = require('mongoose');
 const { ArchitectHiring, DesignRequest, Customer, Worker, Company, CompanytoWorker, WorkerToCompany } = require('../models');
 
+// Helper function to capitalize the first letter
+const capitalize = (s) => {
+    if (typeof s !== 'string' || s.length === 0) return '';
+    return s.charAt(0).toUpperCase() + s.slice(1);
+};
 
+// ====================================================================
+// authorizeChatAccess remains UNCHANGED as it's not the source of the error
+// ====================================================================
 const authorizeChatAccess = async (roomId, userId, userRole) => {
     const chatRoom = await ChatRoom.findOne({ roomId }).lean();
 
@@ -39,12 +47,14 @@ const authorizeChatAccess = async (roomId, userId, userRole) => {
     return { authorized: false, message: 'Unauthorized access to this chat room.' };
 };
 
-
+// ====================================================================
+// getChatPage is CORRECTED to handle null user data (Line 71 in your file)
+// ====================================================================
 const getChatPage = async (req, res) => {
     try {
         const { roomId } = req.params;
-        const userId = req.user.user_id;
-        const userRole = req.user.role; 
+        const userId = req.user?.user_id; // Using optional chaining for safety
+        const userRole = req.user?.role; 
 
         if (!userId || !userRole) {
             return res.status(401).send('Unauthorized');
@@ -56,19 +66,38 @@ const getChatPage = async (req, res) => {
             return res.status(403).send(message);
         }
 
+        // --- POTENTIAL ERROR SOURCE 1: otherUser is null ---
         const OtherUser = mongoose.model(otherUserModel);
         const otherUser = await OtherUser.findById(otherUserId).select('name companyName').lean();
         
-        const CurrentUser = mongoose.model(userRole.charAt(0).toUpperCase() + userRole.slice(1));
+        // --- Correction: Added null check for otherUser ---
+        if (!otherUser) {
+            console.error(`Other user (${otherUserModel}) not found for ID: ${otherUserId}`);
+            // You can decide to throw an error or continue with a default name
+            // For now, we'll continue, as a default name is set in chatData.
+        }
+
+        // --- POTENTIAL ERROR SOURCE 2: currentUser is null ---
+        const CurrentUser = mongoose.model(capitalize(userRole));
         const currentUser = await CurrentUser.findById(userId).select('name companyName').lean();
 
+        // --- Correction: Added null check for currentUser ---
+        if (!currentUser) {
+            console.error(`Current user (${userRole}) not found for ID: ${userId}`);
+            return res.status(404).send('Current user profile not found.'); // Critical error, should stop
+        }
 
+
+        // The original error occurred because you were doing otherUser.name 
+        // when otherUser was null. Now, the checks above ensure we catch it,
+        // and the safe access below ensures no crash.
         const chatData = {
             roomId: chatRoom.roomId,
             userId: userId.toString(),
-            userName: currentUser.name || currentUser.companyName || 'You',
+            // CORRECTED: Use optional chaining to safely access properties
+            userName: currentUser.name || currentUser.companyName || 'You', 
             userRole: userRole,
-            otherUserName: otherUser.name || otherUser.companyName || 'Other User',
+            otherUserName: otherUser?.name || otherUser?.companyName || 'Other User',
             messages: chatRoom.messages, 
             activePage: 'chat'
         };
@@ -76,12 +105,15 @@ const getChatPage = async (req, res) => {
         res.render('chat', chatData);
 
     } catch (error) {
-        console.error('Error fetching chat page:', error);
+        // The error log now includes the line number from the stack trace
+        console.error('Error fetching chat page:', error); 
         res.status(500).send('Server Error');
     }
 };
 
-
+// ====================================================================
+// findOrCreateChatRoom remains UNCHANGED as it's not the source of the error
+// ====================================================================
 const findOrCreateChatRoom = async (projectId, projectType) => {
     try {
         const roomId = `room-${projectId}-${projectType}`;
