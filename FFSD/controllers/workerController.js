@@ -94,22 +94,62 @@ const getEditProfile = (req, res) => res.render('worker/worker_profile_edit');
 const getDashboard = async (req, res) => {
   try {
     if (!req.user || !req.user.user_id) return res.status(401).send('Unauthorized: User not authenticated');
-    
+
     const workerId = req.user.user_id;
     const worker = await Worker.findById(workerId).lean();
     if (!worker) return res.status(404).send('Worker not found');
 
+    // Determine which jobs to fetch based on worker type
+    let jobsQuery;
+    if (worker.isArchitect) {
+      jobsQuery = ArchitectHiring.find({ worker: workerId, status: 'Pending' }).sort({ createdAt: -1 }).limit(3).lean();
+    } else {
+      jobsQuery = DesignRequest.find({ workerId: workerId, status: 'pending' }).sort({ createdAt: -1 }).limit(3).lean();
+    }
+
     const [offers, companies, jobs, offerCount, applicationCount] = await Promise.all([
       CompanytoWorker.find({ worker: workerId, status: 'Pending' }).populate('company', 'companyName').sort({ createdAt: -1 }).limit(3).lean(),
-      // MODIFIED THIS LINE to sort companies by most recently created
       Company.find({}).sort({ createdAt: -1 }).limit(3).lean(),
-      DesignRequest.find({ workerId: workerId, status: 'pending' }).sort({ createdAt: -1 }).limit(3).lean(),
+      jobsQuery, // Use the conditional query here
       CompanytoWorker.countDocuments({ worker: workerId, status: 'Pending' }),
       WorkerToCompany.countDocuments({ workerId: workerId, status: 'Pending' })
     ]);
 
-    const enhancedJobs = jobs.map(job => ({ ...job, timeline: job.roomType === 'Residential' ? '2 weeks' : '1 month', budget: job.roomSize?.length && job.roomSize?.width ? job.roomSize.length * job.roomSize.width * 1000 : 0 }));
-    
+    const enhancedJobs = jobs.map(job => {
+      if (worker.isArchitect) {
+        // Normalization for ArchitectHiring
+        return {
+          ...job,
+          projectName: job.projectName,
+          address: job.customerAddress ? `${job.customerAddress.city}, ${job.customerAddress.state}` : 'Not specified',
+          projectDescription: job.designRequirements.specialFeatures || 'No special features described.',
+          timeline: 'Varies',
+          budget: job.additionalDetails.budget ? parseFloat(job.additionalDetails.budget.replace(/[^0-9.-]+/g,"")) : 'TBD'
+        };
+      } else {
+        // Normalization for DesignRequest
+        const roomType = (job.roomType || job.roomType === 0) ? String(job.roomType).toLowerCase() : null;
+
+        let timeline = null;
+        if (roomType === 'residential') timeline = '2 weeks';
+        else if (roomType === 'commercial') timeline = '1 month';
+        else if (roomType) timeline = 'TBD';
+
+        let budget = null;
+        try {
+          const length = job.roomSize && typeof job.roomSize.length === 'number' ? job.roomSize.length : null;
+          const width = job.roomSize && typeof job.roomSize.width === 'number' ? job.roomSize.width : null;
+          if (length != null && width != null) {
+            budget = Math.round(length * width * 1000);
+          }
+        } catch (e) {
+          budget = null;
+        }
+
+        return { ...job, timeline: timeline || 'Not specified', budget };
+      }
+    });
+
     res.render('worker/worker_dashboard', { 
         workerName: worker.name || 'Builder', 
         offers, 
@@ -127,6 +167,7 @@ const getDashboard = async (req, res) => {
     res.status(500).render('error', { message: 'Dashboard Loading Failed', error: process.env.NODE_ENV === 'development' ? error : {} });
   }
 };
+
 const getWorkerById = async (req, res) => {
   try {
     const worker = await Worker.findById(req.params.id).select('name email title rating about specialties projects contact location linkedin previousWork profileImage').lean();

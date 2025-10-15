@@ -318,96 +318,163 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const tabs = document.querySelectorAll('.nav-link');
-            const tabPanes = document.querySelectorAll('.tab-pane');
-            const detailsModal = document.getElementById('detailsModal');
-            const closeModal = detailsModal.querySelector('.close-modal');
-            // Ensure projectsData is available and safe to parse
-            const projectsData = <%- JSON.stringify(projects || []) %>;
-            const isArchitect = <%- JSON.stringify((user && user.isArchitect) || false) %>;
+    document.addEventListener('DOMContentLoaded', function() {
+        const tabs = document.querySelectorAll('.nav-link');
+        const tabPanes = document.querySelectorAll('.tab-pane');
+        const detailsModal = document.getElementById('detailsModal');
+        const closeModal = detailsModal.querySelector('.close-modal');
+        // Ensure projectsData is available and safe to parse
+        const projectsData = <%- JSON.stringify(projects || []) %>;
+        const isArchitect = <%- JSON.stringify((user && user.isArchitect) || false) %>;
 
-            tabs.forEach(tab => {
-                tab.addEventListener('click', function() {
-                    tabs.forEach(t => t.classList.remove('active'));
-                    this.classList.add('active');
-                    tabPanes.forEach(pane => pane.classList.remove('active'));
-                    document.getElementById(this.dataset.tab).classList.add('active');
-                });
+        tabs.forEach(tab => {
+            tab.addEventListener('click', function() {
+                tabs.forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                tabPanes.forEach(pane => pane.classList.remove('active'));
+                document.getElementById(this.dataset.tab).classList.add('active');
             });
+        });
 
-            document.querySelectorAll('.view-details').forEach(button => {
-                button.addEventListener('click', function() {
-                    const projectId = this.dataset.projectId;
-                    const project = projectsData.find(p => p._id && p._id.toString() === projectId);
-                    if (!project) return;
+        document.querySelectorAll('.view-details').forEach(button => {
+            button.addEventListener('click', function() {
+                const projectId = this.dataset.projectId;
+                const project = projectsData.find(p => p._id && p._id.toString() === projectId);
+                if (!project) {
+                    console.error('Project data not found for ID:', projectId);
+                    return;
+                }
 
-                    const modalTitle = detailsModal.querySelector('#modalTitle');
-                    const modalBody = detailsModal.querySelector('#modalBody');
-                    modalTitle.textContent = project.projectName || 'Project Details';
+                const modalTitle = detailsModal.querySelector('#modalTitle');
+                const modalBody = detailsModal.querySelector('#modalBody');
+                modalTitle.textContent = project.projectName || 'Project Details';
 
-                    let detailsHtml = '';
+                let detailsHtml = '';
+                let imagesHtml = '';
 
-                    if (isArchitect) {
-                        detailsHtml = `
-                            <div class="modal-section"><div class="modal-section-title">Customer Details</div><div class="detail-grid">
+                if (isArchitect) {
+                    // --- ARCHITECT DETAILS ---
+                    detailsHtml = `
+                        <div class="modal-section">
+                            <div class="modal-section-title">Customer Details</div>
+                            <div class="detail-grid">
                                 <div class="modal-detail-item"><strong>Name:</strong> ${project.customerDetails?.fullName || 'N/A'}</div>
                                 <div class="modal-detail-item"><strong>Contact:</strong> ${project.customerDetails?.contactNumber || 'N/A'}</div>
-                            </div></div>
-                            <div class="modal-section"><div class="modal-section-title">Plot Information</div><div class="detail-grid">
-                                <div class="modal-detail-item"><strong>Location:</strong> ${project.plotInformation?.plotLocation || 'N/A'}</div>
-                                <div class="modal-detail-item"><strong>Size:</strong> ${project.plotInformation?.plotSize || 'N/A'}</div>
-                            </div></div>
-                            <div class="modal-section"><div class="modal-section-title">Special Features</div><p>${project.designRequirements?.specialFeatures || 'None'}</p></div>
-                        `;
-                    } else {
-                        detailsHtml = `
-                            <div class="modal-section"><div class="modal-section-title">Customer Details</div><div class="detail-grid">
+                                <div class="modal-detail-item"><strong>Email:</strong> ${project.customerDetails?.email || 'N/A'}</div>
+                                <div class="modal-detail-item"><strong>Address:</strong> ${project.customerAddress?.streetAddress}, ${project.customerAddress?.city}, ${project.customerAddress?.state} ${project.customerAddress?.zipCode}</div>
+                            </div>
+                        </div>
+                        <div class="modal-section">
+                            <div class="modal-section-title">Project Overview</div>
+                            <div class="detail-grid">
+                                <div class="modal-detail-item"><strong>Design Type:</strong> ${project.designRequirements?.designType || 'N/A'}</div>
+                                <div class="modal-detail-item"><strong>Architectural Style:</strong> ${project.designRequirements?.architecturalStyle || 'N/A'}</div>
+                                <div class="modal-detail-item"><strong>Budget:</strong> ${project.additionalDetails?.budget || 'Not specified'}</div>
+                                <div class="modal-detail-item"><strong>Preferred Completion:</strong> ${project.additionalDetails?.completionDate ? new Date(project.additionalDetails.completionDate).toLocaleDateString() : 'N/A'}</div>
+                            </div>
+                        </div>
+                        <div class="modal-section">
+                            <div class="modal-section-title">Plot & Dimensions</div>
+                            <div class="detail-grid">
+                                <div class="modal-detail-item"><strong>Plot Location:</strong> ${project.plotInformation?.plotLocation || 'N/A'}</div>
+                                <div class="modal-detail-item"><strong>Plot Size:</strong> ${project.plotInformation?.plotSize || 'N/A'}</div>
+                                <div class="modal-detail-item"><strong>Plot Orientation:</strong> ${project.plotInformation?.plotOrientation || 'N/A'}</div>
+                                <div class="modal-detail-item"><strong>Number of Floors:</strong> ${project.designRequirements?.numFloors || 'N/A'}</div>
+                            </div>
+                        </div>
+                         <div class="modal-section">
+                            <div class="modal-section-title">Floor Requirements</div>
+                            ${ (project.designRequirements?.floorRequirements && project.designRequirements.floorRequirements.length > 0)
+                                ? project.designRequirements.floorRequirements.map(floor => `<p><strong>Floor ${floor.floorNumber}:</strong> ${floor.details}</p>`).join('')
+                                : '<p>No specific floor requirements provided.</p>'
+                            }
+                        </div>
+                        <div class="modal-section">
+                            <div class="modal-section-title">Special Features</div>
+                            <p>${project.designRequirements?.specialFeatures || 'None specified'}</p>
+                        </div>
+                    `;
+                    // --- CORRECT IMAGE HANDLING FOR ARCHITECT ---
+                    const images = project.additionalDetails?.referenceImages || [];
+                    if (images.length > 0) {
+                        imagesHtml = `<div class="modal-section"><div class="modal-section-title">Reference Images & Documents</div><div class="inspiration-images">`;
+                        images.forEach(img => {
+                            if (img.mimeType && img.mimeType.startsWith('image/')) {
+                                imagesHtml += `<div><img src="${img.url}" alt="Reference Image"></div>`;
+                            } else if (img.mimeType === 'application/pdf') {
+                                imagesHtml += `<div><a href="${img.url}" target="_blank">View PDF Document</a></div>`;
+                            }
+                        });
+                        imagesHtml += `</div></div>`;
+                    }
+
+                } else {
+                    // --- INTERIOR DESIGNER DETAILS ---
+                    detailsHtml = `
+                        <div class="modal-section">
+                            <div class="modal-section-title">Customer Details</div>
+                            <div class="detail-grid">
                                 <div class="modal-detail-item"><strong>Name:</strong> ${project.fullName || 'N/A'}</div>
                                 <div class="modal-detail-item"><strong>Contact:</strong> ${project.phone || 'N/A'}</div>
                                 <div class="modal-detail-item"><strong>Email:</strong> ${project.email || 'N/A'}</div>
                                 <div class="modal-detail-item"><strong>Address:</strong> ${project.address || 'N/A'}</div>
-                            </div></div>
-                            <div class="modal-section"><div class="modal-section-title">Room Information</div><div class="detail-grid">
+                            </div>
+                        </div>
+                        <div class="modal-section">
+                            <div class="modal-section-title">Room & Design Information</div>
+                            <div class="detail-grid">
                                 <div class="modal-detail-item"><strong>Room Type:</strong> ${project.roomType || 'N/A'}</div>
-                                <div class="modal-detail-item"><strong>Size:</strong> ${project.roomSize?.length || 0}x${project.roomSize?.width || 0} ${project.roomSize?.unit || ''}</div>
-                            </div></div>
-                            <div class="modal-section"><div class="modal-section-title">Special Features</div><p>${project.projectDescription || 'None'}</p></div>
-                        `;
-                    }
-
-                    const images = isArchitect ? project.additionalDetails?.referenceImages || [] : project.inspirationImages || [];
-                    if (images.length > 0) {
-                        detailsHtml += `<div class="modal-section"><div class="modal-section-title">Inspiration Images</div><div class="inspiration-images">`;
-                        images.forEach(img => {
-                            const imgUrl = typeof img === 'string' ? img : (img.url || '');
-                            if (imgUrl) {
-                                detailsHtml += `<div><img src="${imgUrl}" alt="Inspiration" onerror="this.style.display='none';"></div>`;
-                            }
+                                <div class="modal-detail-item"><strong>Room Size:</strong> ${project.roomSize?.length || 0}x${project.roomSize?.width || 0} ${project.roomSize?.unit || ''}</div>
+                                <div class="modal-detail-item"><strong>Ceiling Height:</strong> ${project.ceilingHeight?.height || 'N/A'} ${project.ceilingHeight?.unit || ''}</div>
+                                <div class="modal-detail-item"><strong>Design Preference:</strong> ${project.designPreference || 'N/A'}</div>
+                            </div>
+                        </div>
+                        <div class="modal-section">
+                            <div class="modal-section-title">Project Description</div>
+                            <p>${project.projectDescription || 'None'}</p>
+                        </div>
+                    `;
+                    // --- CORRECT IMAGE HANDLING FOR INTERIOR DESIGNER ---
+                    const currentImages = project.currentRoomImages || [];
+                    const inspirationImages = project.inspirationImages || [];
+                    if (currentImages.length > 0) {
+                        imagesHtml += `<div class="modal-section"><div class="modal-section-title">Current Room Images</div><div class="inspiration-images">`;
+                        currentImages.forEach(imgUrl => {
+                            if(imgUrl) imagesHtml += `<div><img src="${imgUrl}" alt="Current Room"></div>`;
                         });
-                        detailsHtml += `</div></div>`;
+                        imagesHtml += `</div></div>`;
                     }
-
-                    detailsHtml += `<div class="modal-section"><div class="modal-section-title">Update History</div><div class="update-history">`;
-                    if (project.projectUpdates && project.projectUpdates.length > 0) {
-                        project.projectUpdates.forEach(update => {
-                            detailsHtml += `<div class="update-item"><p>${update.updateText || 'No text'}</p><small>${new Date(update.createdAt || Date.now()).toLocaleString()}</small></div>`;
+                    if (inspirationImages.length > 0) {
+                        imagesHtml += `<div class="modal-section"><div class="modal-section-title">Inspiration Images</div><div class="inspiration-images">`;
+                        inspirationImages.forEach(imgUrl => {
+                            if(imgUrl) imagesHtml += `<div><img src="${imgUrl}" alt="Inspiration"></div>`;
                         });
-                    } else {
-                        detailsHtml += '<p>No updates for this project.</p>';
+                        imagesHtml += `</div></div>`;
                     }
-                    detailsHtml += `</div></div>`;
+                }
 
-                    modalBody.innerHTML = detailsHtml;
-                    detailsModal.classList.add('active');
-                });
-            });
+                // --- UPDATE HISTORY (Same for both) ---
+                let updatesHtml = `<div class="modal-section"><div class="modal-section-title">Update History</div><div class="update-history">`;
+                if (project.projectUpdates && project.projectUpdates.length > 0) {
+                    project.projectUpdates.forEach(update => {
+                        updatesHtml += `<div class="update-item"><p>${update.updateText || 'No text'}</p><small>${new Date(update.createdAt || Date.now()).toLocaleString()}</small></div>`;
+                    });
+                } else {
+                    updatesHtml += '<p>No updates for this project.</p>';
+                }
+                updatesHtml += `</div></div>`;
 
-            closeModal.addEventListener('click', () => detailsModal.classList.remove('active'));
-            window.addEventListener('click', (e) => {
-                if (e.target === detailsModal) detailsModal.classList.remove('active');
+                // Combine all sections and set the modal body
+                modalBody.innerHTML = detailsHtml + imagesHtml + updatesHtml;
+                detailsModal.classList.add('active');
             });
         });
-    </script>
+
+        closeModal.addEventListener('click', () => detailsModal.classList.remove('active'));
+        window.addEventListener('click', (e) => {
+            if (e.target === detailsModal) detailsModal.classList.remove('active');
+        });
+    });
+</script>
 </body>
 </html>
