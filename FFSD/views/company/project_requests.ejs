@@ -472,6 +472,40 @@
     .proposal-btn-primary:hover { 
         background-color: var(--primary-accent-hover); 
     }
+
+    /* Validation Styles */
+    .error-message {
+        color: #e74c3c;
+        font-size: 0.85rem;
+        margin-top: 0.5rem;
+        display: none;
+        font-weight: 500;
+    }
+
+    .input-error {
+        border-color: #e74c3c !important;
+        background-color: #fdf2f2;
+    }
+
+    .input-success {
+        border-color: #2ecc71 !important;
+        background-color: #f2fdf2;
+    }
+
+    .char-counter {
+        font-size: 0.8rem;
+        color: var(--text-secondary);
+        text-align: right;
+        margin-top: 0.25rem;
+    }
+
+    .char-counter.warning {
+        color: #e67e22;
+    }
+
+    .char-counter.error {
+        color: #e74c3c;
+    }
     
     /* Status Badge Color Definitions */
     .status-pending {
@@ -545,15 +579,24 @@
                 <button class="modal-close" onclick="closeProposalModal()">×</button>
             </div>
             <div class="proposal-modal-body">
-                <form action="/company/submit-proposal" method="POST">
+                <form id="proposalForm" action="/company/submit-proposal" method="POST">
                     <input type="hidden" name="projectId" id="proposalProjectId">
                     <div class="proposal-form-group">
                         <label class="proposal-form-label">Project Price (₹)</label>
-                        <input type="number" name="price" required class="proposal-form-control" min="10000" step="10000">
+                        <input type="number" name="price" required class="proposal-form-control" 
+                               min="10000" step="10000" id="projectPrice" oninput="validatePrice()">
+                        <div id="priceError" class="error-message" style="display: none;">
+                            Price must be less than ₹<span id="maxBudget"></span>
+                        </div>
                     </div>
                     <div class="proposal-form-group">
                         <label class="proposal-form-label">Scope of Work</label>
-                        <textarea name="description" rows="4" required class="proposal-form-control"></textarea>
+                        <textarea name="description" rows="4" required class="proposal-form-control" 
+                                  id="scopeOfWork" oninput="validateScope()" maxlength="2000"></textarea>
+                        <div class="char-counter" id="charCounter">0/2000 characters</div>
+                        <div id="scopeError" class="error-message" style="display: none;">
+                            Scope of work is required
+                        </div>
                     </div>
                     <button type="submit" class="proposal-btn-primary">Send Proposal</button>
                 </form>
@@ -577,6 +620,9 @@
 
     <script>
         // --- Modal Helper Functions ---
+
+        let maxBudget = 0;
+        let currentProjectData = null;
 
         function closeModal() {
             document.getElementById('projectModal').classList.remove('active');
@@ -613,6 +659,7 @@
                 if (!response.ok) throw new Error('Failed to fetch project details.');
                 
                 const project = await response.json();
+                currentProjectData = project; // Store project data for validation
 
                 const modalTitle = document.getElementById('modalTitle');
                 const modalStatus = document.getElementById('modalStatus');
@@ -754,6 +801,80 @@
             }
         }
 
+        // --- Proposal Modal Validation Functions ---
+
+        function validatePrice() {
+            const priceInput = document.getElementById('projectPrice');
+            const priceError = document.getElementById('priceError');
+            const price = parseFloat(priceInput.value) || 0;
+
+            if (maxBudget === 0) {
+                priceError.textContent = 'Note: Customer budget not specified. You can proceed with your proposal.';
+                priceError.style.display = 'block';
+                priceError.style.color = '#e67e22'; // Orange warning instead of red error
+                priceInput.classList.remove('input-error');
+                return true; // Allow submission even if budget is 0
+            }
+
+            if (price > maxBudget) {
+                priceError.textContent = `Proposal price (₹${price.toLocaleString('en-IN')}) must be less than or equal to customer's budget (₹${maxBudget.toLocaleString('en-IN')})`;
+                priceError.style.display = 'block';
+                priceError.style.color = '#e74c3c'; // Red error
+                priceInput.classList.add('input-error');
+                return false;
+            } else if (price < 10000) {
+                priceError.textContent = 'Price must be at least ₹10,000';
+                priceError.style.display = 'block';
+                priceError.style.color = '#e74c3c'; // Red error
+                priceInput.classList.add('input-error');
+                return false;
+            } else {
+                priceError.style.display = 'none';
+                priceInput.classList.remove('input-error');
+                return true;
+            }
+        }
+        function validateScope() {
+            const scopeInput = document.getElementById('scopeOfWork');
+            const scopeError = document.getElementById('scopeError');
+            const charCounter = document.getElementById('charCounter');
+            const text = scopeInput.value.trim();
+            const charCount = text.length;
+
+            // Update character counter
+            if (charCounter) {
+                charCounter.textContent = `${charCount}/2000 characters`;
+                charCounter.className = 'char-counter';
+                if (charCount > 1500) charCounter.classList.add('warning');
+                if (charCount > 1900) charCounter.classList.add('error');
+            }
+
+            if (text === '') {
+                scopeError.textContent = 'Scope of work is required';
+                scopeError.style.display = 'block';
+                scopeInput.classList.add('input-error');
+                return false;
+            } else if (charCount < 10) {
+                scopeError.textContent = 'Scope of work must be at least 10 characters';
+                scopeError.style.display = 'block';
+                scopeInput.classList.add('input-error');
+                return false;
+            } else {
+                scopeError.style.display = 'none';
+                scopeInput.classList.remove('input-error');
+                return true;
+            }
+        }
+
+        function clearProposalValidation() {
+            document.getElementById('priceError').style.display = 'none';
+            document.getElementById('scopeError').style.display = 'none';
+            document.getElementById('projectPrice').classList.remove('input-error');
+            document.getElementById('scopeOfWork').classList.remove('input-error');
+            document.getElementById('charCounter').className = 'char-counter';
+            document.getElementById('charCounter').textContent = '0/2000 characters';
+        }
+
         // --- Event Listeners ---
 
         document.addEventListener('DOMContentLoaded', function() {
@@ -766,21 +887,59 @@
             });
             
             // Open Proposal Modal Listener (Delegation for dynamic content)
+            // Update the proposal modal opening to include budget validation
+            // Update the proposal modal opening to include budget validation
             document.addEventListener('click', function(e) {
                 const button = e.target.closest('.proposal-create-btn');
                 if (button) {
                     e.preventDefault();
-                    closeModal(); // Close details modal if open
+                    closeModal();
                     const projectId = button.dataset.projectId;
+                    
+                    let estimatedBudget = 0;
+                    
+                    // Method 1: Use the stored project data from showProjectDetails
+                    if (currentProjectData && currentProjectData.estimatedBudget) {
+                        estimatedBudget = currentProjectData.estimatedBudget;
+                    } 
+                    // Method 2: If still 0, try to fetch the project data directly
+                    else {
+                        console.log('No budget found in currentProjectData, fetching fresh data...');
+                        // You might need to fetch the project data here if currentProjectData is not available
+                    }
+                    
                     document.getElementById('proposalProjectId').value = projectId;
+                    document.getElementById('maxBudget').textContent = estimatedBudget.toLocaleString('en-IN');
+                    maxBudget = estimatedBudget;
+                    
+                    // Clear previous inputs and errors
+                    document.getElementById('projectPrice').value = '';
+                    document.getElementById('scopeOfWork').value = '';
+                    clearProposalValidation();
+                    
                     document.getElementById('proposalModal').classList.add('active');
+                    
+                    // Debug log
+                    console.log('Project ID:', projectId);
+                    console.log('Max Budget:', maxBudget);
+                    console.log('Current Project Data:', currentProjectData);
                 }
             });
-            
-            // Close Proposal Modal Listener
-            document.getElementById('proposalModal').addEventListener('click', function(e) {
-                if (e.target === this || e.target.closest('.modal-close')) {
-                    closeProposalModal();
+            // Proposal Form Submission Handler
+            document.getElementById('proposalForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const isPriceValid = validatePrice();
+                const isScopeValid = validateScope();
+                
+                if (isPriceValid && isScopeValid) {
+                    this.submit();
+                } else {
+                    // Scroll to first error
+                    const firstError = document.querySelector('.input-error');
+                    if (firstError) {
+                        firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
                 }
             });
         });
