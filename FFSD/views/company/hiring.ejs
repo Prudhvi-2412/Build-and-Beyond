@@ -3,12 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Add CSRF token meta tag -->
     <title>Worker Management Dashboard</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
-    <!-- Add Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <style>
         /* --- CORPORATE/ESTABLISHED COLOR PALETTE --- */
@@ -548,6 +546,7 @@
 
         .modal.show {
             opacity: 1;
+            display: flex; 
         }
 
         .modal-content {
@@ -875,7 +874,6 @@
     <%- include('navbar_company') %>
 
     <div class="container">
-        <!-- Tabs -->
         <div class="tabs">
             <div class="tab active" data-tab="find-workers">
                 <i class="fas fa-search"></i> Find Workers
@@ -888,7 +886,6 @@
             </div>
         </div>
 
-        <!-- Find Workers Section -->
         <div id="find-workers" class="section active">
             <div class="section-header">
                 <h2>Available Workers</h2>
@@ -948,9 +945,7 @@
             </div>
         </div>
 
-        <!-- Worker Requests Section -->
-        <!-- Worker Requests Section -->
-<div id="worker-requests" class="section">
+        <div id="worker-requests" class="section">
     <div class="section-header">
         <h2>Pending Worker Requests</h2>
         <div class="filter-controls">
@@ -1035,7 +1030,6 @@
                         </div>
                     </div>
                 <% } else { %>
-                    <!-- Display for requests with null workerId -->
                     <div class="request-card" data-request-id="<%= request._id %>">
                         <div class="left">
                             <img src="https://via.placeholder.com/80x60" alt="Profile" class="profile-image">
@@ -1064,7 +1058,6 @@
         <% } %>
     </div>
 </div>
-        <!-- Requested Workers Section -->
         <div id="requested-workers" class="section">
             <div class="section-header">
                 <h2>Requested Workers Status</h2>
@@ -1113,7 +1106,6 @@
             </div>
         </div>
 
-        <!-- Hire Request Modal -->
         <div id="hire-modal" class="modal">
             <div class="modal-content hire-modal-content">
                 <span class="close">×</span>
@@ -1125,15 +1117,15 @@
                         <p id="hire-modal-worker-name" style="margin-bottom: 15px;"></p>
                         <div class="form-group">
                             <label for="position">Position</label>
-                            <input type="text" id="position" name="position" placeholder="Enter position (e.g., Master Carpenter)" required>
+                            <input type="text" id="position" name="position" placeholder="Enter position (e.g., Master Carpenter)" required minlength="2">
                         </div>
                         <div class="form-group">
                             <label for="location">Location</label>
-                            <input type="text" id="location" name="location" placeholder="Enter job location (e.g., Guntur)" required>
+                            <input type="text" id="location" name="location" placeholder="Enter job location (e.g., Guntur)" required minlength="2">
                         </div>
                         <div class="form-group">
                             <label for="salary">Salary (₹/hr)</label>
-                            <input type="number" id="salary" name="salary" placeholder="Enter salary (e.g., 1200)" required>
+                            <input type="number" id="salary" name="salary" placeholder="Enter salary (e.g., 1200)" required min="10">
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -1148,7 +1140,6 @@
             </div>
         </div>
 
-        <!-- Profile Modal -->
         <div id="profile-modal" class="modal">
             <div class="modal-content">
                 <span class="close">×</span>
@@ -1249,7 +1240,11 @@
 
         // Consolidated Profile View Buttons Initialization
         function initializeProfileViewButtons() {
-            viewProfileButtons.forEach(button => {
+            // Note: Use event delegation for dynamically added elements in a real app.
+            // For simplicity with this current markup, we re-query all buttons.
+            const allViewButtons = document.querySelectorAll('.btn-view'); 
+
+            allViewButtons.forEach(button => {
                 button.addEventListener('click', (event) => {
                     event.preventDefault();
                     
@@ -1288,6 +1283,8 @@
                     const modalProfileImage = document.getElementById('modal-profile-image');
                     const modalRating = document.getElementById('modal-rating');
                     const projectsContainer = document.getElementById('modal-projects');
+                    const modalHireButton = profileModal.querySelector('.modal-hire-btn');
+
 
                     // Verify all elements exist
                     if (!modalName || !modalTitle || !modalAbout || !modalSpecialties || 
@@ -1307,7 +1304,12 @@
                     modalLinkedIn.innerHTML = `<a href="${workerLinkedIn}" target="_blank">${workerLinkedIn}</a>`;
                     modalPreviousWork.textContent = workerPreviousWork;
 
-                    // Set profile image with fallback
+                    // Set worker ID on the Hire button in the Profile Modal
+                    modalHireButton.setAttribute('data-worker-id', workerId);
+                    modalHireButton.setAttribute('data-worker', workerName);
+
+
+                    // Set profile image with fallback (using Dicebear API for a good default)
                     modalProfileImage.src = profileImage && profileImage.trim() !== ''
                         ? profileImage
                         : `https://api.dicebear.com/9.x/male/svg?seed=${encodeURIComponent(workerName.replace(/\s+/g, ''))}&mouth=smile`;
@@ -1352,12 +1354,23 @@
 
         // Hire Modal Functionality
         function initializeHireButtons() {
-            hireButtons.forEach(button => {
+            // Note: Use event delegation for dynamically added buttons here too.
+            const allHireButtons = document.querySelectorAll('.hire-btn'); 
+
+            allHireButtons.forEach(button => {
                 button.addEventListener('click', () => {
                     const workerName = button.getAttribute('data-worker');
                     const workerId = button.getAttribute('data-worker-id');
+
+                    // Reset the form before opening
+                    document.getElementById('hire-form').reset();
+                    document.getElementById('position').value = '';
+                    document.getElementById('location').value = '';
+                    document.getElementById('salary').value = '';
+
                     hireModalWorkerName.textContent = `Sending hire request to ${workerName}`;
                     hireModalWorkerName.setAttribute('data-worker-id', workerId);
+                    
                     hireModal.style.display = 'flex';
                     setTimeout(() => {
                         hireModal.classList.add('show');
@@ -1371,23 +1384,49 @@
 
                 const formData = new FormData(hireForm);
                 const workerId = hireModalWorkerName.getAttribute('data-worker-id');
+                const salaryValue = parseFloat(formData.get('salary')); 
+                
+                // Regular Expression to validate location: must contain at least one letter, allows letters, numbers, spaces, and punctuation.
+                const locationRegex = /^(?=.*[a-zA-Z])[a-zA-Z0-9\s,\.\-']{2,}$/;
+
                 const data = {
-                    position: formData.get('position'),
-                    location: formData.get('location'),
-                    salary: parseFloat(formData.get('salary')),
+                    position: formData.get('position')?.trim(),
+                    location: formData.get('location')?.trim(),
+                    salary: isNaN(salaryValue) ? 0 : salaryValue,
                     workerId: workerId
                 };
 
-                if (!data.position || !data.location || !data.salary || !data.workerId) {
-                    showNotification('Please fill in all fields.', 'error');
+                // ENHANCED JAVASCRIPT VALIDATION
+
+                if (!data.position || data.position.length < 2) {
+                    showNotification('Please enter a valid position title (min 2 characters).', 'error');
                     return;
                 }
+
+                // ⚠️ STRICT LOCATION VALIDATION
+                if (!data.location || data.location.length < 2 || !locationRegex.test(data.location)) {
+                    showNotification('Please enter a valid location (e.g., Guntur, AP). Cannot be just numbers or too short.', 'error');
+                    return;
+                }
+                // ⚠️ END OF STRICT LOCATION VALIDATION
+
+                if (data.salary <= 0 || isNaN(data.salary)) {
+                    showNotification('Please enter a valid salary greater than 0.', 'error');
+                    return;
+                }
+                
+                if (!data.workerId) {
+                    showNotification('Error: Worker ID is missing. Cannot send request.', 'error');
+                    return;
+                }
+                // END OF ENHANCED VALIDATION
 
                 try {
                     const response = await fetch('/companytoworker', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
+                            // The CSRF token retrieval should be handled by your backend framework
                             'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]')?.content || ''
                         },
                         body: JSON.stringify(data)
@@ -1400,11 +1439,11 @@
                         closeModal(hireModal);
                         hireForm.reset();
                     } else {
-                        showNotification('Error: ' + result.error, 'error');
+                        showNotification('Error: ' + (result.error || 'Failed to send request to worker.'), 'error');
                     }
                 } catch (err) {
                     console.error('Error submitting form:', err);
-                    showNotification('An error occurred while sending the request.', 'error');
+                    showNotification('An unexpected error occurred while sending the request.', 'error');
                 }
             });
 
@@ -1435,7 +1474,10 @@
 
         // Initialize action buttons (Accept, Reject)
         function initializeActionButtons() {
-            actionButtons.forEach(button => {
+            // Note: Use event delegation for dynamically added buttons here too.
+            const allActionButtons = document.querySelectorAll('.btn-hire:not(.hire-btn), .btn-reject');
+            
+            allActionButtons.forEach(button => {
                 button.addEventListener('click', () => {
                     const requestId = button.getAttribute('data-request-id');
                     const status = button.classList.contains('btn-accept') ? 'accepted' : 'rejected';
@@ -1536,17 +1578,30 @@
 
             const modalHireBtn = document.querySelector('.modal-hire-btn');
             if (modalHireBtn) {
-                modalHireBtn.addEventListener('click', () => {
+                modalHireBtn.addEventListener('click', (event) => {
+                    event.preventDefault();
+
                     const workerName = document.getElementById('modal-name').textContent;
-                    const workerId = modalHireBtn.closest('.modal-content').querySelector('.btn-view')?.getAttribute('data-worker-id') ||
-                                    viewProfileButtons[0]?.getAttribute('data-worker-id'); // Fallback to first button
-                    hireModalWorkerName.textContent = `Sending hire request to ${workerName}`;
-                    hireModalWorkerName.setAttribute('data-worker-id', workerId);
-                    closeModal(profileModal);
-                    hireModal.style.display = 'flex';
-                    setTimeout(() => {
-                        hireModal.classList.add('show');
-                    }, 10);
+                    const workerId = event.currentTarget.getAttribute('data-worker-id'); 
+                    
+                    // Populate hire modal with data from the profile modal's buttons
+                    if (workerId) {
+                        // Reset hire form
+                        document.getElementById('hire-form').reset();
+                        document.getElementById('position').value = '';
+                        document.getElementById('location').value = '';
+                        document.getElementById('salary').value = '';
+                        
+                        hireModalWorkerName.textContent = `Sending hire request to ${workerName}`;
+                        hireModalWorkerName.setAttribute('data-worker-id', workerId);
+                        closeModal(profileModal);
+                        hireModal.style.display = 'flex';
+                        setTimeout(() => {
+                            hireModal.classList.add('show');
+                        }, 10);
+                    } else {
+                        showNotification('Error: Worker ID not found.', 'error');
+                    }
                 });
             }
         }
@@ -1585,7 +1640,7 @@
             workerCards.forEach(card => {
                 const skills = Array.from(card.querySelectorAll('.tag')).map(tag => tag.textContent.toLowerCase());
                 
-                if (skill === 'all' || skills.some(s => s.toLowerCase() === skill.toLowerCase())) {
+                if (skill === 'all' || skills.some(s => s.toLowerCase().includes(skill.toLowerCase()))) {
                     card.style.display = 'flex';
                 } else {
                     card.style.display = 'none';
@@ -1598,9 +1653,18 @@
             const requestCards = document.querySelectorAll('#worker-requests .request-card');
             
             requestCards.forEach(card => {
-                const name = card.querySelector('h3').textContent.toLowerCase();
-                const role = card.querySelector('.detail-value').textContent.toLowerCase();
-                const location = card.querySelectorAll('.detail-value')[2].textContent.toLowerCase();
+                const nameElement = card.querySelector('h3');
+                const roleElement = card.querySelector('.detail-item:nth-child(2) .detail-value'); // Role is the 2nd .detail-item's value
+                const locationElement = card.querySelector('.detail-item:nth-child(3) .detail-value'); // Location is the 3rd
+
+                if (!nameElement || !roleElement || !locationElement) {
+                    card.style.display = 'none'; // Hide invalid or incomplete cards
+                    return;
+                }
+
+                const name = nameElement.textContent.toLowerCase();
+                const role = roleElement.textContent.toLowerCase();
+                const location = locationElement.textContent.toLowerCase();
                 
                 if (name.includes(searchTerm) || 
                     role.includes(searchTerm) || 
@@ -1634,23 +1698,30 @@
             
             tableRows.forEach(row => {
                 const statusCell = row.querySelector('.status');
-                const workerStatus = statusCell.textContent.toLowerCase();
                 
-                if (status === 'all' || workerStatus === status.toLowerCase()) {
-                    row.style.display = '';
+                if (statusCell) {
+                    const workerStatus = statusCell.textContent.toLowerCase();
+                    
+                    if (status === 'all' || workerStatus === status.toLowerCase()) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
                 } else {
-                    row.style.display = 'none';
+                    // Handle rows without a status element (like the "No requested workers found" row)
+                    if (row.querySelector('td[colspan="6"]')) {
+                        row.style.display = status === 'all' ? '' : 'none';
+                    }
                 }
             });
         }
 
         // Initialize worker cards in the requested workers section
         function initializeWorkerCards() {
-            // Note: This function is currently not used since requested-workers uses a table.
             // Left here for potential future card-based implementation.
         }
 
-        // Show notification
+        // Show notification (copied for completeness)
         function showNotification(message, type = 'info') {
             const notification = document.createElement('div');
             notification.className = `notification notification-${type}`;
@@ -1703,7 +1774,7 @@
             }, 5000);
         }
 
-        // Debounce function for search input
+        // Debounce function for search input (copied for completeness)
         function debounce(func, delay) {
             let timeout;
             return function() {
@@ -1714,7 +1785,7 @@
             };
         }
 
-        // Add CSS for notifications
+        // Add CSS for notifications (copied for completeness)
         if (!document.querySelector('#notification-styles')) {
             const notificationStyles = document.createElement('style');
             notificationStyles.id = 'notification-styles';
