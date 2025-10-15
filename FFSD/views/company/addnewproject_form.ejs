@@ -101,11 +101,41 @@
         .btn-secondary:hover {
             background-color: #d5d5d5;
         }
+        
+        /* Validation styles */
+        .error-message {
+            color: #e74c3c;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+        .input-error {
+            border-color: #e74c3c;
+        }
+        .input-success {
+            border-color: #2ecc71;
+        }
+        .validation-summary {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        .validation-summary ul {
+            margin-left: 20px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Edit Construction Project</h1>
+        
+        <div id="validationSummary" class="validation-summary">
+            <p>Please correct the following errors:</p>
+            <ul id="validationList"></ul>
+        </div>
         
         <form id="constructionProjectForm" action="/api/projects/update" method="POST" enctype="multipart/form-data">
             <input type="hidden" name="projectId" value="<%= project._id %>">
@@ -118,11 +148,13 @@
                         <span id="progressValue" class="progress-value"><%= project.completionPercentage || 0 %>%</span>
                     </div>
                 </div>
+                <div id="completionPercentageError" class="error-message">Completion percentage is required</div>
             </div>
             
             <div class="form-group">
                 <label for="targetCompletionDate">Target Completion Date</label>
                 <input type="date" id="targetCompletionDate" name="targetCompletionDate" value="<%= project.targetCompletionDate ? project.targetCompletionDate.toISOString().split('T')[0] : '' %>" required>
+                <div id="targetCompletionDateError" class="error-message">Target completion date is required and must be a future date</div>
             </div>
             
             <div class="form-group">
@@ -134,16 +166,19 @@
                     <option value="Interior work" <%= project.currentPhase === 'Interior work' ? 'selected' : '' %>>Interior work</option>
                     <option value="Finishing" <%= project.currentPhase === 'Finishing' ? 'selected' : '' %>>Finishing</option>
                 </select>
+                <div id="currentPhaseError" class="error-message">Current phase is required</div>
             </div>
             
             <div class="form-group">
                 <label for="mainImage">Main Project File</label>
                 <input type="file" id="mainImage" name="mainImage" accept=".pdf,.jpg,.jpeg,.png" class="image-upload">
+                <div id="mainImageError" class="error-message">File must be a PDF, JPG, JPEG, or PNG and cannot exceed 5MB</div>
             </div>
             
             <div class="form-group">
                 <label for="additionalImages">Additional Project Files</label>
                 <input type="file" id="additionalImages" name="additionalImages" accept=".pdf,.jpg,.jpeg,.png" multiple class="image-upload">
+                <div id="additionalImagesError" class="error-message">Files must be PDF, JPG, JPEG, or PNG and each cannot exceed 5MB</div>
             </div>
             
             <div class="form-group">
@@ -152,10 +187,12 @@
                     <div class="form-group">
                         <label for="update1">Update 1</label>
                         <textarea id="update1" name="updates[]" rows="3" placeholder="e.g. Interior work is progressing as planned."></textarea>
+                        <div id="update1Error" class="error-message">Update text cannot exceed 500 characters</div>
                     </div>
                     <div class="form-group">
                         <label for="updateImage1">Update File</label>
                         <input type="file" id="updateImage1" name="updateImages" accept=".pdf,.jpg,.jpeg,.png" class="image-upload">
+                        <div id="updateImage1Error" class="error-message">File must be a PDF, JPG, JPEG, or PNG and cannot exceed 5MB</div>
                     </div>
                 </div>
             </div>
@@ -168,34 +205,209 @@
     </div>
     
     <script>
+        // Update progress value display
         function updateProgressValue(value) {
             document.getElementById('progressValue').innerText = value + '%';
         }
         
+        // Validation functions
+        function validateForm() {
+            let isValid = true;
+            const errors = [];
+            
+            // Clear previous validation states
+            clearValidation();
+            
+            // Validate completion percentage
+            const completionPercentage = document.getElementById('completionPercentage').value;
+            if (!completionPercentage || completionPercentage < 0 || completionPercentage > 100) {
+                showError('completionPercentageError', 'Completion percentage must be between 0 and 100');
+                isValid = false;
+                errors.push('Completion percentage must be between 0 and 100');
+            }
+            
+            // Validate target completion date
+            const targetCompletionDate = document.getElementById('targetCompletionDate').value;
+            if (!targetCompletionDate) {
+                showError('targetCompletionDateError', 'Target completion date is required');
+                isValid = false;
+                errors.push('Target completion date is required');
+            } else {
+                const today = new Date();
+                const selectedDate = new Date(targetCompletionDate);
+                if (selectedDate <= today) {
+                    showError('targetCompletionDateError', 'Target completion date must be in the future');
+                    isValid = false;
+                    errors.push('Target completion date must be in the future');
+                }
+            }
+            
+            // Validate current phase
+            const currentPhase = document.getElementById('currentPhase').value;
+            if (!currentPhase) {
+                showError('currentPhaseError', 'Current phase is required');
+                isValid = false;
+                errors.push('Current phase is required');
+            }
+            
+            // Validate main image file
+            const mainImage = document.getElementById('mainImage').files[0];
+            if (mainImage && !validateFile(mainImage)) {
+                showError('mainImageError', 'Main file must be a PDF, JPG, JPEG, or PNG and cannot exceed 5MB');
+                isValid = false;
+                errors.push('Main file must be a PDF, JPG, JPEG, or PNG and cannot exceed 5MB');
+            }
+            
+            // Validate additional images
+            const additionalImages = document.getElementById('additionalImages').files;
+            if (additionalImages.length > 0) {
+                for (let i = 0; i < additionalImages.length; i++) {
+                    if (!validateFile(additionalImages[i])) {
+                        showError('additionalImagesError', 'Additional files must be PDF, JPG, JPEG, or PNG and each cannot exceed 5MB');
+                        isValid = false;
+                        errors.push('Additional files must be PDF, JPG, JPEG, or PNG and each cannot exceed 5MB');
+                        break;
+                    }
+                }
+            }
+            
+            // Validate update text
+            const update1 = document.getElementById('update1').value;
+            if (update1 && update1.length > 500) {
+                showError('update1Error', 'Update text cannot exceed 500 characters');
+                isValid = false;
+                errors.push('Update text cannot exceed 500 characters');
+            }
+            
+            // Validate update image
+            const updateImage1 = document.getElementById('updateImage1').files[0];
+            if (updateImage1 && !validateFile(updateImage1)) {
+                showError('updateImage1Error', 'Update file must be a PDF, JPG, JPEG, or PNG and cannot exceed 5MB');
+                isValid = false;
+                errors.push('Update file must be a PDF, JPG, JPEG, or PNG and cannot exceed 5MB');
+            }
+            
+            // Show validation summary if there are errors
+            if (!isValid) {
+                showValidationSummary(errors);
+            }
+            
+            return isValid;
+        }
+        
+        function validateFile(file) {
+            // Check file type
+            const allowedTypes = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'];
+            if (!allowedTypes.includes(file.type)) {
+                return false;
+            }
+            
+            // Check file size (5MB max)
+            const maxSize = 5 * 1024 * 1024; // 5MB in bytes
+            if (file.size > maxSize) {
+                return false;
+            }
+            
+            return true;
+        }
+        
+        function showError(elementId, message) {
+            const errorElement = document.getElementById(elementId);
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+            
+            // Find the corresponding input element and add error class
+            const inputElement = errorElement.previousElementSibling;
+            if (inputElement && (inputElement.tagName === 'INPUT' || inputElement.tagName === 'SELECT' || inputElement.tagName === 'TEXTAREA')) {
+                inputElement.classList.add('input-error');
+            }
+        }
+        
+        function clearValidation() {
+            // Hide all error messages
+            const errorMessages = document.querySelectorAll('.error-message');
+            errorMessages.forEach(error => {
+                error.style.display = 'none';
+            });
+            
+            // Remove error classes from inputs
+            const inputs = document.querySelectorAll('input, select, textarea');
+            inputs.forEach(input => {
+                input.classList.remove('input-error');
+                input.classList.remove('input-success');
+            });
+            
+            // Hide validation summary
+            document.getElementById('validationSummary').style.display = 'none';
+        }
+        
+        function showValidationSummary(errors) {
+            const validationSummary = document.getElementById('validationSummary');
+            const validationList = document.getElementById('validationList');
+            
+            // Clear previous list
+            validationList.innerHTML = '';
+            
+            // Add errors to the list
+            errors.forEach(error => {
+                const listItem = document.createElement('li');
+                listItem.textContent = error;
+                validationList.appendChild(listItem);
+            });
+            
+            // Show the summary
+            validationSummary.style.display = 'block';
+            
+            // Scroll to the summary
+            validationSummary.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+        
+        // Add real-time validation for some fields
+        document.getElementById('update1').addEventListener('input', function() {
+            const updateText = this.value;
+            const errorElement = document.getElementById('update1Error');
+            
+            if (updateText.length > 500) {
+                showError('update1Error', 'Update text cannot exceed 500 characters');
+            } else {
+                errorElement.style.display = 'none';
+                this.classList.remove('input-error');
+                if (updateText.length > 0) {
+                    this.classList.add('input-success');
+                }
+            }
+        });
+        
+        // Form submission handler
         window.onload = function() {
             document.getElementById('constructionProjectForm').addEventListener('submit', function(e) {
                 e.preventDefault();
-                const form = e.target;
-                const formData = new FormData(form);
-                console.log('FormData fields:');
-                for (let [key, value] of formData.entries()) {
-                    console.log(`${key}: ${value instanceof File ? value.name : value}`);
-                }
-                fetch(form.action, {
-                    method: form.method,
-                    body: formData
-                })
-                .then(response => response.json())
-                .then(data => {
-                    alert(data.message);
-                    if (data.message === 'Project updated successfully') {
-                        window.location.href = '/companyongoing_projects'; // Adjust redirect
+                
+                if (validateForm()) {
+                    const form = e.target;
+                    const formData = new FormData(form);
+                    
+                    console.log('FormData fields:');
+                    for (let [key, value] of formData.entries()) {
+                        console.log(`${key}: ${value instanceof File ? value.name : value}`);
                     }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Error updating project');
-                });
+                    
+                    fetch(form.action, {
+                        method: form.method,
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        alert(data.message);
+                        if (data.message === 'Project updated successfully') {
+                            window.location.href = '/companyongoing_projects'; // Adjust redirect
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Error updating project');
+                    });
+                }
             });
         }
     </script>
