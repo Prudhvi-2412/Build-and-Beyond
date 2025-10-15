@@ -527,24 +527,26 @@
             
             <% if (designers && designers.length > 0) { %>
                 <% designers.forEach((designer, index) => { %>
-                    <div class="designer-card" data-id="<%= designer._id %>">
-                        <img src="<%= designer.profileImage || 'https://t4.ftcdn.net/jpg/03/64/21/11/360_F_364211147_1qgLVxv1Tcq0Ohz3FawUfrtONzz8nq3e.jpg' %>" 
-                             alt="<%= designer.name %>" class="designer-image-small">
-                        <div class="designer-info">
-                            <h3><%= designer.name %></h3>
-                            <p><%= designer.professionalTitle || 'Interior Designer' %></p>
-                            <p><i class="fas fa-briefcase"></i> <%= designer.experience %> years experience</p>
-                            <div class="rating">
-                                <% for(let i = 0; i < Math.floor(designer.rating); i++) { %>
-                                    <span class="star">★</span>
-                                <% } %>
-                                <% if(designer.rating % 1 >= 0.5) { %>
-                                    <span class="star">½</span>
-                                <% } %>
-                                <span class="rating-count">(<%= designer.rating %>)</span>
+                    <% if(designer.availability == 'available'){ %>
+                        <div class="designer-card" data-id="<%= designer._id %>">
+                            <img src="<%= designer.profileImage || 'https://t4.ftcdn.net/jpg/03/64/21/11/360_F_364211147_1qgLVxv1Tcq0Ohz3FawUfrtONzz8nq3e.jpg' %>" 
+                                alt="<%= designer.name %>" class="designer-image-small">
+                            <div class="designer-info">
+                                <h3><%= designer.name %></h3>
+                                <p><%= designer.professionalTitle || 'Interior Designer' %></p>
+                                <p><i class="fas fa-briefcase"></i> <%= designer.experience %> years experience</p>
+                                <div class="rating">
+                                    <% for(let i = 0; i < Math.floor(designer.rating); i++) { %>
+                                        <span class="star">★</span>
+                                    <% } %>
+                                    <% if(designer.rating % 1 >= 0.5) { %>
+                                        <span class="star">½</span>
+                                    <% } %>
+                                    <span class="rating-count">(<%= designer.rating %>)</span>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    <% } %>
                 <% }); %>
             <% } else { %>
                 <div class="no-designers">
@@ -576,59 +578,61 @@
                 
                 <% if (designers && designers.length > 0) { %>
                     <% designers.forEach(designer => { %>
-                        <div class="designer-details" id="designer-<%= designer._id %>">
-                            <div class="designer-header">
-                                <img src="<%= designer.profileImage || 'https://t4.ftcdn.net/jpg/03/64/21/11/360_F_364211147_1qgLVxv1Tcq0Ohz3FawUfrtONzz8nq3e.jpg' %>" 
-                                     alt="<%= designer.name %>" class="designer-image-large">
-                                <div class="designer-header-content">
-                                    <h2><%= designer.name %></h2>
-                                    <p><strong><%= designer.professionalTitle || 'Interior Designer' %></strong></p>
-                                    <p><i class="fas fa-briefcase"></i> <%= designer.experience %> years experience</p>
-                                    <div class="rating">
-                                        <% for(let i = 0; i < Math.floor(designer.rating); i++) { %>
-                                            <span class="star">★</span>
-                                        <% } %>
-                                        <% if(designer.rating % 1 >= 0.5) { %>
-                                            <span class="star">½</span>
-                                        <% } %>
-                                        <span class="rating-count">(<%= designer.rating %>)</span>
+                        <% if(designer.availability == 'available'){ %>
+                            <div class="designer-details" id="designer-<%= designer._id %>">
+                                <div class="designer-header">
+                                    <img src="<%= designer.profileImage || 'https://t4.ftcdn.net/jpg/03/64/21/11/360_F_364211147_1qgLVxv1Tcq0Ohz3FawUfrtONzz8nq3e.jpg' %>" 
+                                        alt="<%= designer.name %>" class="designer-image-large">
+                                    <div class="designer-header-content">
+                                        <h2><%= designer.name %></h2>
+                                        <p><strong><%= designer.professionalTitle || 'Interior Designer' %></strong></p>
+                                        <p><i class="fas fa-briefcase"></i> <%= designer.experience %> years experience</p>
+                                        <div class="rating">
+                                            <% for(let i = 0; i < Math.floor(designer.rating); i++) { %>
+                                                <span class="star">★</span>
+                                            <% } %>
+                                            <% if(designer.rating % 1 >= 0.5) { %>
+                                                <span class="star">½</span>
+                                            <% } %>
+                                            <span class="rating-count">(<%= designer.rating %>)</span>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            
-                            <div class="bio">
-                                <h3>About</h3>
-                                <p><%= designer.about || 'Information not available' %></p>
                                 
-                                <% if (designer.specialties && designer.specialties.length > 0) { %>
-                                    <div class="specialties">
-                                        <% designer.specialties.forEach(specialty => { %>
-                                            <span class="specialty"><%= specialty %></span>
-                                        <% }); %>
-                                    </div>
-                                <% } %>
-                            </div>
-                            
-                            <div class="projects">
-                                <h3>Notable Projects</h3>
-                                <% if (designer.projects && designer.projects.length > 0) { %>
-                                    <% designer.projects.forEach(project => { %>
-                                        <div class="project">
-                                            <h4><%= project.name %></h4>
-                                            <div class="project-meta">
-                                                <span><i class="fas fa-calendar-alt"></i> <%= project.year %></span>
-                                                <span><i class="fas fa-map-marker-alt"></i> <%= project.location %></span>
-                                            </div>
-                                            <img src="<%= project.image || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQC7-RFA1wE4wTSP0DZJSJ1AJ8TitBYtkmEYA&s' %>" 
-                                                 alt="<%= project.name %>" class="project-image">
-                                            <p><%= project.description %></p>
+                                <div class="bio">
+                                    <h3>About</h3>
+                                    <p><%= designer.about || 'Information not available' %></p>
+                                    
+                                    <% if (designer.specialties && designer.specialties.length > 0) { %>
+                                        <div class="specialties">
+                                            <% designer.specialties.forEach(specialty => { %>
+                                                <span class="specialty"><%= specialty %></span>
+                                            <% }); %>
                                         </div>
-                                    <% }); %>
-                                <% } else { %>
-                                    <p>No projects available for this designer.</p>
-                                <% } %>
+                                    <% } %>
+                                </div>
+                                
+                                <div class="projects">
+                                    <h3>Notable Projects</h3>
+                                    <% if (designer.projects && designer.projects.length > 0) { %>
+                                        <% designer.projects.forEach(project => { %>
+                                            <div class="project">
+                                                <h4><%= project.name %></h4>
+                                                <div class="project-meta">
+                                                    <span><i class="fas fa-calendar-alt"></i> <%= project.year %></span>
+                                                    <span><i class="fas fa-map-marker-alt"></i> <%= project.location %></span>
+                                                </div>
+                                                <img src="<%= project.image || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQC7-RFA1wE4wTSP0DZJSJ1AJ8TitBYtkmEYA&s' %>" 
+                                                    alt="<%= project.name %>" class="project-image">
+                                                <p><%= project.description %></p>
+                                            </div>
+                                        <% }); %>
+                                    <% } else { %>
+                                        <p>No projects available for this designer.</p>
+                                    <% } %>
+                                </div>
                             </div>
-                        </div>
+                        <% } %>
                     <% }); %>
                 <% } %>
             </div>

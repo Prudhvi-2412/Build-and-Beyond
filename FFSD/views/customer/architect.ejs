@@ -540,24 +540,26 @@
             
             <% if (architects && architects.length > 0) { %>
                 <% architects.forEach((architect, index) => { %>
-                    <div class="architect-card" data-id="<%= architect._id %>">
-                        <img src="<%= architect.profileImage || 'https://t4.ftcdn.net/jpg/03/64/21/11/360_F_364211147_1qgLVxv1Tcq0Ohz3FawUfrtONzz8nq3e.jpg' %>" 
-                             alt="<%= architect.name %>" class="architect-image-small">
-                        <div class="architect-info">
-                            <h3><%= architect.name %></h3>
-                            <p><%= architect.professionalTitle || 'Architect' %></p>
-                            <p><i class="fas fa-briefcase"></i> <%= architect.experience %> years experience</p>
-                            <div class="rating">
-                                <% for(let i = 0; i < Math.floor(architect.rating); i++) { %>
-                                    <span class="star">★</span>
-                                <% } %>
-                                <% if(architect.rating % 1 >= 0.5) { %>
-                                    <span class="star">½</span>
-                                <% } %>
-                                <span class="rating-count">(<%= architect.rating %>)</span>
+                    <% if(architect.availability == 'available'){ %>
+                        <div class="architect-card" data-id="<%= architect._id %>">
+                            <img src="<%= architect.profileImage || 'https://t4.ftcdn.net/jpg/03/64/21/11/360_F_364211147_1qgLVxv1Tcq0Ohz3FawUfrtONzz8nq3e.jpg' %>" 
+                                 alt="<%= architect.name %>" class="architect-image-small">
+                            <div class="architect-info">
+                                <h3><%= architect.name %></h3>
+                                <p><%= architect.professionalTitle || 'Architect' %></p>
+                                <p><i class="fas fa-briefcase"></i> <%= architect.experience %> years experience</p>
+                                <div class="rating">
+                                    <% for(let i = 0; i < Math.floor(architect.rating); i++) { %>
+                                        <span class="star">★</span>
+                                    <% } %>
+                                    <% if(architect.rating % 1 >= 0.5) { %>
+                                        <span class="star">½</span>
+                                    <% } %>
+                                    <span class="rating-count">(<%= architect.rating %>)</span>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    <% } %>
                 <% }); %>
             <% } else { %>
                 <div class="no-architects">
@@ -588,59 +590,61 @@
                 
                 <% if (architects && architects.length > 0) { %>
                     <% architects.forEach(architect => { %>
-                        <div class="architect-details" id="architect-<%= architect._id %>">
-                            <div class="architect-header">
-                                <img src="<%= architect.profileImage || 'https://t4.ftcdn.net/jpg/03/64/21/11/360_F_364211147_1qgLVxv1Tcq0Ohz3FawUfrtONzz8nq3e.jpg' %>" 
-                                     alt="<%= architect.name %>" class="architect-image-large">
-                                <div class="architect-header-content">
-                                    <h2><%= architect.name %></h2>
-                                    <p><strong><%= architect.professionalTitle || 'Architect' %></strong></p>
-                                    <p><i class="fas fa-briefcase"></i> <%= architect.experience %> years experience</p>
-                                    <div class="rating">
-                                        <% for(let i = 0; i < Math.floor(architect.rating); i++) { %>
-                                            <span class="star">★</span>
-                                        <% } %>
-                                        <% if(architect.rating % 1 >= 0.5) { %>
-                                            <span class="star">½</span>
-                                        <% } %>
-                                        <span class="rating-count">(<%= architect.rating %>)</span>
+                        <% if(architect.availability == 'available'){ %>
+                            <div class="architect-details" id="architect-<%= architect._id %>">
+                                <div class="architect-header">
+                                    <img src="<%= architect.profileImage || 'https://t4.ftcdn.net/jpg/03/64/21/11/360_F_364211147_1qgLVxv1Tcq0Ohz3FawUfrtONzz8nq3e.jpg' %>" 
+                                        alt="<%= architect.name %>" class="architect-image-large">
+                                    <div class="architect-header-content">
+                                        <h2><%= architect.name %></h2>
+                                        <p><strong><%= architect.professionalTitle || 'Architect' %></strong></p>
+                                        <p><i class="fas fa-briefcase"></i> <%= architect.experience %> years experience</p>
+                                        <div class="rating">
+                                            <% for(let i = 0; i < Math.floor(architect.rating); i++) { %>
+                                                <span class="star">★</span>
+                                            <% } %>
+                                            <% if(architect.rating % 1 >= 0.5) { %>
+                                                <span class="star">½</span>
+                                            <% } %>
+                                            <span class="rating-count">(<%= architect.rating %>)</span>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            
-                            <div class="bio">
-                                <h3>About</h3>
-                                <p><%= architect.about || 'Information not available' %></p>
                                 
-                                <% if (architect.specialties && architect.specialties.length > 0) { %>
-                                    <div class="specialties">
-                                        <% architect.specialties.forEach(specialty => { %>
-                                            <span class="specialty"><%= specialty %></span>
-                                        <% }); %>
-                                    </div>
-                                <% } %>
-                            </div>
-                            
-                            <div class="projects">
-                                <h3>Notable Projects</h3>
-                                <% if (architect.projects && architect.projects.length > 0) { %>
-                                    <% architect.projects.forEach(project => { %>
-                                        <div class="project">
-                                            <h4><%= project.name %></h4>
-                                            <div class="project-meta">
-                                                <span><i class="fas fa-calendar-alt"></i> <%= project.year %></span>
-                                                <span><i class="fas fa-map-marker-alt"></i> <%= project.location %></span>
-                                            </div>
-                                            <img src="<%= project.image || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQC7-RFA1wE4wTSP0DZJSJ1AJ8TitBYtkmEYA&s' %>" 
-                                                 alt="<%= project.name %>" class="project-image">
-                                            <p><%= project.description %></p>
+                                <div class="bio">
+                                    <h3>About</h3>
+                                    <p><%= architect.about || 'Information not available' %></p>
+                                    
+                                    <% if (architect.specialties && architect.specialties.length > 0) { %>
+                                        <div class="specialties">
+                                            <% architect.specialties.forEach(specialty => { %>
+                                                <span class="specialty"><%= specialty %></span>
+                                            <% }); %>
                                         </div>
-                                    <% }); %>
-                                <% } else { %>
-                                    <p>No projects available for this architect.</p>
-                                <% } %>
+                                    <% } %>
+                                </div>
+                                
+                                <div class="projects">
+                                    <h3>Notable Projects</h3>
+                                    <% if (architect.projects && architect.projects.length > 0) { %>
+                                        <% architect.projects.forEach(project => { %>
+                                            <div class="project">
+                                                <h4><%= project.name %></h4>
+                                                <div class="project-meta">
+                                                    <span><i class="fas fa-calendar-alt"></i> <%= project.year %></span>
+                                                    <span><i class="fas fa-map-marker-alt"></i> <%= project.location %></span>
+                                                </div>
+                                                <img src="<%= project.image || 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQC7-RFA1wE4wTSP0DZJSJ1AJ8TitBYtkmEYA&s' %>" 
+                                                    alt="<%= project.name %>" class="project-image">
+                                                <p><%= project.description %></p>
+                                            </div>
+                                        <% }); %>
+                                    <% } else { %>
+                                        <p>No projects available for this architect.</p>
+                                    <% } %>
+                                </div>
                             </div>
-                        </div>
+                        <% } %>  
                     <% }); %>
                 <% } %>
             </div>

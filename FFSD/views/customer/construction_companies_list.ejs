@@ -73,9 +73,9 @@
             max-width: 1280px;
             margin: 0 auto;
             padding: 0 20px;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 30px;
+            display: flex;
+            flex-direction: row;
+            gap: 60px;
             background: white;
             border-radius: 16px;
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
@@ -486,16 +486,7 @@
     <%- include('navbar_customer') %>
     <!-- Page Title -->
     <h1 class="page-title">Hire Companies<div class="underline"></div></h1>
-
-    <!-- Sort Dropdown -->
-    <div class="sort-container">
-        <select class="sort-select" onchange="sortCompanies(this.value)">
-            <option value="name" class="sort-list">Sort by Name (A-Z)</option>
-            <option value="projects" class="sort-list">Sort by Projects Completed</option>
-            <option value="years" class="sort-list">Sort by Years in Business</option>
-        </select>
-    </div>
-
+    
     <!-- Company Cards -->
     <div class="company-container">
         <% if (companies && companies.length > 0) { %>
