@@ -276,7 +276,8 @@
                             <img src="<%= employee.worker.profileImage || 'https://via.placeholder.com/100' %>" alt="Profile" class="profile-image">
                             <div class="header-info">
                                 <h3><%= employee.worker.name %></h3>
-                                <p class="title"><%= employee.worker.professionalTitle || 'Worker' %></p>
+                                <!-- CHANGE: professionalTitle to specialization -->
+                                <p class="title"><%= employee.worker.specialization || 'Worker' %></p>
                             </div>
                         </div>
                         <div class="card-body">
@@ -294,17 +295,28 @@
                             </div>
                             <div class="detail-item">
                                 <i class="fas fa-briefcase"></i>
-                                <span><%= employee.worker.experience %> years of experience</span>
+                                <!-- CHANGE: Added fallback for experience -->
+                                <span><%= employee.worker.experience || '0' %> years of experience</span>
                             </div>
                             <div class="detail-item">
                                 <i class="fas fa-calendar-check"></i>
-                                <span class="availability <%= employee.worker.availability %>"><%= employee.worker.availability %></span>
+                                <!-- CHANGE: Added fallback for availability -->
+                                <span class="availability <%= employee.worker.availability || 'available' %>">
+                                    <%= employee.worker.availability || 'Available' %>
+                                </span>
                             </div>
                         </div>
                         <div class="card-footer">
-                            <a href="/chat/<%= employee.chatId %>" class="btn-chat">
-                                <i class="fas fa-comment-dots"></i> Chat Now
-                            </a>
+                            <!-- CHANGE: Added check for chatId -->
+                            <% if (employee.chatId) { %>
+                                <a href="/chat/<%= employee.chatId %>" class="btn-chat">
+                                    <i class="fas fa-comment-dots"></i> Chat Now
+                                </a>
+                            <% } else { %>
+                                <button class="btn-chat" disabled>
+                                    <i class="fas fa-comment-dots"></i> Chat Unavailable
+                                </button>
+                            <% } %>
                         </div>
                     </div>
                 <% }); %>
@@ -313,5 +325,5 @@
             <% } %>
         </div>
     </div>
-</body>
+</body> 
 </html>
