@@ -482,24 +482,32 @@ const acceptProposal = async (req, res) => {
         if (type === 'architect') {
             project = await ArchitectHiring.findOne({ _id: id, customer: customerId });
             if (!project) return res.status(404).send('Project not found or you are not authorized.');
+            
+            // --- FIX: Save the final amount ---
+            if (project.proposal && project.proposal.price) {
+                project.finalAmount = project.proposal.price;
+            }
             project.status = 'Accepted';
+
         } else if (type === 'interior') {
-            // Find the project and ensure it belongs to the customer
-            const projectToUpdate = await DesignRequest.findOne({ _id: id });
-            // Note: The schema uses customerId for interior designers. Let's make sure the check is correct.
-            // Assuming your DesignRequest schema has a customerId field referencing the Customer model.
-            if (!projectToUpdate || projectToUpdate.customerId.toString() !== customerId) {
+            const projectToUpdate = await DesignRequest.findOne({ _id: id, customerId: customerId });
+            if (!projectToUpdate) {
                  return res.status(404).send('Project not found or you are not authorized.');
             }
             project = projectToUpdate;
+
+            // --- FIX: Save the final amount ---
+            if (project.proposal && project.proposal.price) {
+                project.finalAmount = project.proposal.price;
+            }
             project.status = 'accepted';
+
         } else {
             return res.status(400).send('Invalid project type.');
         }
 
         await project.save();
         
-        // CORRECTED REDIRECT: Go back to the Job Status page
         res.redirect('/job_status');
 
     } catch (error) {
