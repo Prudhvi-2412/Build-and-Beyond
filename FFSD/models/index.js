@@ -184,6 +184,7 @@ const architectHiringSchema = new mongoose.Schema({
     enum: ["Pending", "Proposal Sent", "Accepted", "Rejected", "Completed"],
     default: "Pending",
   },
+  finalAmount: { type: Number, default: 0 },
   proposal: {
     price: { type: Number },
     description: { type: String },
@@ -406,6 +407,7 @@ const designRequestSchema = new mongoose.Schema({
     enum: ["pending", "proposal_sent", "accepted", "rejected", "completed"], 
     default: "pending" 
   },
+  finalAmount: { type: Number, default: 0 },
   proposal: {
     price: { type: Number },
     description: { type: String },
