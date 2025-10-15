@@ -86,6 +86,7 @@
 
         .form-group {
             margin-bottom: 15px;
+            position: relative;
         }
         
         label {
@@ -120,14 +121,7 @@
         select {
             height: 48px;
         }
-
-        /* Required asterisk */
-        .form-group label[for]:after {
-            content: "*";
-            color: #facc15;
-            margin-left: 4px;
-        }
-
+        
         /* File Upload */
         .file-upload {
             margin-top: 10px;
@@ -269,6 +263,13 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        /* Error Message */
+        .error-message {
+            color: #ef4444;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
     </style>
 </head>
 <body>
@@ -278,7 +279,7 @@
             <div class="underline"></div>
         </div>
         
-        <form id="designRequestForm" enctype="multipart/form-data" action="/architect_submit" method="post">
+        <form id="designRequestForm" enctype="multipart/form-data" action="/architect_submit" method="post" novalidate>
             <input type="hidden" id="workerId" name="workerId" value="">
             
             <div class="section">
@@ -331,7 +332,7 @@
                     </div>
                     <div class="form-group">
                         <label for="email">Email Address*</label>
-                        <input type="email" id="email" name="email" required>
+                        <input type="text" id="email" name="email" required>
                     </div>
                 </div>
             </div>
@@ -352,7 +353,7 @@
                         <input type="text" id="state" name="state" required>
                     </div>
                     <div class="form-group">
-                        <label for="zipCode">Pincode/ZIP Code*</label>
+                        <label for="zipCode">Pincode*</label>
                         <input type="text" id="zipCode" name="zipCode" required>
                     </div>
                 </div>
@@ -396,17 +397,15 @@
                             <option value="1">1</option>
                             <option value="2">2</option>
                             <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5+">5+</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="budget">Max Budget (if applicable)</label>
-                        <input type="text" id="budget" name="budget" placeholder="e.g., 100000">
+                        <label for="budget">Max Budget (if applicable)*</label>
+                        <input type="text" id="budget" name="budget" required>
                     </div>
                     <div class="form-group">
-                        <label for="completionDate">Preferred Design Completion Date</label>
-                        <input type="date" id="completionDate" name="completionDate">
+                        <label for="completionDate">Preferred Design Completion Date*</label>
+                        <input type="date" id="completionDate" name="completionDate" required>
                     </div>
                 </div>
                 
@@ -448,7 +447,7 @@
         const form = document.getElementById('designRequestForm');
         
         numFloorsSelect.addEventListener('change', function() {
-            const numFloors = this.value === '5+' ? 5 : parseInt(this.value);
+            const numFloors = parseInt(this.value);
             floorRequirementsContainer.innerHTML = '';
             if (!isNaN(numFloors)) {
                 for (let i = 1; i <= numFloors; i++) {
@@ -522,6 +521,123 @@
 
         form.addEventListener("submit", (e) => {
             e.preventDefault();
+            const requiredFields = form.querySelectorAll('[required]');
+            let isValid = true;
+
+            // Clear previous error messages
+            document.querySelectorAll('.error-message').forEach(error => error.remove());
+
+            // Validate required fields
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    isValid = false;
+                    field.style.borderColor = '#ef4444';
+                    const errorDiv = document.createElement('div');
+                    errorDiv.className = 'error-message';
+                    errorDiv.textContent = 'This field is required';
+                    field.parentNode.appendChild(errorDiv);
+                } else {
+                    field.style.borderColor = '#e2e8f0';
+                }
+            });
+
+            // Validate email format if provided
+            const emailField = document.getElementById('email');
+            const emailValue = emailField.value.trim();
+            const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+            if (emailValue && !emailRegex.test(emailValue)) {
+                isValid = false;
+                emailField.style.borderColor = '#ef4444';
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'error-message';
+                errorDiv.textContent = 'Please enter a valid email address (e.g., example@domain.com)';
+                emailField.parentNode.appendChild(errorDiv);
+            } else if (emailValue) {
+                emailField.style.borderColor = '#e2e8f0';
+            }
+
+            // Validate plot size (numbers only)
+            const plotSizeField = document.getElementById('plotSize');
+            const plotSizeValue = plotSizeField.value.trim();
+            const plotSizeRegex = /^\d*\.?\d+$/; // Allows numbers with an optional decimal (e.g., 150, 150.5)
+            if (plotSizeValue && !plotSizeRegex.test(plotSizeValue)) {
+                isValid = false;
+                plotSizeField.style.borderColor = '#ef4444';
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'error-message';
+                errorDiv.textContent = 'Plot size must be a number (e.g., 150 or 150.5)';
+                plotSizeField.parentNode.appendChild(errorDiv);
+            } else if (plotSizeValue) {
+                plotSizeField.style.borderColor = '#e2e8f0';
+            }
+
+            // Validate phone number if provided
+            const phoneField = document.getElementById('contactNumber');
+            const phoneValue = phoneField.value.trim();
+            let phoneDigits = phoneValue.replace(/\D/g, '');
+            if (phoneValue) {
+                if (phoneDigits.startsWith('0')) {
+                    phoneDigits = phoneDigits.slice(1);
+                    if (!/^\d{10}$/.test(phoneDigits)) {
+                        isValid = false;
+                        phoneField.style.borderColor = '#ef4444';
+                        const errorDiv = document.createElement('div');
+                        errorDiv.className = 'error-message';
+                        errorDiv.textContent = 'Please enter a valid phone number with exactly 10 digits after a leading 0 (e.g., 01234567890)';
+                        phoneField.parentNode.appendChild(errorDiv);
+                    } else {
+                        phoneField.style.borderColor = '#e2e8f0';
+                    }
+                } else {
+                    if (!/^\d{10}$/.test(phoneDigits)) {
+                        isValid = false;
+                        phoneField.style.borderColor = '#ef4444';
+                        const errorDiv = document.createElement('div');
+                        errorDiv.className = 'error-message';
+                        errorDiv.textContent = 'Please enter a valid 10-digit phone number (e.g., 1234567890)';
+                        phoneField.parentNode.appendChild(errorDiv);
+                    } else {
+                        phoneField.style.borderColor = '#e2e8f0';
+                    }
+                }
+            }
+
+            // Validate completion date
+            const completionDateField = document.getElementById('completionDate');
+            const completionDateValue = completionDateField.value;
+            const currentDate = new Date('2025-10-15T11:38:00+05:30'); // Current date and time in IST
+            if (completionDateValue) {
+                const selectedDate = new Date(completionDateValue);
+                if (selectedDate <= currentDate) {
+                    isValid = false;
+                    completionDateField.style.borderColor = '#ef4444';
+                    const errorDiv = document.createElement('div');
+                    errorDiv.className = 'error-message';
+                    errorDiv.textContent = 'Completion date must be greater than today (October 15, 2025)';
+                    completionDateField.parentNode.appendChild(errorDiv);
+                } else {
+                    completionDateField.style.borderColor = '#e2e8f0';
+                }
+            }
+
+            // Validate pincode (6 digits)
+            const zipCodeField = document.getElementById('zipCode');
+            const zipCodeValue = zipCodeField.value.trim();
+            if (zipCodeValue && !/^\d{6}$/.test(zipCodeValue)) {
+                isValid = false;
+                zipCodeField.style.borderColor = '#ef4444';
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'error-message';
+                errorDiv.textContent = 'Pincode must be exactly 6 digits';
+                zipCodeField.parentNode.appendChild(errorDiv);
+            } else if (zipCodeValue) {
+                zipCodeField.style.borderColor = '#e2e8f0';
+            }
+
+            if (!isValid) {
+                return; // Stop submission if invalid
+            }
+
             const formData = new FormData(form);
             fetch("/architect_submit", {
                 method: "POST",

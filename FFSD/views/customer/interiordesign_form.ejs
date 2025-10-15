@@ -128,6 +128,10 @@
             margin-left: 4px;
         }
 
+        .form-group.no-asterisk label[for]:after {
+            content: "";
+        }
+
         /* Radio Buttons */
         .room-selector {
             display: grid;
@@ -291,24 +295,12 @@
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
         }
         
-        /* Message sections */
-        .success-message, .error-message {
+        /* Error Message */
+        .error-text {
+            color: #e74c3c;
+            font-size: 0.85rem;
+            margin-top: 5px;
             display: none;
-            text-align: center;
-            padding: 20px;
-            border-radius: 8px;
-            margin-top: 20px;
-            font-weight: 500;
-        }
-        
-        .success-message {
-            background: #d1fae5;
-            color: #065f46;
-        }
-        
-        .error-message {
-            background: #fee2e2;
-            color: #991b1b;
         }
 
         /* Responsive Design */
@@ -335,7 +327,7 @@
             <div class="underline"></div>
         </div>
         
-        <form id="designRequestForm" enctype="multipart/form-data" action="/design_submit" method="post">
+        <form id="designRequestForm" enctype="multipart/form-data" action="/design_submit" method="post" novalidate>
             <input type="hidden" id="workerId" name="workerId" value="">
 
             <div class="section">
@@ -344,23 +336,28 @@
                     <div class="form-group">
                         <label for="projectName">Project Name*</label>
                         <input type="text" id="projectName" name="projectName" required>
+                        <div class="error-text" id="projectNameError">Please enter a project name</div>
                     </div>
                     <div class="form-group">
                         <label for="fullName">Full Name*</label>
                         <input type="text" id="fullName" name="fullName" required>
+                        <div class="error-text" id="fullNameError">Please enter your full name</div>
                     </div>
                     <div class="form-group">
                         <label for="email">Email Address*</label>
                         <input type="email" id="email" name="email" required>
+                        <div class="error-text" id="emailError">Please enter a valid email (format: text@text.text)</div>
                     </div>
                     <div class="form-group">
                         <label for="phone">Phone Number*</label>
                         <input type="tel" id="phone" name="phone" required>
+                        <div class="error-text" id="phoneError">Please enter a valid 10-digit phone number</div>
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="address">Home Address*</label>
                     <input type="text" id="address" name="address" required>
+                    <div class="error-text" id="addressError">Please enter your home address</div>
                 </div>
             </div>
             
@@ -394,6 +391,7 @@
                             <label for="otherRoom">Other</label>
                         </div>
                     </div>
+                    <div class="error-text" id="roomTypeError">Please select a room type</div>
                 </div>
                 
                 <div class="form-grid">
@@ -403,29 +401,31 @@
                             <input type="number" id="roomLength" name="roomLength" placeholder="Length" min="1" step="0.01" required>
                             <span>×</span>
                             <input type="number" id="roomWidth" name="roomWidth" placeholder="Width" min="1" step="0.01" required>
-                            <select id="dimensionUnit" name="dimensionUnit" class="dimension-unit">
+                            <select id="dimensionUnit" name="dimensionUnit" class="dimension-unit" required>
                                 <option value="feet">feet</option>
                                 <option value="meters">meters</option>
                             </select>
                         </div>
+                        <div class="error-text" id="roomSizeError">Please enter valid room dimensions</div>
                         <p style="color: #64748b; font-size: 14px; margin-top: 5px;">Please enter the approximate dimensions of your room</p>
                     </div>
                     <div class="form-group">
-                        <label for="ceilingHeight">Ceiling Height (Optional)</label>
+                        <label for="ceilingHeight">Ceiling Height*</label>
                         <div class="dimension-inputs">
-                            <input type="number" id="ceilingHeight" name="ceilingHeight" placeholder="Height" min="1" step="0.01">
-                            <select id="heightUnit" name="heightUnit" class="dimension-unit">
+                            <input type="number" id="ceilingHeight" name="ceilingHeight" placeholder="Height" min="1" step="0.01" required>
+                            <select id="heightUnit" name="heightUnit" class="dimension-unit" required>
                                 <option value="feet">feet</option>
                                 <option value="meters">meters</option>
                             </select>
                         </div>
+                        <div class="error-text" id="ceilingHeightError">Please enter a valid ceiling height</div>
                     </div>
                 </div>
                 
                 <div class="form-group">
-                    <label for="designPreference">Design Preference (Optional)</label>
-                    <select id="designPreference" name="designPreference">
-                        <option value="">Select a style (optional)</option>
+                    <label for="designPreference">Design Preference*</label>
+                    <select id="designPreference" name="designPreference" required>
+                        <option value="">Select a style</option>
                         <option value="Modern">Modern</option>
                         <option value="Traditional">Traditional</option>
                         <option value="Scandinavian">Scandinavian</option>
@@ -435,18 +435,20 @@
                         <option value="Rustic">Rustic</option>
                         <option value="Contemporary">Contemporary</option>
                     </select>
+                    <div class="error-text" id="designPreferenceError">Please select a design preference</div>
                 </div>
                 
                 <div class="form-group">
-                    <label for="projectDescription">Project Description (Optional)</label>
-                    <textarea id="projectDescription" name="projectDescription" rows="4" placeholder="Tell us more about your vision for this space..."></textarea>
+                    <label for="projectDescription">Project Description*</label>
+                    <textarea id="projectDescription" name="projectDescription" rows="4" placeholder="Tell us more about your vision for this space..." required></textarea>
+                    <div class="error-text" id="projectDescriptionError">Please enter a project description</div>
                 </div>
             </div>
             
             <div class="section">
                 <h2 class="section-title">Upload Photos</h2>
                 <div class="image-section">
-                    <h3>Current Room Photos</h3>
+                    <h3>Current Room Photos*</h3>
                     <p>Upload photos of your current space to help our designers understand its layout, dimensions, and style.</p>
                     <div class="file-upload">
                         <label class="file-upload-label" for="currentRoomImages">
@@ -454,13 +456,14 @@
                             <span>Upload current room photos</span>
                             <small>(Max 3 images)</small>
                         </label>
-                        <input type="file" id="currentRoomImages" name="currentRoomImages" accept="image/*" multiple>
+                        <input type="file" id="currentRoomImages" name="currentRoomImages" accept="image/*" multiple required>
                     </div>
+                    <div class="error-text" id="currentRoomImagesError">Please upload at least one room photo</div>
                     <div class="preview-container" id="currentRoomPreview"></div>
                 </div>
                 
                 <div class="image-section">
-                    <h3>Design Inspiration</h3>
+                    <h3 class="no-asterisk">Design Inspiration (Optional)</h3>
                     <p>Share images of designs, colors, or furniture styles you like to help us understand your preferences.</p>
                     <div class="file-upload">
                         <label class="file-upload-label" for="inspirationImages">
@@ -476,14 +479,6 @@
             
             <button type="submit" class="btn-submit">Submit Request</button>
         </form>
-        
-        <div class="success-message" id="successMessage">
-            <h2>Request Submitted Successfully!</h2>
-            <p>One of our designers will contact you within 48 hours to discuss your project.</p>
-        </div>
-        <div class="error-message" id="errorMessage">
-            <p id="errorText"></p>
-        </div>
     </div>
 
     <script>
@@ -506,27 +501,31 @@
 
                     if (files.length > maxFiles) {
                         alert(`You can only upload a maximum of ${maxFiles} images.`);
-                        this.value = ''; // Clear selected files
+                        this.value = '';
                         previewContainer.innerHTML = '';
                         return;
                     }
 
-                    previewContainer.innerHTML = ''; // Clear previous previews
+                    if (inputId === 'currentRoomImages' && files.length === 0) {
+                        document.getElementById('currentRoomImagesError').style.display = 'block';
+                    } else {
+                        document.getElementById('currentRoomImagesError').style.display = 'none';
+                    }
+
+                    previewContainer.innerHTML = '';
                     files.forEach(file => {
                         const reader = new FileReader();
                         reader.onload = function(e) {
                             const previewItem = document.createElement('div');
                             previewItem.className = 'preview-item';
                             previewItem.innerHTML = `<img src="${e.target.result}" alt="Preview">
-                                                     <div class="remove-btn">×</div>`;
+                                                    <div class="remove-btn">×</div>`;
                             
                             previewItem.querySelector('.remove-btn').addEventListener('click', function() {
                                 previewItem.remove();
-                                // To update the file list, you'd need a more complex DataTransfer object logic
-                                // which is not available directly on input.files.
-                                // A simpler approach for this form is to clear and re-add all files,
-                                // or to let the server handle filtering. For this front-end code,
-                                // we'll just handle the visual removal.
+                                if (inputId === 'currentRoomImages' && previewContainer.children.length === 0) {
+                                    document.getElementById('currentRoomImagesError').style.display = 'block';
+                                }
                             });
                             previewContainer.appendChild(previewItem);
                         };
@@ -547,64 +546,157 @@
                 dimensionUnit.value = this.value;
             });
 
-            // Form submission
+            // Form validation
             const form = document.getElementById('designRequestForm');
-            const successMessage = document.getElementById('successMessage');
-            const errorMessage = document.getElementById('errorMessage');
-            const errorText = document.getElementById('errorText');
-
-            form.addEventListener('submit', async function(e) {
+            form.addEventListener('submit', function(e) {
                 e.preventDefault();
                 
-                let allValid = true;
-                const requiredFields = form.querySelectorAll('[required]');
-                requiredFields.forEach(field => {
-                    if (!field.value.trim()) {
-                        allValid = false;
-                        field.style.borderColor = '#e74c3c';
-                    } else {
-                        field.style.borderColor = '#ddd';
-                    }
-                });
-                
+                let isValid = true;
+
+                // Project Name validation
+                const projectName = document.getElementById('projectName');
+                if (!projectName.value.trim()) {
+                    document.getElementById('projectNameError').style.display = 'block';
+                    projectName.style.borderColor = '#e74c3c';
+                    isValid = false;
+                } else {
+                    document.getElementById('projectNameError').style.display = 'none';
+                    projectName.style.borderColor = '#e2e8f0';
+                }
+
+                // Full Name validation
+                const fullName = document.getElementById('fullName');
+                if (!fullName.value.trim()) {
+                    document.getElementById('fullNameError').style.display = 'block';
+                    fullName.style.borderColor = '#e74c3c';
+                    isValid = false;
+                } else {
+                    document.getElementById('fullNameError').style.display = 'none';
+                    fullName.style.borderColor = '#e2e8f0';
+                }
+
+                // Email validation
+                const email = document.getElementById('email');
+                const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+                if (!email.value.trim() || !emailRegex.test(email.value)) {
+                    document.getElementById('emailError').style.display = 'block';
+                    email.style.borderColor = '#e74c3c';
+                    isValid = false;
+                } else {
+                    document.getElementById('emailError').style.display = 'none';
+                    email.style.borderColor = '#e2e8f0';
+                }
+
+                // Phone validation
+                const phone = document.getElementById('phone');
+                const phoneNumber = phone.value.replace(/^0+/, '');
+                if (!phoneNumber || !/^\d{10}$/.test(phoneNumber)) {
+                    document.getElementById('phoneError').style.display = 'block';
+                    phone.style.borderColor = '#e74c3c';
+                    isValid = false;
+                } else {
+                    document.getElementById('phoneError').style.display = 'none';
+                    phone.style.borderColor = '#e2e8f0';
+                }
+
+                // Address validation
+                const address = document.getElementById('address');
+                if (!address.value.trim()) {
+                    document.getElementById('addressError').style.display = 'block';
+                    address.style.borderColor = '#e74c3c';
+                    isValid = false;
+                } else {
+                    document.getElementById('addressError').style.display = 'none';
+                    address.style.borderColor = '#e2e8f0';
+                }
+
+                // Room Type validation
                 const roomTypeSelected = form.querySelector('input[name="roomType"]:checked');
                 if (!roomTypeSelected) {
-                    allValid = false;
+                    document.getElementById('roomTypeError').style.display = 'block';
                     document.getElementById('roomTypeSelector').style.borderColor = '#e74c3c';
+                    isValid = false;
                 } else {
+                    document.getElementById('roomTypeError').style.display = 'none';
                     document.getElementById('roomTypeSelector').style.borderColor = 'transparent';
                 }
-                
-                if (!allValid) {
-                    errorMessage.style.display = 'block';
-                    errorText.textContent = 'Please fill in all required fields.';
+
+                // Room Size validation
+                const roomLength = document.getElementById('roomLength');
+                const roomWidth = document.getElementById('roomWidth');
+                if (!roomLength.value || !roomWidth.value || roomLength.value <= 0 || roomWidth.value <= 0) {
+                    document.getElementById('roomSizeError').style.display = 'block';
+                    roomLength.style.borderColor = '#e74c3c';
+                    roomWidth.style.borderColor = '#e74c3c';
+                    isValid = false;
+                } else {
+                    document.getElementById('roomSizeError').style.display = 'none';
+                    roomLength.style.borderColor = '#e2e8f0';
+                    roomWidth.style.borderColor = '#e2e8f0';
+                }
+
+                // Ceiling Height validation
+                const ceilingHeight = document.getElementById('ceilingHeight');
+                if (!ceilingHeight.value || ceilingHeight.value <= 0) {
+                    document.getElementById('ceilingHeightError').style.display = 'block';
+                    ceilingHeight.style.borderColor = '#e74c3c';
+                    heightUnit.style.borderColor = '#e74c3c';
+                    isValid = false;
+                } else {
+                    document.getElementById('ceilingHeightError').style.display = 'none';
+                    ceilingHeight.style.borderColor = '#e2e8f0';
+                    heightUnit.style.borderColor = '#e2e8f0';
+                }
+
+                // Design Preference validation
+                const designPreference = document.getElementById('designPreference');
+                if (!designPreference.value) {
+                    document.getElementById('designPreferenceError').style.display = 'block';
+                    designPreference.style.borderColor = '#e74c3c';
+                    isValid = false;
+                } else {
+                    document.getElementById('designPreferenceError').style.display = 'none';
+                    designPreference.style.borderColor = '#e2e8f0';
+                }
+
+                // Project Description validation
+                const projectDescription = document.getElementById('projectDescription');
+                if (!projectDescription.value.trim()) {
+                    document.getElementById('projectDescriptionError').style.display = 'block';
+                    projectDescription.style.borderColor = '#e74c3c';
+                    isValid = false;
+                } else {
+                    document.getElementById('projectDescriptionError').style.display = 'none';
+                    projectDescription.style.borderColor = '#e2e8f0';
+                }
+
+                // Current Room Images validation
+                const currentRoomImages = document.getElementById('currentRoomImages');
+                if (currentRoomImages.files.length === 0) {
+                    document.getElementById('currentRoomImagesError').style.display = 'block';
+                    isValid = false;
+                } else {
+                    document.getElementById('currentRoomImagesError').style.display = 'none';
+                }
+
+                if (!isValid) {
                     return;
                 }
-                
-                try {
-                    const formData = new FormData(form);
-                    
-                    const response = await fetch('/design_request', {
-                        method: 'POST',
-                        body: formData,
-                    });
-                    
-                    const result = await response.json();
-                    
-                    if (response.ok) {
-                        form.style.display = 'none';
-                        if (successMessage) successMessage.style.display = 'block';
-                        if (errorMessage) errorMessage.style.display = 'none';
+
+                // Submit form if all validations pass
+                const formData = new FormData(form);
+                fetch('/design_request', {
+                    method: 'POST',
+                    body: formData,
+                })
+                .then(response => response.json())
+                .then(result => {
+                    if (result.success) {
+                        window.location.href = 'http://localhost:4000/job_status'
                     } else {
-                        if (errorMessage) errorMessage.style.display = 'block';
-                        if (errorText) errorText.textContent = result.error || 'An error occurred. Please try again.';
-                        if (successMessage) successMessage.style.display = 'none';
+                        alert(result.error || 'An error occurred. Please try again.');
                     }
-                } catch (error) {
-                    if (errorMessage) errorMessage.style.display = 'block';
-                    if (errorText) errorText.textContent = 'Network error. Please check your connection and try again.';
-                    if (successMessage) successMessage.style.display = 'none';
-                }
+                })
             });
         });
     </script>

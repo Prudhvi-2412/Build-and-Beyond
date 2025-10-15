@@ -161,9 +161,9 @@ const submitDesignRequest = async (req, res) => {
       workerId,
     });
     await designRequest.save();
-    res.status(201).json({ message: "Design request submitted successfully" });
+    res.status(201).json({ message: "Design request submitted successfully" ,success:true});
   } catch (error) {
-    res.status(500).json({ error: "Server error" });
+    res.status(500).json({ error: "Server error" ,success:false});
   }
 };
 

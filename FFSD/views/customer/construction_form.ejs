@@ -30,7 +30,6 @@
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
         }
 
-        /* Page Title */
         .page-title {
             text-align: center;
             margin-bottom: 30px;
@@ -74,7 +73,7 @@
             background: #facc15;
             border-radius: 2px;
         }
-        
+
         .form-group {
             margin-bottom: 15px;
         }
@@ -119,7 +118,14 @@
             color: #facc15;
             margin-left: 4px;
         }
-        
+
+        .error-text {
+            color: #ef4444;
+            font-size: 0.85rem;
+            margin-top: 5px;
+            display: none;
+        }
+
         .floor-container {
             border: 1px solid #e2e8f0;
             padding: 20px;
@@ -162,7 +168,7 @@
             transform: translateY(-3px);
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
         }
-        
+
         .btn-remove {
             background-color: #ef4444;
             color: white;
@@ -176,7 +182,7 @@
             transform: translateY(0);
             box-shadow: none;
         }
-        
+
         .image-preview {
             max-width: 100%;
             max-height: 200px;
@@ -197,17 +203,24 @@
             background-color: #1e293b;
             color: white;
         }
-        
+
         .submit-btn:hover {
             background-color: #0f172a;
         }
 
-        /* Responsive Design */
+        .success-message {
+            color: #2ecc71;
+            font-size: 1rem;
+            text-align: center;
+            margin-top: 20px;
+            display: none;
+        }
+
         @media (max-width: 768px) {
             .container {
                 padding: 20px;
             }
-            
+
             .page-title h1 {
                 font-size: 2rem;
             }
@@ -228,16 +241,17 @@
             <h1>Construction Project Submission</h1>
             <div class="underline"></div>
         </div>
-        
-        <form id="constructionForm" method="post" action="/construction_form" enctype="multipart/form-data">
+
+        <form id="constructionForm" method="post" action="/construction_form" enctype="multipart/form-data" novalidate>
             <input type="hidden" id="companyId" name="companyId" value="">
-            
+
             <div class="form-section">
                 <h2>Project Information</h2>
                 <div class="form-grid">
                     <div class="form-group">
                         <label for="projectName" class="required">Project Name</label>
                         <input type="text" id="projectName" name="projectName" required>
+                        <div class="error-text" id="projectNameError">Please enter a project name</div>
                     </div>
                     <div class="form-group">
                         <label for="buildingType" class="required">Building Type</label>
@@ -249,73 +263,82 @@
                             <option value="mixedUse">Mixed Use</option>
                             <option value="other">Other</option>
                         </select>
+                        <div class="error-text" id="buildingTypeError">Please select a building type</div>
                     </div>
                 </div>
             </div>
-            
+
             <div class="form-section">
                 <h2>Customer Information</h2>
                 <div class="form-grid">
                     <div class="form-group">
                         <label for="customerName" class="required">Full Name</label>
                         <input type="text" id="customerName" name="customerName" required>
+                        <div class="error-text" id="customerNameError">Please enter your full name</div>
                     </div>
                     <div class="form-group">
                         <label for="customerEmail" class="required">Email Address</label>
                         <input type="email" id="customerEmail" name="customerEmail" required>
+                        <div class="error-text" id="customerEmailError">Please enter a valid email address (e.g., example@domain.com)</div>
                     </div>
                     <div class="form-group">
                         <label for="customerPhone" class="required">Phone Number</label>
                         <input type="tel" id="customerPhone" name="customerPhone" required>
+                        <div class="error-text" id="customerPhoneError">Please enter a valid 10-digit phone number (e.g., 1234567890)</div>
                     </div>
                 </div>
             </div>
-            
+
             <div class="form-section">
                 <h2>Project Details</h2>
                 <div class="form-grid">
                     <div class="form-group">
                         <label for="totalArea" class="required">Total Building Area (sq meters)</label>
                         <input type="number" id="totalArea" name="totalArea" step="1" required>
+                        <div class="error-text" id="totalAreaError">Please enter a valid area (positive number)</div>
                     </div>
                     <div class="form-group">
-                        <label for="estimatedBudget">Estimated Budget ($)</label>
-                        <input type="number" id="estimatedBudget" name="estimatedBudget">
+                        <label for="estimatedBudget" class="required">Estimated Budget (₹)</label>
+                        <input type="number" id="estimatedBudget" name="estimatedBudget" required>
+                        <div class="error-text" id="estimatedBudgetError">Please enter a valid budget (positive number)</div>
                     </div>
                     <div class="form-group">
-                        <label for="projectTimeline">Expected Timeline (months)</label>
-                        <input type="number" id="projectTimeline" name="projectTimeline">
+                        <label for="projectTimeline" class="required">Expected Timeline (months)</label>
+                        <input type="number" id="projectTimeline" name="projectTimeline" required>
+                        <div class="error-text" id="projectTimelineError">Please enter a valid timeline (positive number)</div>
                     </div>
                     <div class="form-group">
-                        <label for="projectLocation" class="required">Project Location Pincode </label>
-                        <input type="text" id="projectLocation" name="projectLocation" placeholder="e.g.,534260" required>
+                        <label for="projectLocation" class="required">Project Location Pincode</label>
+                        <input type="text" id="projectLocation" name="projectLocation" placeholder="e.g., 534260" required>
+                        <div class="error-text" id="projectLocationError">Please enter a valid pincode (e.g., 534260)</div>
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="projectAddress" class="required">Project Address</label>
                     <textarea id="projectAddress" name="projectAddress" required></textarea>
+                    <div class="error-text" id="projectAddressError">Please enter a project address</div>
                 </div>
             </div>
-            
+
             <div class="form-section">
                 <h2>Floor Plans</h2>
                 <div class="form-group">
                     <label for="totalFloors" class="required">Number of Floors</label>
                     <input type="number" id="totalFloors" name="totalFloors" min="1" required>
+                    <div class="error-text" id="totalFloorsError">Please enter a valid number of floors (positive number)</div>
                 </div>
-                
-                <div id="floorDetails">
-                    </div>
-                
+
+                <div id="floorDetails"></div>
+
                 <button type="button" id="generateFloors" class="btn">Generate Floor Details</button>
             </div>
-            
+
             <div class="form-section">
                 <h2>Additional Requirements</h2>
                 <div class="form-grid">
                     <div class="form-group">
-                        <label for="accessibilityNeeds">Accessibility Needs</label>
-                        <select id="accessibilityNeeds" name="accessibilityNeeds">
+                        <label for="accessibilityNeeds" class="required">Accessibility Needs</label>
+                        <select id="accessibilityNeeds" name="accessibilityNeeds" required>
                             <option value="">Select Options</option>
                             <option value="wheelchair">Wheelchair Accessibility</option>
                             <option value="elevators">Elevators</option>
@@ -323,10 +346,11 @@
                             <option value="other">Other</option>
                             <option value="none">None</option>
                         </select>
+                        <div class="error-text" id="accessibilityNeedsError">Please select an accessibility option</div>
                     </div>
                     <div class="form-group">
-                        <label for="energyEfficiency">Energy Efficiency Goals</label>
-                        <select id="energyEfficiency" name="energyEfficiency">
+                        <label for="energyEfficiency" class="required">Energy Efficiency Goals</label>
+                        <select id="energyEfficiency" name="energyEfficiency" required>
                             <option value="">Select Options</option>
                             <option value="standard">Standard</option>
                             <option value="leed">LEED Certified</option>
@@ -334,20 +358,23 @@
                             <option value="netZero">Net Zero</option>
                             <option value="other">Other</option>
                         </select>
+                        <div class="error-text" id="energyEfficiencyError">Please select an energy efficiency goal</div>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="specialRequirements">Special Requirements or Considerations</label>
-                    <textarea id="specialRequirements" name="specialRequirements" placeholder="List any special requirements, materials, or design considerations"></textarea>
+                    <label for="specialRequirements" class="required">Special Requirements or Considerations</label>
+                    <textarea id="specialRequirements" name="specialRequirements" placeholder="List any special requirements, materials, or design considerations" required></textarea>
+                    <div class="error-text" id="specialRequirementsError">Please enter any special requirements</div>
                 </div>
-                
+
                 <div class="form-group">
-                    <label for="siteFiles">Site Plans or Additional Documents</label>
+                    <label for="siteFiles">Site Plans or Additional Documents (Optional)</label>
                     <input type="file" id="siteFiles" name="siteFiles" multiple>
                 </div>
             </div>
-            
+
             <div class="submit-section">
+                <div class="success-message" id="successMessage">Project submitted successfully!</div>
                 <button type="submit" class="btn submit-btn">Submit Project</button>
             </div>
         </form>
@@ -358,32 +385,38 @@
             const form = document.getElementById('constructionForm');
             const generateFloorsBtn = document.getElementById('generateFloors');
             const floorDetailsContainer = document.getElementById('floorDetails');
-            
+
             // Get company ID from URL parameter
             const urlParams = new URLSearchParams(window.location.search);
             const companyId = urlParams.get('companyId');
-            
+
             // Set company ID in hidden field
             if (companyId) {
                 document.getElementById('companyId').value = companyId;
             }
-            
+
             // Generate floor details based on the number of floors
             generateFloorsBtn.addEventListener('click', function() {
-                const totalFloors = parseInt(document.getElementById('totalFloors').value);
-                
+                const totalFloorsInput = document.getElementById('totalFloors');
+                const totalFloors = parseInt(totalFloorsInput.value);
+                const totalFloorsError = document.getElementById('totalFloorsError');
+
                 if (isNaN(totalFloors) || totalFloors <= 0) {
-                    alert('Please enter a valid number of floors');
+                    totalFloorsError.style.display = 'block';
+                    totalFloorsInput.style.borderColor = '#ef4444';
                     return;
+                } else {
+                    totalFloorsError.style.display = 'none';
+                    totalFloorsInput.style.borderColor = '#e2e8f0';
                 }
-                
+
                 floorDetailsContainer.innerHTML = '';
-                
+
                 for (let i = 1; i <= totalFloors; i++) {
                     const floorDiv = document.createElement('div');
                     floorDiv.className = 'floor-container';
                     floorDiv.id = `floor-${i}`;
-                    
+
                     floorDiv.innerHTML = `
                         <div class="floor-header">
                             <h3>Floor ${i}</h3>
@@ -393,7 +426,7 @@
                         </div>
                         <div class="form-grid">
                             <div class="form-group">
-                                <label for="floorType-${i}">Floor Type</label>
+                                <label for="floorType-${i}" class="required">Floor Type</label>
                                 <select id="floorType-${i}" name="floorType-${i}" required>
                                     <option value="">Select Floor Type</option>
                                     <option value="residential">Residential</option>
@@ -402,95 +435,185 @@
                                     <option value="mechanical">Mechanical/Utility</option>
                                     <option value="other">Other</option>
                                 </select>
+                                <div class="error-text" id="floorTypeError-${i}">Please select a floor type</div>
                             </div>
                             <div class="form-group">
-                                <label for="floorArea-${i}">Floor Area (sq meters)</label>
+                                <label for="floorArea-${i}" class="required">Floor Area (sq meters)</label>
                                 <input type="number" id="floorArea-${i}" name="floorArea-${i}" step="1" required>
+                                <div class="error-text" id="floorAreaError-${i}">Please enter a valid floor area (positive number)</div>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="floorDescription-${i}">Floor Description</label>
-                            <textarea id="floorDescription-${i}" name="floorDescription-${i}" placeholder="Describe the layout and purpose of this floor"></textarea>
+                            <label for="floorDescription-${i}" class="required">Floor Description</label>
+                            <textarea id="floorDescription-${i}" name="floorDescription-${i}" placeholder="Describe the layout and purpose of this floor" required></textarea>
+                            <div class="error-text" id="floorDescriptionError-${i}">Please enter a floor description</div>
                         </div>
                         <div class="form-group">
-                            <label for="floorImage-${i}">Floor Plan Image</label>
+                            <label for="floorImage-${i}">Floor Plan Image (Optional)</label>
                             <input type="file" id="floorImage-${i}" name="floorImage-${i}" accept="image/*" onchange="previewImage(this, 'imagePreview-${i}')">
                             <img id="imagePreview-${i}" class="image-preview" src="#" alt="Floor Plan Preview">
                         </div>
                     `;
-                    
+
                     floorDetailsContainer.appendChild(floorDiv);
                 }
             });
-            
-            // Form submission
+
+            // Form submission with field-specific validation
             form.addEventListener('submit', async function(e) {
                 e.preventDefault();
-                
-                const requiredFields = form.querySelectorAll('[required]');
+
                 let isValid = true;
-                
-                requiredFields.forEach(field => {
-                    if (!field.value.trim()) {
+
+                // Reset all error messages and borders
+                document.querySelectorAll('.error-text').forEach(error => {
+                    error.style.display = 'none';
+                });
+                document.querySelectorAll('input, select, textarea').forEach(field => {
+                    field.style.borderColor = '#e2e8f0';
+                });
+
+                // Validate static required fields
+                const staticFields = [
+                    { id: 'projectName', errorId: 'projectNameError', message: 'Please enter a project name' },
+                    { id: 'buildingType', errorId: 'buildingTypeError', message: 'Please select a building type' },
+                    { id: 'customerName', errorId: 'customerNameError', message: 'Please enter your full name' },
+                    { id: 'customerEmail', errorId: 'customerEmailError', message: 'Please enter a valid email address (e.g., example@domain.com)' },
+                    { id: 'customerPhone', errorId: 'customerPhoneError', message: 'Please enter a valid 10-digit phone number (e.g., 1234567890)' },
+                    { id: 'totalArea', errorId: 'totalAreaError', message: 'Please enter a valid area (positive number)' },
+                    { id: 'estimatedBudget', errorId: 'estimatedBudgetError', message: 'Please enter a valid budget (positive number)' },
+                    { id: 'projectTimeline', errorId: 'projectTimelineError', message: 'Please enter a valid timeline (positive number)' },
+                    { id: 'projectLocation', errorId: 'projectLocationError', message: 'Please enter a valid pincode (e.g., 534260)' },
+                    { id: 'projectAddress', errorId: 'projectAddressError', message: 'Please enter a project address' },
+                    { id: 'totalFloors', errorId: 'totalFloorsError', message: 'Please enter a valid number of floors (positive number)' },
+                    { id: 'accessibilityNeeds', errorId: 'accessibilityNeedsError', message: 'Please select an accessibility option' },
+                    { id: 'energyEfficiency', errorId: 'energyEfficiencyError', message: 'Please select an energy efficiency goal' },
+                    { id: 'specialRequirements', errorId: 'specialRequirementsError', message: 'Please enter any special requirements' }
+                ];
+
+                staticFields.forEach(field => {
+                    const element = document.getElementById(field.id);
+                    const errorElement = document.getElementById(field.errorId);
+                    const value = element.value.trim();
+
+                    if (!value) {
                         isValid = false;
-                        field.style.borderColor = '#ef4444';
-                    } else {
-                        field.style.borderColor = '#e2e8f0';
+                        errorElement.style.display = 'block';
+                        element.style.borderColor = '#ef4444';
+                    } else if (field.id === 'customerEmail') {
+                        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+                        if (!emailRegex.test(value)) {
+                            isValid = false;
+                            errorElement.style.display = 'block';
+                            element.style.borderColor = '#ef4444';
+                        }
+                    } else if (field.id === 'customerPhone') {
+                        let phoneDigits = value.replace(/\D/g, '');
+                        if (phoneDigits.startsWith('0')) {
+                            phoneDigits = phoneDigits.slice(1);
+                        }
+                        if (!/^\d{10}$/.test(phoneDigits)) {
+                            isValid = false;
+                            errorElement.style.display = 'block';
+                            element.style.borderColor = '#ef4444';
+                        }
+                    } else if (['totalArea', 'estimatedBudget', 'projectTimeline', 'totalFloors'].includes(field.id) && (parseFloat(value) <= 0)) {
+                        isValid = false;
+                        errorElement.style.display = 'block';
+                        element.style.borderColor = '#ef4444';
+                    } else if (field.id === 'projectLocation' && !/^\d{6}$/.test(value)) {
+                        isValid = false;
+                        errorElement.style.display = 'block';
+                        element.style.borderColor = '#ef4444';
                     }
                 });
-                
+
+                // Validate dynamic floor fields
+                const floorContainers = document.querySelectorAll('.floor-container');
+                floorContainers.forEach((floor, index) => {
+                    const i = index + 1;
+                    const floorType = document.getElementById(`floorType-${i}`);
+                    const floorArea = document.getElementById(`floorArea-${i}`);
+                    const floorDescription = document.getElementById(`floorDescription-${i}`);
+                    const floorTypeError = document.getElementById(`floorTypeError-${i}`);
+                    const floorAreaError = document.getElementById(`floorAreaError-${i}`);
+                    const floorDescriptionError = document.getElementById(`floorDescriptionError-${i}`);
+
+                    if (!floorType.value) {
+                        isValid = false;
+                        floorTypeError.style.display = 'block';
+                        floorType.style.borderColor = '#ef4444';
+                    }
+                    if (!floorArea.value || parseFloat(floorArea.value) <= 0) {
+                        isValid = false;
+                        floorAreaError.style.display = 'block';
+                        floorArea.style.borderColor = '#ef4444';
+                    }
+                    if (!floorDescription.value.trim()) {
+                        isValid = false;
+                        floorDescriptionError.style.display = 'block';
+                        floorDescription.style.borderColor = '#ef4444';
+                    }
+                });
+
                 if (!isValid) {
-                    alert('Please fill in all required fields');
                     return;
                 }
-                
+
                 try {
                     const formData = new FormData(form);
-                    
                     const submitBtn = form.querySelector('.submit-btn');
                     submitBtn.disabled = true;
                     submitBtn.textContent = 'Submitting...';
-                    
+
                     const response = await fetch('/construction_form', {
                         method: 'POST',
                         body: formData
                     });
-                    
+
                     const result = await response.json();
-                    
+
                     if (response.ok) {
-                        alert('Project submitted successfully!');
-                        window.location.href = '/customerdashboard';
+                        const successMessage = document.getElementById('successMessage');
+                        form.reset();
+                        window.location.href = '/job_status';
                     } else {
-                        throw new Error(result.message || 'Failed to submit project');
+                        const errorMessage = document.createElement('div');
+                        errorMessage.className = 'error-text';
+                        errorMessage.style.display = 'block';
+                        errorMessage.textContent = result.message || 'Failed to submit project';
+                        form.querySelector('.submit-section').prepend(errorMessage);
                     }
                 } catch (error) {
                     console.error('Submission error:', error);
-                    alert(`Error: ${error.message}`);
+                    const errorMessage = document.createElement('div');
+                    errorMessage.className = 'error-text';
+                    errorMessage.style.display = 'block';
+                    errorMessage.textContent = `Error: ${error.message}`;
+                    form.querySelector('.submit-section').prepend(errorMessage);
                 } finally {
                     const submitBtn = form.querySelector('.submit-btn');
                     submitBtn.disabled = false;
                     submitBtn.textContent = 'Submit Project';
                 }
             });
-            
+
             window.removeFloor = function(floorNumber) {
                 const floorElement = document.getElementById(`floor-${floorNumber}`);
                 if (floorElement) {
                     floorElement.remove();
                 }
             };
-            
+
             window.previewImage = function(input, previewId) {
                 const preview = document.getElementById(previewId);
                 if (input.files && input.files[0]) {
                     const reader = new FileReader();
-                    
+
                     reader.onload = function(e) {
                         preview.src = e.target.result;
                         preview.style.display = 'block';
                     }
-                    
                     reader.readAsDataURL(input.files[0]);
                 }
             };
