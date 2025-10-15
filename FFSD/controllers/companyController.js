@@ -237,7 +237,8 @@ const getHiring = async (req, res) => {
 
         const workerRequestsRaw = await WorkerToCompany.find({
             companyId: companyId,
-            status: 'Pending'
+            status: 'Pending',
+            workerId: { $ne: null }
         }).populate('workerId').lean();
 
         const workerRequests = await Promise.all(workerRequestsRaw.map(async (request) => {
@@ -506,18 +507,74 @@ const submitProjectProposal = async (req, res) => {
     res.status(500).send('Server Error');
   }
 };
+
 const getEmployees = async (req, res) => {
     try {
         const companyId = req.user.user_id;
-        const employeesFromOffers = await CompanytoWorker.find({ company: companyId, status: 'Accepted' }).populate('worker').lean();
-        const employeesFromApps = await WorkerToCompany.find({ companyId: companyId, status: 'accepted' }).populate('workerId').lean();
+        
+        const employeesFromOffers = await CompanytoWorker.find({ 
+            company: companyId, 
+            status: 'Accepted' 
+        }).populate({
+            path: 'worker',
+            select: 'name specialization experience profileImage email phone availability' // ADDED email, phone, availability
+        }).lean();
 
-        const employees = [...employeesFromOffers, ...employeesFromApps.map(app => ({...app, worker: app.workerId}))];
+        const employeesFromApps = await WorkerToCompany.find({ 
+            companyId: companyId, 
+            status: 'accepted' 
+        }).populate({
+            path: 'workerId',
+            select: 'name specialization experience profileImage email phone availability' // ADDED email, phone, availability
+        }).lean();
 
-        const employeesWithChat = await Promise.all(employees.map(async (employee) => {
-            const chatRoom = await findOrCreateChatRoom(employee._id, 'hiring');
-            return { ...employee, chatId: chatRoom ? chatRoom.roomId : null };
-        }));
+        // Rest of your controller code remains the same...
+        const validOffers = employeesFromOffers.filter(emp => emp.worker !== null);
+        const validApps = employeesFromApps.filter(app => app.workerId !== null);
+
+        const employees = [
+            ...validOffers.map(emp => ({
+                ...emp,
+                worker: {
+                    ...emp.worker,
+                    name: emp.worker.name || 'Unknown Worker',
+                    specialization: emp.worker.specialization || 'Worker',
+                    experience: emp.worker.experience || 0,
+                    profileImage: emp.worker.profileImage || 'https://via.placeholder.com/100',
+                    email: emp.worker.email || 'No email provided',
+                    phone: emp.worker.phone || 'No phone provided',
+                    availability: emp.worker.availability || 'available'
+                }
+            })),
+            ...validApps.map(app => ({
+                ...app,
+                worker: {
+                    ...app.workerId,
+                    name: app.workerId.name || 'Unknown Worker',
+                    specialization: app.workerId.specialization || 'Worker',
+                    experience: app.workerId.experience || 0,
+                    profileImage: app.workerId.profileImage || 'https://via.placeholder.com/100',
+                    email: app.workerId.email || 'No email provided',
+                    phone: app.workerId.phone || 'No phone provided',
+                    availability: app.workerId.availability || 'available'
+                }
+            }))
+        ];
+
+        const employeesWithChat = await Promise.all(
+            employees.map(async (employee) => {
+                try {
+                    const chatRoom = await findOrCreateChatRoom(employee._id, 'hiring');
+                    return { 
+                        ...employee, 
+                        chatId: chatRoom ? chatRoom.roomId : null 
+                    };
+                } catch (chatError) {
+                    console.error('Chat room creation error:', chatError);
+                    return { ...employee, chatId: null };
+                }
+            })
+        );
 
         res.render('company/employees', { employees: employeesWithChat });
     } catch (error) {
@@ -525,7 +582,6 @@ const getEmployees = async (req, res) => {
         res.status(500).send('Server Error');
     }
 };
-
 // Add other company controllers like revenue, etc., if needed
 
 module.exports = { getDashboard, getOngoingProjects, getProjectRequests, updateProjectStatusController, 
