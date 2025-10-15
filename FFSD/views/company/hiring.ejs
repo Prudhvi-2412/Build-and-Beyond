@@ -778,6 +778,33 @@
             box-shadow: 0 0 0 2px rgba(0, 77, 122, 0.1);
         }
 
+        /* New styles for expected salary highlight */
+        .expected-salary-highlight {
+            background: linear-gradient(135deg, #ffd700, #ffa500);
+            color: #000;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--card-radius);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 12px rgba(255, 165, 0, 0.3);
+            border-left: 4px solid #ff8c00;
+        }
+
+        .expected-salary-highlight .label {
+            font-size: 1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .expected-salary-highlight .amount {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
         @media (max-width: 1024px) {
             .container { padding: 2rem 1.5rem; }
             .worker-grid {
@@ -946,118 +973,157 @@
         </div>
 
         <div id="worker-requests" class="section">
-    <div class="section-header">
-        <h2>Pending Worker Requests</h2>
-        <div class="filter-controls">
-            <input type="text" placeholder="Search requests..." class="search-input">
-        </div>
-    </div>
+            <div class="section-header">
+                <h2>Pending Worker Requests</h2>
+                <div class="filter-controls">
+                    <input type="text" placeholder="Search requests..." class="search-input">
+                </div>
+            </div>
 
-    <div class="request-list">
-        <% if (workerRequests.length === 0) { %>
-            <p>No worker requests at this time.</p>
-        <% } else { %>
-            <% workerRequests.forEach(request => { %>
-                <% if (request.workerId) { %>
-                    <div class="request-card" data-worker-id="<%= request.workerId._id %>" data-request-id="<%= request._id %>">
-                        <div class="left">
-                            <img src="<%= request.workerId.profileImage || 'https://via.placeholder.com/80x60' %>" alt="Profile" class="profile-image">
-                            <div class="request-info">
-                                <h3><%= request.workerId.name %></h3>
-                                <div class="request-details">
-                                    <div class="detail-item">
-                                        <span class="detail-label"><i class="fas fa-envelope"></i> Email:</span>
-                                        <span class="detail-value"><%= request.workerId.email %></span>
-                                    </div>
-                                    <div class="detail-item">
-                                        <span class="detail-label"><i class="fas fa-user-tie"></i> Role:</span>
-                                        <span class="detail-value"><%= request.position %></span>
-                                    </div>
-                                    <div class="detail-item">
-                                        <span class="detail-label"><i class="fas fa-map-marker-alt"></i> Location:</span>
-                                        <span class="detail-value"><%= request.location %></span>
-                                    </div>
-                                    <div class="detail-item">
-                                        <span class="detail-label"><i class="fas fa-tools"></i> Specialties:</span>
-                                        <span class="detail-value"><%= request.workerId.specialties.join(', ') %></span>
-                                    </div>
-                                    <div class="detail-item">
-                                        <span class="detail-label"><i class="fas fa-briefcase"></i> Experience:</span>
-                                        <span class="detail-value"><%= request.workerId.experience %></span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="request-actions">
-                            <button class="btn btn-view" 
-                                    data-worker="<%= request.workerId.name %>" 
-                                    data-title="<%= request.workerId.title %>" 
-                                    data-rating="<%= request.workerId.rating %>" 
-                                    data-about="<%= request.workerId.about %>" 
-                                    data-specialties="<%= request.workerId.specialties.join(', ') %>" 
-                                    data-projects='<%= JSON.stringify(request.workerId.projects) %>' 
-                                    data-contact="<%= request.workerId.contact %>" 
-                                    data-location="<%= request.workerId.location %>" 
-                                    data-linkedin="<%= request.workerId.linkedin %>" 
-                                    data-previous-work="<%= request.workerId.previousWork %>"
-                                    data-profile-image="<%= request.workerId.profileImage %>"
-                                    data-worker-id="<%= request.workerId._id %>">
-                                <i class="fas fa-eye"></i> View Profile
-                            </button>
-                            <button class="btn btn-hire btn-accept" data-request-id="<%= request._id %>">
-                                <i class="fas fa-check"></i> Accept
-                            </button>
-                            <button class="btn btn-reject" data-request-id="<%= request._id %>">
-                                <i class="fas fa-times"></i> Reject
-                            </button>
-                            <button class="btn btn-toggle-details">
-                                <i class="fas fa-chevron-down"></i> Details
-                            </button>
-                        </div>
-                        <div class="details">
-                            <div class="detail-expanded-item">
-                                <span class="detail-label"><i class="fas fa-file-alt"></i> Resume:</span>
-                                <span class="detail-value"><a href="<%= request.workerId.resume %>" class="detail-link">Download Resume</a></span>
-                            </div>
-                            <div class="detail-expanded-item">
-                                <span class="detail-label"><i class="fab fa-linkedin"></i> LinkedIn:</span>
-                                <span class="detail-value"><a href="<%= request.workerId.linkedin %>" class="detail-link"><%= request.workerId.linkedin %></a></span>
-                            </div>
-                            <div class="detail-expanded-item">
-                                <span class="detail-label"><i class="fas fa-history"></i> Previous Work:</span>
-                                <span class="detail-value"><%= request.workerId.previousWork %></span>
-                            </div>
-                        </div>
-                    </div>
+            <div class="request-list">
+                <% if (workerRequests.length === 0) { %>
+                    <p>No worker requests at this time.</p>
                 <% } else { %>
-                    <div class="request-card" data-request-id="<%= request._id %>">
-                        <div class="left">
-                            <img src="https://via.placeholder.com/80x60" alt="Profile" class="profile-image">
-                            <div class="request-info">
-                                <h3>Worker Not Available</h3>
-                                <div class="request-details">
-                                    <div class="detail-item">
-                                        <span class="detail-label"><i class="fas fa-user-tie"></i> Role:</span>
-                                        <span class="detail-value"><%= request.position %></span>
+                    <% workerRequests.forEach(request => { %>
+                        <% if (request.workerId) { %>
+                            <div class="request-card" data-worker-id="<%= request.workerId._id %>" data-request-id="<%= request._id %>">
+                                <!-- Expected Salary Highlight Section -->
+                                <div class="expected-salary-highlight">
+                                    <div class="label">
+                                        <i class="fas fa-money-bill-wave"></i>
+                                        Expected Salary
                                     </div>
-                                    <div class="detail-item">
+                                    <div class="amount">₹<%= request.expectedSalary.toLocaleString('en-IN') %>/month</div>
+                                </div>
+
+                                <div class="left">
+                                    <img src="<%= request.workerId.profileImage || 'https://via.placeholder.com/80x60' %>" alt="Profile" class="profile-image">
+                                    <div class="request-info">
+                                        <h3><%= request.workerId.name %></h3>
+                                        <div class="request-details">
+                                            <div class="detail-item">
+                                                <span class="detail-label"><i class="fas fa-envelope"></i> Email:</span>
+                                                <span class="detail-value"><%= request.workerId.email %></span>
+                                            </div>
+                                            <div class="detail-item">
+                                                <span class="detail-label"><i class="fas fa-user-tie"></i> Role:</span>
+                                                <span class="detail-value"><%= request.positionApplying %></span>
+                                            </div>
+                                            <div class="detail-item">
+                                                <span class="detail-label"><i class="fas fa-map-marker-alt"></i> Location:</span>
+                                                <span class="detail-value"><%= request.location %></span>
+                                            </div>
+                                            <div class="detail-item">
+                                                <span class="detail-label"><i class="fas fa-tools"></i> Specialties:</span>
+                                                <span class="detail-value"><%= request.workerId.specialties.join(', ') %></span>
+                                            </div>
+                                            <div class="detail-item">
+                                                <span class="detail-label"><i class="fas fa-briefcase"></i> Experience:</span>
+                                                <span class="detail-value"><%= request.workerId.experience %></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="request-actions">
+                                    <button class="btn btn-view" 
+                                            data-worker="<%= request.workerId.name %>" 
+                                            data-title="<%= request.workerId.title %>" 
+                                            data-rating="<%= request.workerId.rating %>" 
+                                            data-about="<%= request.workerId.about %>" 
+                                            data-specialties="<%= request.workerId.specialties.join(', ') %>" 
+                                            data-projects='<%= JSON.stringify(request.workerId.projects) %>' 
+                                            data-contact="<%= request.workerId.contact %>" 
+                                            data-location="<%= request.workerId.location %>" 
+                                            data-linkedin="<%= request.workerId.linkedin %>" 
+                                            data-previous-work="<%= request.workerId.previousWork %>"
+                                            data-profile-image="<%= request.workerId.profileImage %>"
+                                            data-worker-id="<%= request.workerId._id %>">
+                                        <i class="fas fa-eye"></i> View Profile
+                                    </button>
+                                    <button class="btn btn-hire btn-accept" data-request-id="<%= request._id %>">
+                                        <i class="fas fa-check"></i> Accept
+                                    </button>
+                                    <button class="btn btn-reject" data-request-id="<%= request._id %>">
+                                        <i class="fas fa-times"></i> Reject
+                                    </button>
+                                    <button class="btn btn-toggle-details">
+                                        <i class="fas fa-chevron-down"></i> Details
+                                    </button>
+                                </div>
+                                <div class="details">
+                                    <div class="detail-expanded-item">
+                                        <span class="detail-label"><i class="fas fa-user"></i> Full Name:</span>
+                                        <span class="detail-value"><%= request.fullName %></span>
+                                    </div>
+                                    <div class="detail-expanded-item">
+                                        <span class="detail-label"><i class="fas fa-envelope"></i> Email:</span>
+                                        <span class="detail-value"><%= request.email %></span>
+                                    </div>
+                                    <div class="detail-expanded-item">
                                         <span class="detail-label"><i class="fas fa-map-marker-alt"></i> Location:</span>
                                         <span class="detail-value"><%= request.location %></span>
                                     </div>
+                                    <div class="detail-expanded-item">
+                                        <span class="detail-label"><i class="fab fa-linkedin"></i> LinkedIn:</span>
+                                        <span class="detail-value"><a href="<%= request.linkedin %>" class="detail-link"><%= request.linkedin %></a></span>
+                                    </div>
+                                    <div class="detail-expanded-item">
+                                        <span class="detail-label"><i class="fas fa-briefcase"></i> Experience (Years):</span>
+                                        <span class="detail-value"><%= request.experience %> years</span>
+                                    </div>
+                                    <div class="detail-expanded-item">
+                                        <span class="detail-label"><i class="fas fa-money-bill-wave"></i> Expected Salary:</span>
+                                        <span class="detail-value">₹<%= request.expectedSalary.toLocaleString('en-IN') %>/month</span>
+                                    </div>
+                                    <div class="detail-expanded-item">
+                                        <span class="detail-label"><i class="fas fa-user-tie"></i> Position Applying:</span>
+                                        <span class="detail-value"><%= request.positionApplying %></span>
+                                    </div>
+                                    <div class="detail-expanded-item">
+                                        <span class="detail-label"><i class="fas fa-tools"></i> Primary Skills:</span>
+                                        <span class="detail-value"><%= request.primarySkills.join(', ') %></span>
+                                    </div>
+                                    <div class="detail-expanded-item">
+                                        <span class="detail-label"><i class="fas fa-file-alt"></i> Work Experience:</span>
+                                        <span class="detail-value"><%= request.workExperience %></span>
+                                    </div>
+                                    <div class="detail-expanded-item">
+                                        <span class="detail-label"><i class="fas fa-file-pdf"></i> Resume:</span>
+                                        <span class="detail-value"><a href="<%= request.resume %>" class="detail-link">Download Resume</a></span>
+                                    </div>
+                                    
                                 </div>
                             </div>
-                        </div>
-                        <div class="request-actions">
-                            <button class="btn btn-reject" data-request-id="<%= request._id %>">
-                                <i class="fas fa-times"></i> Remove Invalid Request
-                            </button>
-                        </div>
-                    </div>
+                        <% } else { %>
+                            <div class="request-card" data-request-id="<%= request._id %>">
+                                <div class="left">
+                                    <img src="https://via.placeholder.com/80x60" alt="Profile" class="profile-image">
+                                    <div class="request-info">
+                                        <h3>Worker Not Available</h3>
+                                        <div class="request-details">
+                                            <div class="detail-item">
+                                                <span class="detail-label"><i class="fas fa-user-tie"></i> Role:</span>
+                                                <span class="detail-value"><%= request.position %></span>
+                                            </div>
+                                            <div class="detail-item">
+                                                <span class="detail-label"><i class="fas fa-map-marker-alt"></i> Location:</span>
+                                                <span class="detail-value"><%= request.location %></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="request-actions">
+                                    <button class="btn btn-reject" data-request-id="<%= request._id %>">
+                                        <i class="fas fa-times"></i> Remove Invalid Request
+                                    </button>
+                                </div>
+                            </div>
+                        <% } %>
+                    <% }) %>
                 <% } %>
-            <% }) %>
-        <% } %>
-    </div>
-</div>
+            </div>
+        </div>
+
         <div id="requested-workers" class="section">
             <div class="section-header">
                 <h2>Requested Workers Status</h2>
@@ -1721,59 +1787,6 @@
             // Left here for potential future card-based implementation.
         }
 
-        // Show notification (copied for completeness)
-        function showNotification(message, type = 'info') {
-            const notification = document.createElement('div');
-            notification.className = `notification notification-${type}`;
-            
-            let icon = '';
-            switch (type) {
-                case 'success':
-                    icon = '<i class="fas fa-check-circle"></i>';
-                    break;
-                case 'error':
-                    icon = '<i class="fas fa-exclamation-circle"></i>';
-                    break;
-                case 'info':
-                    icon = '<i class="fas fa-info-circle"></i>';
-                    break;
-                case 'warning':
-                    icon = '<i class="fas fa-exclamation-triangle"></i>';
-                    break;
-            }
-            
-            notification.innerHTML = `
-                <div class="notification-content">
-                    ${icon}
-                    <span>${message}</span>
-                </div>
-                <button class="notification-close">×</button>
-            `;
-            
-            document.body.appendChild(notification);
-            
-            setTimeout(() => {
-                notification.classList.add('show');
-            }, 10);
-            
-            const closeBtn = notification.querySelector('.notification-close');
-            closeBtn.addEventListener('click', () => {
-                notification.classList.remove('show');
-                setTimeout(() => {
-                    notification.remove();
-                }, 300);
-            });
-            
-            setTimeout(() => {
-                if (notification.parentNode) {
-                    notification.classList.remove('show');
-                    setTimeout(() => {
-                        notification.remove();
-                    }, 300);
-                }
-            }, 5000);
-        }
-
         // Debounce function for search input (copied for completeness)
         function debounce(func, delay) {
             let timeout;
@@ -1785,96 +1798,10 @@
             };
         }
 
-        // Add CSS for notifications (copied for completeness)
-        if (!document.querySelector('#notification-styles')) {
-            const notificationStyles = document.createElement('style');
-            notificationStyles.id = 'notification-styles';
-            notificationStyles.textContent = `
-                .notification {
-                    position: fixed;
-                    bottom: 20px;
-                    right: 20px;
-                    padding: 15px;
-                    border-radius: 8px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: space-between;
-                    gap: 15px;
-                    background: var(--content-light);
-                    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-                    z-index: 1100;
-                    min-width: 300px;
-                    max-width: 450px;
-                    transform: translateY(100px);
-                    opacity: 0;
-                    transition: all 0.3s ease;
-                }
-                
-                .notification.show {
-                    transform: translateY(0);
-                    opacity: 1;
-                }
-                
-                .notification-content {
-                    display: flex;
-                    align-items: center;
-                    gap: 10px;
-                }
-                
-                .notification i {
-                    font-size: 20px;
-                }
-                
-                .notification-success {
-                    border-left: 4px solid var(--status-success-text);
-                }
-                
-                .notification-success i {
-                    color: var(--status-success-text);
-                }
-                
-                .notification-error {
-                    border-left: 4px solid var(--status-danger-text);
-                }
-                
-                .notification-error i {
-                    color: var(--status-danger-text);
-                }
-                
-                .notification-info {
-                    border-left: 4px solid var(--primary-accent);
-                }
-                
-                .notification-info i {
-                    color: var(--primary-accent);
-                }
-                
-                .notification-warning {
-                    border-left: 4px solid var(--status-warning-text);
-                }
-                
-                .notification-warning i {
-                    color: var(--status-warning-text);
-                }
-                
-                .notification-close {
-                    background: none;
-                    border: none;
-                    font-size: 20px;
-                    cursor: pointer;
-                    color: var(--text-secondary);
-                    transition: color 0.3s ease;
-                }
-                
-                .notification-close:hover {
-                    color: var(--text-primary);
-                }
-                
-                .notification-content span {
-                    font-size: 1rem;
-                }
-            `;
-            document.head.appendChild(notificationStyles);
+        // Notification function (if not already defined)
+        function showNotification(message, type = 'info') {
+            // You can implement a toast notification system here
+            alert(`${type.toUpperCase()}: ${message}`);
         }
     </script>
 </body>
