@@ -42,15 +42,10 @@
         body {
             /* MODIFIED: Font updated to Roboto */
             font-family: 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
-            
             /* ---------------------------------------------------------------------------------- */
             /* MODIFIED: Background Image with Teal Gradient Overlay (Opacity adjusted for image) */
             /* ---------------------------------------------------------------------------------- */
-            background:
-                        url('https://images.unsplash.com/photo-1565008447742-97f6f38c985c?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1331') center/cover no-repeat fixed;
-            /* Using a new image URL that better matches the tone of your screenshot. */
-            /* ---------------------------------------------------------------------------------- */
-            
+            background: url('https://images.unsplash.com/photo-1565008447742-97f6f38c985c?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1331') center/cover no-repeat fixed;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -278,7 +273,7 @@
 
         .form-input:focus, .form-control:focus, select:focus {
             border-color: var(--primary-blue);
-            box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.2); /* Adjusted to primary blue transparency */
+            box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.2);
         }
 
         /* Validation Styles */
@@ -290,11 +285,9 @@
 
         .form-input.success, .form-control.success {
             border-color: var(--success-green);
-            background: #F0FFF4; /* Very light green background */
+            background: #F0FFF4;
             transition: border-color 0.3s ease, background 0.3s ease;
         }
-        /* End Validation Styles */
-
 
         .error-message, .validation-error {
             color: var(--error-red);
@@ -305,21 +298,18 @@
             left: 0;
             bottom: -1rem;
         }
-        
-        /* Specific error message positioning for file/radio groups */
+
         .file-upload-container .validation-error,
         .form-group:has(.checkbox-container) .validation-error:last-child {
             position: static;
         }
-        
-        /* Animation for error */
+
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
             20%, 60% { transform: translateX(-5px); }
             40%, 80% { transform: translateX(5px); }
         }
 
-        /* Two Column Layout for Signup */
         .signup-columns {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -345,7 +335,6 @@
             margin-top: 1rem;
         }
 
-        /* Form Display States */
         .customer-fields,
         .company-fields,
         .worker-fields,
@@ -360,7 +349,6 @@
             display: contents;
         }
 
-        /* File Upload Styles */
         .file-upload-container {
             grid-column: 1 / -1;
         }
@@ -376,8 +364,7 @@
             border-radius: 8px;
             transition: border-color 0.3s ease;
         }
-        
-        /* Validation for file wrapper */
+
         .file-input-wrapper.error {
             border-color: var(--error-red);
             background: #FEF2F2;
@@ -387,7 +374,6 @@
             border-color: var(--success-green);
             background: #F0FFF4;
         }
-        
 
         .file-upload-btn {
             background: var(--surface-light);
@@ -656,7 +642,6 @@
             to { transform: translateY(0); opacity: 1; }
         }
 
-        /* Success/Error Message Box */
         .message-box {
             position: fixed;
             top: 20px;
@@ -691,7 +676,6 @@
             opacity: 1;
         }
 
-        /* Responsive Design */
         @media (max-width: 1200px) {
             .main-container {
                 grid-template-columns: 1fr 500px;
@@ -803,7 +787,6 @@
     </style>
 </head>
 <body>
-
     <div class="admin-link">
         <a href="/adminpage" class="admin-login-btn">
             Admin Login
@@ -813,7 +796,8 @@
         <div class="hero-content">
             <h1>Welcome to Build & Beyond</h1>
             <p>
-                Your one-stop platform for finding skilled professionals for home repairs, renovations, and construction projects. Whether you need a handyman, contractor, or specialist, we connect you with trusted experts to bring your vision to life!
+                Your one-stop platform for finding skilled professionals for home repairs, renovations, and construction projects.
+                Whether you need a handyman, contractor, or specialist, we connect you with trusted experts to bring your vision to life!
             </p>
             <div class="btn-container">
                 <button class="btn btn-primary" onclick="switchTab('signup')">Learn More</button>
@@ -901,12 +885,6 @@
                                     <label for="customer-name">Full Name</label>
                                     <input type="text" id="customer-name" class="form-control" placeholder="Your Full Name">
                                     <div class="validation-error" id="customer-name-error"></div>
-                                </div>
-                                
-                                <div class="form-group">
-                                    <label for="customer-username">Username</label>
-                                    <input type="text" id="customer-username" class="form-control" placeholder="Unique Username (no spaces/special chars)">
-                                    <div class="validation-error" id="customer-username-error"></div>
                                 </div>
                                 
                                 <div class="form-group">
@@ -1044,7 +1022,7 @@
                                 </div>
                                 <div class="validation-error" id="worker-documents-error"></div>
                             </div>
-
+                            
                             <div class="common-password-fields password-section" id="common-password-fields">
                                 <div class="form-group">
                                     <label for="signup-password">Password</label>
@@ -1076,7 +1054,8 @@
                     </form>
                     
                     <div class="toggle-form">
-                        Already have an account? <a href="#" onclick="switchTab('signin')">Sign In</a>
+                        Already have an account?
+                        <a href="#" onclick="switchTab('signin')">Sign In</a>
                     </div>
                 </div>
             </div>
@@ -1141,18 +1120,15 @@
                     el.style.boxShadow = 'none';
                 }
             });
-            // Clear file upload wrappers
             document.querySelectorAll('.file-input-wrapper').forEach(wrapper => {
                 wrapper.classList.remove('error', 'success');
             });
         }
         
-        // Utility function to set border color and remove other classes
         function showValidationState(inputId, isValid, message = '') {
             const inputElement = document.getElementById(inputId) || document.querySelector(`[name="${inputId}"]:checked`) || document.querySelector(`#${inputId}`);
             const errorElement = document.getElementById(inputId + '-error');
             
-            // Handle standard input/select fields
             if (inputElement && inputElement.type !== 'radio' && inputElement.type !== 'checkbox' && inputElement.type !== 'file') {
                 inputElement.classList.remove('error', 'success');
                 if (!isValid) {
@@ -1162,9 +1138,8 @@
                 }
             }
             
-            // Handle File Inputs (Special Case: use the wrapper for visual feedback)
             if (inputId === 'company-documents' || inputId === 'worker-documents') {
-                const wrapper = document.getElementById(inputId.replace('-', '-file-')); // e.g., company-documents -> company-file-wrapper
+                const wrapper = document.getElementById(inputId.replace('-', '-file-'));
                 if (wrapper) {
                     wrapper.classList.remove('error', 'success');
                     if (!isValid) {
@@ -1175,7 +1150,6 @@
                 }
             }
 
-            // Handle Checkbox (Terms)
             if (inputId === 'signup-terms') {
                 const termsCheckbox = document.getElementById('signup-terms');
                 if (!isValid) {
@@ -1188,7 +1162,6 @@
             if (errorElement) {
                 errorElement.textContent = message;
                 if (!isValid) {
-                    // Slight shake effect for error
                     errorElement.style.animation = 'shake 0.3s';
                     setTimeout(() => errorElement.style.animation = '', 300);
                 } else {
@@ -1207,7 +1180,6 @@
             }
         }
 
-        // Tab switching functionality
         function switchTab(tabName) {
             document.querySelectorAll('.tab-button').forEach(tab => {
                 tab.classList.remove('active');
@@ -1215,7 +1187,6 @@
             document.querySelectorAll('.form-content').forEach(content => {
                 content.classList.remove('active');
             });
-            
             document.getElementById(tabName + '-tab').classList.add('active');
             document.getElementById(tabName + '-form').classList.add('active');
             
@@ -1226,11 +1197,9 @@
             }
         }
 
-        // User type selection handler
         document.getElementById('user-type').addEventListener('change', function() {
             const userType = this.value;
             
-            // Hide all field groups
             document.getElementById('customer-fields').classList.remove('active');
             document.getElementById('company-fields').classList.remove('active');
             document.getElementById('worker-fields').classList.remove('active');
@@ -1258,7 +1227,6 @@
             clearAllErrors();
         });
 
-        // File upload handlers (also triggering validation check on change)
         document.querySelectorAll('.file-upload-btn').forEach(button => {
             button.addEventListener('click', function() {
                 const fileInput = this.closest('.file-input-wrapper').querySelector('input[type="file"]');
@@ -1272,7 +1240,6 @@
             const fileCount = e.target.files.length;
             document.getElementById('company-file-name-display').textContent = 
                 fileCount > 0 ? `${fileCount} file(s) selected` : 'No files selected';
-            // Live validation check
             showValidationState('company-documents', fileCount > 0, fileCount > 0 ? '' : 'Company license is required.');
         });
 
@@ -1280,11 +1247,9 @@
             const fileCount = e.target.files.length;
             document.getElementById('worker-file-name-display').textContent = 
                 fileCount > 0 ? `${fileCount} file(s) selected` : 'No files selected';
-            // Live validation check
             showValidationState('worker-documents', fileCount > 0, fileCount > 0 ? '' : 'Certificates/licenses are required.');
         });
 
-        // Reset signup form
         function resetSignupForm() {
             document.getElementById('user-type').value = '';
             document.getElementById('customer-fields').classList.remove('active');
@@ -1299,7 +1264,6 @@
             clearAllErrors();
         }
 
-        // Sign In Handler - RESTORED ORIGINAL API CALL STRUCTURE (Mocked response for safety)
         function handleSignIn(event) {
             event.preventDefault();
             let isValid = true;
@@ -1310,7 +1274,6 @@
             
             showValidationState('signin-email', true); 
             showValidationState('signin-password', true);
-            
             if (!email) {
                 showValidationState('signin-email', false, 'Email is required');
                 isValid = false;
@@ -1330,15 +1293,6 @@
             if (isValid) {
                 toggleLoading(submitBtn, true);
                 
-                // MOCK API CALL for Sign In - Replace this entire block with your original fetch if you want to connect to your live backend.
-                setTimeout(() => {
-                    toggleLoading(submitBtn, false);
-                    showMessageBox('Login successful! Redirecting...', 'success');
-                    // In a real app, you would redirect here
-                }, 1500);
-
-                /*
-                // ORIGINAL SIGN-IN FETCH BLOCK (Keep commented out as requested not to change backend interaction)
                 fetch('http://localhost:4000/login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -1347,7 +1301,7 @@
                 })
                 .then(response => {
                     if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
+                        return response.json().then(error => { throw new Error(error.message || `HTTP error! status: ${response.status}`); });
                     }
                     return response.json();
                 })
@@ -1367,14 +1321,11 @@
                 .catch(error => {
                     toggleLoading(submitBtn, false);
                     console.error('Login Error:', error);
-                    showMessageBox('Login failed. Please check your credentials and try again.', 'error');
+                    showMessageBox(error.message.includes('Failed to fetch') || error.message.includes('HTTP error') ? 'Login failed. Please check your credentials and ensure the server is running on localhost:4000.' : error.message, 'error');
                 });
-                */
             }
         }
 
-
-        // Sign Up Handler - BACKEND FETCH RESTORED
         function handleSignUp(event) {
             event.preventDefault();
             let isValid = true;
@@ -1383,16 +1334,13 @@
             const submitBtn = document.getElementById('signup-submit');
             
             clearAllErrors();
-            
-            // 1. Validate User Type selection (Required)
             if (!userType) {
                 showValidationState('user-type', false, 'Please select a user type');
                 isValid = false;
             } else {
-                 showValidationState('user-type', true);
+                showValidationState('user-type', true);
             }
             
-            // 2. Validate user-specific fields
             if (userType === 'customer') {
                 isValid = validateCustomerFields() && isValid;
             } else if (userType === 'company') {
@@ -1401,7 +1349,6 @@
                 isValid = validateWorkerFields() && isValid;
             }
             
-            // 3. Validate common fields (Password and Terms & Conditions)
             if (userType) {
                 isValid = validatePasswordFields() && isValid;
                 isValid = validateTerms() && isValid;
@@ -1410,14 +1357,8 @@
             if (isValid) {
                 const formData = { role: userType, ...gatherFormData(userType) };
                 
-                // IMPORTANT: Use FormData for file uploads if you need to send files, 
-                // but since you are using JSON serialization here, I will stick to sending JSON 
-                // data only and note that file handling (multipart/form-data) is often required 
-                // for actual uploads and would require a change to this fetch structure.
-                
                 toggleLoading(submitBtn, true);
                 
-                // RESTORED ACTUAL API CALL TO BACKEND
                 fetch('http://localhost:4000/signup', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -1425,7 +1366,6 @@
                 })
                 .then(response => {
                     if (!response.ok) {
-                        // Attempt to parse non-200 responses for error message
                         return response.json().then(error => { throw new Error(error.message || 'Signup failed.'); });
                     }
                     return response.json();
@@ -1438,14 +1378,12 @@
                         resetSignupForm();
                         switchTab('signin');
                     } else {
-                        // Handle success cases where message isn't exactly "Signup successful"
                         showMessageBox(data.message || 'Signup failed. Please try again.', 'error');
                     }
                 })
                 .catch(error => {
                     toggleLoading(submitBtn, false);
                     console.error('Signup Error:', error);
-                    // Show a more specific error message from the backend if available
                     showMessageBox(error.message.includes('Failed to fetch') ? 'Cannot connect to server (localhost:4000).' : error.message, 'error');
                 });
             } else {
@@ -1454,14 +1392,12 @@
         }
 
         function gatherFormData(userType) {
-             const data = {
+            const data = {
                 password: document.getElementById('signup-password').value,
                 termsAccepted: document.getElementById('signup-terms').checked
             };
-
             if (userType === 'customer') {
                 data.name = document.getElementById('customer-name').value;
-                data.username = document.getElementById('customer-username').value;
                 data.email = document.getElementById('customer-email').value;
                 data.dob = document.getElementById('customer-dob').value;
                 data.phone = document.getElementById('customer-phone').value;
@@ -1480,45 +1416,24 @@
                 data.specialization = document.getElementById('specialization').value;
                 data.experience = document.getElementById('experience').value;
             }
-            // Note: File data is NOT included in this JSON object, 
-            // as it requires a separate multipart/form-data request.
             return data;
         }
 
-
-        // --- Core Validation Functions (Already complete and correct) ---
-
         function validateCustomerFields() {
             let isValid = true;
-            
             const name = document.getElementById('customer-name').value;
-            const username = document.getElementById('customer-username').value; 
             const email = document.getElementById('customer-email').value;
             const dob = document.getElementById('customer-dob').value;
             const phone = document.getElementById('customer-phone').value;
             const gender = document.querySelector('input[name="customer-gender"]:checked');
             
-            // 1. Full Name Validation (Required)
             if (!name.trim()) {
                 showValidationState('customer-name', false, 'Full name is required.');
                 isValid = false;
             } else {
                 showValidationState('customer-name', true);
             }
-
-            // 2. Username Validation (No spaces/special chars, min 4 chars)
-            const usernameRegex = /^[a-zA-Z0-9_]{4,}$/; // Alphanumeric and underscore, min 4
-            if (!username.trim()) {
-                showValidationState('customer-username', false, 'Username is required.');
-                isValid = false;
-            } else if (!usernameRegex.test(username)) {
-                showValidationState('customer-username', false, 'Min 4 chars. No spaces or special characters (except underscore).');
-                isValid = false;
-            } else {
-                showValidationState('customer-username', true);
-            }
             
-            // 3. Email Validation (Format)
             if (!email.trim()) {
                 showValidationState('customer-email', false, 'Email is required.');
                 isValid = false;
@@ -1529,7 +1444,6 @@
                 showValidationState('customer-email', true);
             }
             
-            // 4. Date of Birth Validation (Required, Min 13 years old)
             if (!dob) {
                 showValidationState('customer-dob', false, 'Date of birth is required.');
                 isValid = false;
@@ -1537,7 +1451,6 @@
                 const dobDate = new Date(dob);
                 const today = new Date();
                 const minAgeDate = new Date(today.getFullYear() - 13, today.getMonth(), today.getDate());
-
                 if (dobDate > minAgeDate) {
                     showValidationState('customer-dob', false, 'You must be at least 13 years old.');
                     isValid = false;
@@ -1546,7 +1459,6 @@
                 }
             }
 
-            // 5. Phone Number Validation (Required, Exactly 10 digits, numeric)
             const phoneRegex = /^\d{10}$/;
             if (!phone.trim()) {
                 showValidationState('customer-phone', false, 'Phone number is required.');
@@ -1558,12 +1470,11 @@
                 showValidationState('customer-phone', true);
             }
 
-            // 6. Gender Validation (Required)
             if (!gender) {
                 showValidationState('customer-gender', false, 'Please select your gender.');
                 isValid = false;
             } else {
-                 showValidationState('customer-gender', true);
+                showValidationState('customer-gender', true);
             }
             
             return isValid;
@@ -1571,26 +1482,22 @@
 
         function validateCompanyFields() {
             let isValid = true;
-            
             const companyName = document.getElementById('company-name').value;
             const contactPerson = document.getElementById('contact-person').value;
             const email = document.getElementById('company-email').value;
             const phone = document.getElementById('company-phone').value;
-            const documents = document.getElementById('company-documents').files.length; 
+            const documents = document.getElementById('company-documents').files.length;
             const phoneRegex = /^\d{10}$/;
 
-            // Apply validations
             if (!companyName.trim()) { showValidationState('company-name', false, 'Company name is required.'); isValid = false; } else { showValidationState('company-name', true); }
             if (!contactPerson.trim()) { showValidationState('contact-person', false, 'Contact person is required.'); isValid = false; } else { showValidationState('contact-person', true); }
             if (!email.trim() || !validateEmail(email)) { showValidationState('company-email', false, 'Enter a valid email.'); isValid = false; } else { showValidationState('company-email', true); }
             if (!phone.trim() || !phoneRegex.test(phone)) { showValidationState('company-phone', false, 'Must be exactly 10 digits.'); isValid = false; } else { showValidationState('company-phone', true); }
-            
-            // File Upload Validation
             if (documents === 0) { 
-                showValidationState('company-documents', false, 'Company license is required.'); 
+                showValidationState('company-documents', false, 'Company license is required.');
                 isValid = false; 
             } else { 
-                showValidationState('company-documents', true); 
+                showValidationState('company-documents', true);
             }
             
             return isValid;
@@ -1598,7 +1505,6 @@
 
         function validateWorkerFields() {
             let isValid = true;
-            
             const name = document.getElementById('worker-name').value;
             const dob = document.getElementById('worker-dob').value;
             const email = document.getElementById('worker-email').value;
@@ -1609,11 +1515,8 @@
             
             const phoneRegex = /^\d{10}$/;
             const aadharRegex = /^\d{12}$/;
-
-            // Apply validations
             if (!name.trim()) { showValidationState('worker-name', false, 'Full name is required.'); isValid = false; } else { showValidationState('worker-name', true); }
             
-            // DOB (Min 13 years old)
             if (!dob) { showValidationState('worker-dob', false, 'Date of birth is required.'); isValid = false; }
             else { 
                 const dobDate = new Date(dob);
@@ -1631,13 +1534,11 @@
             if (!aadhar.trim() || !aadharRegex.test(aadhar)) { showValidationState('aadhar-number', false, 'Must be a valid 12-digit Aadhar number.'); isValid = false; } else { showValidationState('aadhar-number', true); }
             if (!phone.trim() || !phoneRegex.test(phone)) { showValidationState('worker-phone', false, 'Must be exactly 10 digits.'); isValid = false; } else { showValidationState('worker-phone', true); }
             if (!specialization) { showValidationState('specialization', false, 'Please select a specialization.'); isValid = false; } else { showValidationState('specialization', true); }
-
-            // File Upload Validation
             if (documents === 0) { 
-                showValidationState('worker-documents', false, 'Certificates/licenses are required.'); 
+                showValidationState('worker-documents', false, 'Certificates/licenses are required.');
                 isValid = false; 
             } else { 
-                showValidationState('worker-documents', true); 
+                showValidationState('worker-documents', true);
             }
             
             return isValid;
@@ -1645,11 +1546,9 @@
 
         function validatePasswordFields() {
             let isValid = true;
-            
             const password = document.getElementById('signup-password').value;
             const confirmPassword = document.getElementById('signup-confirm-password').value;
             
-            // Password Validation: Min 8, 1 uppercase, 1 lowercase, 1 number, 1 special character
             const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+=\-{}[\]|\\:;"'<,>.?/]).{8,}$/;
             
             if (!password.trim()) {
@@ -1663,7 +1562,6 @@
                 showValidationState('signup-password', true);
             }
             
-            // Confirm Password Validation: Must match password
             if (!confirmPassword.trim()) {
                 showValidationState('signup-confirm-password', false, 'Confirm password is required.');
                 isValid = false;
@@ -1671,7 +1569,7 @@
                 showValidationState('signup-confirm-password', false, 'Passwords do not match.');
                 isValid = false;
             } else {
-                 showValidationState('signup-confirm-password', true);
+                showValidationState('signup-confirm-password', true);
             }
             
             return isValid;
@@ -1679,7 +1577,6 @@
 
         function validateTerms() {
             const terms = document.getElementById('signup-terms').checked;
-            
             if (!terms) {
                 showValidationState('signup-terms', false, 'You must agree to the terms and conditions');
                 return false;
@@ -1688,12 +1585,9 @@
             return true;
         }
 
-
-        // --- Live Validation Listeners (Already complete and correct) ---
         document.addEventListener('DOMContentLoaded', () => {
             const signupForm = document.getElementById('signup-form');
             if(signupForm) {
-                // Live validation on blur for standard inputs
                 signupForm.addEventListener('blur', function(e) {
                     if (e.target.matches('.form-control')) {
                         const userType = document.getElementById('user-type').value;
@@ -1702,18 +1596,12 @@
                         let isValid = true;
                         let message = '';
 
-                        // Generic Required Check (for fields without specific formatting)
                         if (e.target.type !== 'radio' && e.target.type !== 'checkbox' && !e.target.value.trim()) {
                             isValid = false;
                             message = e.target.closest('.form-group').querySelector('label').textContent.split('(')[0].trim() + ' is required.';
                         }
 
-                        // Specific validation checks
-                        if (fieldId === 'customer-username') {
-                            const usernameRegex = /^[a-zA-Z0-9_]{4,}$/;
-                            if (!e.target.value.trim()) { message = 'Username is required.'; isValid = false; }
-                            else if (!usernameRegex.test(e.target.value)) { message = 'Min 4 chars. No spaces or special chars (except underscore).'; isValid = false; }
-                        } else if (fieldId.includes('-email')) {
+                        if (fieldId.includes('-email')) {
                             if (!e.target.value.trim()) { message = 'Email is required.'; isValid = false; }
                             else if (!validateEmail(e.target.value)) { message = 'Invalid email format.'; isValid = false; }
                         } else if (fieldId.includes('-phone')) {
@@ -1735,30 +1623,23 @@
                             else if (dobDate > minAgeDate) { message = 'You must be at least 13 years old.'; isValid = false; }
                         }
 
-                        // Apply success/error state
                         if(fieldId && (fieldId.includes(userType) || fieldId.includes('signup'))) {
                             showValidationState(fieldId, isValid, isValid ? '' : message);
                         }
                     }
-                }, true); 
+                }, true);
 
-                // Live validation for Terms and Conditions on change
                 document.getElementById('signup-terms').addEventListener('change', validateTerms);
-
-                // Live validation for Gender on change
+                
                 document.querySelectorAll('input[name="customer-gender"]').forEach(radio => {
                     radio.addEventListener('change', () => {
-                         const gender = document.querySelector('input[name="customer-gender"]:checked');
-                         showValidationState('customer-gender', !!gender, !!gender ? '' : 'Please select your gender.');
+                        const gender = document.querySelector('input[name="customer-gender"]:checked');
+                        showValidationState('customer-gender', !!gender, !!gender ? '' : 'Please select your gender.');
                     });
                 });
-                
-                // File inputs validation is handled in the `change` listener attached earlier
             }
         });
 
-
-        // Forgot Password Modal functionality (Kept original logic)
         document.getElementById('forgot-password-link').addEventListener('click', (e) => {
             e.preventDefault();
             document.getElementById('forgot-password-modal').style.display = 'flex';
@@ -1808,7 +1689,6 @@
             resendLink.textContent = 'Resend Code';
         }
 
-        // OTP Input handling
         document.querySelectorAll('.otp-input').forEach((input, index) => {
             input.addEventListener('input', (e) => {
                 if (e.target.value.length === 1 && index < 3) {
@@ -1823,7 +1703,6 @@
             });
         });
 
-        // Send OTP
         document.getElementById('send-otp').addEventListener('click', () => {
             const email = document.getElementById('forgot-email').value;
 
@@ -1848,7 +1727,6 @@
             }, 1000);
         });
 
-        // Verify OTP
         document.getElementById('verify-otp').addEventListener('click', () => {
             const enteredOTP = Array.from(document.querySelectorAll('.otp-input')).map(input => input.value).join('');
 
@@ -1862,7 +1740,6 @@
             }
         });
 
-        // Resend OTP
         document.getElementById('resend-otp').addEventListener('click', (e) => {
             e.preventDefault();
             if (document.getElementById('resend-otp').classList.contains('disabled')) return;
@@ -1876,14 +1753,12 @@
             document.querySelectorAll('.otp-input')[0].focus();
         });
 
-        // Reset Password
         document.getElementById('forgot-password-form').addEventListener('submit', (e) => {
             e.preventDefault();
 
             const newPassword = document.getElementById('new-password').value;
             const confirmNewPassword = document.getElementById('confirm-new-password').value;
 
-            // Simple validation for new password reset
             const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+=\-{}[\]|\\:;"'<,>.?/]).{8,}$/;
 
             if (!newPassword || !confirmNewPassword) {
@@ -1903,7 +1778,6 @@
 
             const resetBtn = document.getElementById('reset-password-btn');
             toggleLoading(resetBtn, true);
-
             setTimeout(() => {
                 showMessageBox('Password reset successful! Please login with your new password.', 'success');
                 document.getElementById('forgot-password-modal').style.display = 'none';
@@ -1913,7 +1787,6 @@
             }, 1000);
         });
 
-        // Close modal when clicking outside
         document.getElementById('forgot-password-modal').addEventListener('click', (e) => {
             if (e.target === e.currentTarget) {
                 document.getElementById('forgot-password-modal').style.display = 'none';
@@ -1921,7 +1794,6 @@
             }
         });
 
-        // Message Box implementation
         function showMessageBox(message, type = 'info') {
             let msgBox = document.getElementById('message-box');
             if (!msgBox) {
@@ -1957,13 +1829,11 @@
 
             msgBox.textContent = message;
             msgBox.style.opacity = '1';
-
             setTimeout(() => {
                 msgBox.style.opacity = '0';
             }, 3000);
         }
 
-        // DOMContentLoaded listener to initialize the page
         document.addEventListener('DOMContentLoaded', function() {
             const hash = window.location.hash.substring(1);
             if (hash === 'signup' || hash === 'signin') {
