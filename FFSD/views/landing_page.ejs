@@ -12,14 +12,11 @@
     />
     <style>
         :root {
-            /* -------------------------------------------------- */
-            /* MODIFIED: PRIMARY COLOR PALETTE to Teal-Blue tones */
-            /* -------------------------------------------------- */
-            --primary-blue: #06B6D4; /* New Teal-Blue */
-            --primary-blue-dark: #0E7490; /* Darker Teal */
-            --primary-blue-light: #22D3EE; /* Lighter Cyan */
-            --text-primary: #0F172A; /* Darker text for better contrast */
-            --text-secondary: #475569; /* Cooler gray for secondary text */
+            --primary-blue: #06B6D4;
+            --primary-blue-dark: #0E7490;
+            --primary-blue-light: #22D3EE;
+            --text-primary: #0F172A;
+            --text-secondary: #475569;
             --text-light: #9CA3AF;
             --surface-white: #FFFFFF;
             --surface-gray: #F9FAFB;
@@ -40,11 +37,7 @@
         }
 
         body {
-            /* MODIFIED: Font updated to Roboto */
             font-family: 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
-            /* ---------------------------------------------------------------------------------- */
-            /* MODIFIED: Background Image with Teal Gradient Overlay (Opacity adjusted for image) */
-            /* ---------------------------------------------------------------------------------- */
             background: url('https://images.unsplash.com/photo-1565008447742-97f6f38c985c?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1331') center/cover no-repeat fixed;
             min-height: 100vh;
             display: flex;
@@ -55,7 +48,6 @@
             position: relative;
         }
 
-        /* Admin Login Link Styles */
         .admin-link {
             position: absolute;
             top: 2rem;
@@ -167,7 +159,6 @@
             transform: translateY(-2px);
         }
 
-        /* Enhanced Auth Form Card */
         .auth-card {
             background: var(--surface-white);
             border-radius: 24px;
@@ -276,7 +267,6 @@
             box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.2);
         }
 
-        /* Validation Styles */
         .form-input.error, .form-control.error {
             border-color: var(--error-red);
             background: #FEF2F2;
@@ -531,7 +521,6 @@
             text-decoration: underline;
         }
 
-        /* Modal Styles for Forgot Password */
         .modal {
             display: none;
             position: fixed;
@@ -847,13 +836,7 @@
                             <div class="error-message" id="signin-password-error"></div>
                         </div>
                         
-                        <div class="form-footer">
-                            <div class="checkbox-container">
-                                <input type="checkbox" id="remember-me">
-                                <label for="remember-me">Remember me</label>
-                            </div>
-                            <a href="#" class="forgot-link" id="forgot-password-link">Forgot Password?</a>
-                        </div>
+                        
                         
                         <button type="submit" class="submit-btn" id="signin-submit">
                             Sign In
@@ -905,24 +888,7 @@
                                     <div class="validation-error" id="customer-phone-error"></div>
                                 </div>
                                 
-                                <div class="form-group">
-                                    <label>Gender</label>
-                                    <div style="display: flex; gap: 1.5rem;">
-                                        <div class="checkbox-container">
-                                            <input type="radio" id="gender-male" name="customer-gender" value="male" class="form-control">
-                                            <label for="gender-male">Male</label>
-                                        </div>
-                                        <div class="checkbox-container">
-                                            <input type="radio" id="gender-female" name="customer-gender" value="female" class="form-control">
-                                            <label for="gender-female">Female</label>
-                                        </div>
-                                        <div class="checkbox-container">
-                                            <input type="radio" id="gender-other" name="customer-gender" value="other" class="form-control">
-                                            <label for="gender-other">Other</label>
-                                        </div>
-                                    </div>
-                                    <div class="validation-error" id="customer-gender-error" style="position: static; margin-top: 0.3rem;"></div>
-                                </div>
+                                
                             </div>
 
                             <div class="company-fields" id="company-fields">
@@ -988,10 +954,6 @@
                                         <option value="">Select Specialization</option>
                                         <option value="architect">Architect</option>
                                         <option value="interiordesign">Interior Design</option>
-                                        <option value="contractor">Contractor</option>
-                                        <option value="electrician">Electrician</option>
-                                        <option value="plumber">Plumber</option>
-                                        <option value="carpenter">Carpenter</option>
                                     </select>
                                     <div class="validation-error" id="specialization-error"></div>
                                 </div>
@@ -1109,6 +1071,11 @@
         function validateEmail(email) {
             const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             return re.test(email);
+        }
+
+        function validateName(name) {
+            const re = /^[A-Za-z\s]+$/;
+            return re.test(name);
         }
 
         function clearAllErrors() {
@@ -1430,6 +1397,9 @@
             if (!name.trim()) {
                 showValidationState('customer-name', false, 'Full name is required.');
                 isValid = false;
+            } else if (!validateName(name)) {
+                showValidationState('customer-name', false, 'Name must contain only letters and spaces.');
+                isValid = false;
             } else {
                 showValidationState('customer-name', true);
             }
@@ -1450,9 +1420,9 @@
             } else {
                 const dobDate = new Date(dob);
                 const today = new Date();
-                const minAgeDate = new Date(today.getFullYear() - 13, today.getMonth(), today.getDate());
+                const minAgeDate = new Date(today.getFullYear() - 18, today.getMonth(), today.getDate());
                 if (dobDate > minAgeDate) {
-                    showValidationState('customer-dob', false, 'You must be at least 13 years old.');
+                    showValidationState('customer-dob', false, 'You must be at least 18 years old.');
                     isValid = false;
                 } else {
                     showValidationState('customer-dob', true);
@@ -1489,10 +1459,43 @@
             const documents = document.getElementById('company-documents').files.length;
             const phoneRegex = /^\d{10}$/;
 
-            if (!companyName.trim()) { showValidationState('company-name', false, 'Company name is required.'); isValid = false; } else { showValidationState('company-name', true); }
-            if (!contactPerson.trim()) { showValidationState('contact-person', false, 'Contact person is required.'); isValid = false; } else { showValidationState('contact-person', true); }
-            if (!email.trim() || !validateEmail(email)) { showValidationState('company-email', false, 'Enter a valid email.'); isValid = false; } else { showValidationState('company-email', true); }
-            if (!phone.trim() || !phoneRegex.test(phone)) { showValidationState('company-phone', false, 'Must be exactly 10 digits.'); isValid = false; } else { showValidationState('company-phone', true); }
+            if (!companyName.trim()) {
+                showValidationState('company-name', false, 'Company name is required.');
+                isValid = false;
+            } else {
+                showValidationState('company-name', true);
+            }
+
+            if (!contactPerson.trim()) {
+                showValidationState('contact-person', false, 'Contact person name is required.');
+                isValid = false;
+            } else if (!validateName(contactPerson)) {
+                showValidationState('contact-person', false, 'Contact person name must contain only letters and spaces.');
+                isValid = false;
+            } else {
+                showValidationState('contact-person', true);
+            }
+
+            if (!email.trim()) {
+                showValidationState('company-email', false, 'Email is required.');
+                isValid = false;
+            } else if (!validateEmail(email)) {
+                showValidationState('company-email', false, 'Enter a valid email.');
+                isValid = false;
+            } else {
+                showValidationState('company-email', true);
+            }
+
+            if (!phone.trim()) {
+                showValidationState('company-phone', false, 'Phone number is required.');
+                isValid = false;
+            } else if (!phoneRegex.test(phone)) {
+                showValidationState('company-phone', false, 'Must be exactly 10 digits.');
+                isValid = false;
+            } else {
+                showValidationState('company-phone', true);
+            }
+
             if (documents === 0) { 
                 showValidationState('company-documents', false, 'Company license is required.');
                 isValid = false; 
@@ -1515,25 +1518,69 @@
             
             const phoneRegex = /^\d{10}$/;
             const aadharRegex = /^\d{12}$/;
-            if (!name.trim()) { showValidationState('worker-name', false, 'Full name is required.'); isValid = false; } else { showValidationState('worker-name', true); }
             
-            if (!dob) { showValidationState('worker-dob', false, 'Date of birth is required.'); isValid = false; }
-            else { 
+            if (!name.trim()) {
+                showValidationState('worker-name', false, 'Full name is required.');
+                isValid = false;
+            } else if (!validateName(name)) {
+                showValidationState('worker-name', false, 'Name must contain only letters and spaces.');
+                isValid = false;
+            } else {
+                showValidationState('worker-name', true);
+            }
+            
+            if (!dob) {
+                showValidationState('worker-dob', false, 'Date of birth is required.');
+                isValid = false;
+            } else { 
                 const dobDate = new Date(dob);
                 const today = new Date();
-                const minAgeDate = new Date(today.getFullYear() - 13, today.getMonth(), today.getDate());
+                const minAgeDate = new Date(today.getFullYear() - 18, today.getMonth(), today.getDate());
                 if (dobDate > minAgeDate) {
-                    showValidationState('worker-dob', false, 'You must be at least 13 years old.');
+                    showValidationState('worker-dob', false, 'You must be at least 18 years old.');
                     isValid = false;
                 } else {
                     showValidationState('worker-dob', true);
                 }
             }
             
-            if (!email.trim() || !validateEmail(email)) { showValidationState('worker-email', false, 'Enter a valid email.'); isValid = false; } else { showValidationState('worker-email', true); }
-            if (!aadhar.trim() || !aadharRegex.test(aadhar)) { showValidationState('aadhar-number', false, 'Must be a valid 12-digit Aadhar number.'); isValid = false; } else { showValidationState('aadhar-number', true); }
-            if (!phone.trim() || !phoneRegex.test(phone)) { showValidationState('worker-phone', false, 'Must be exactly 10 digits.'); isValid = false; } else { showValidationState('worker-phone', true); }
-            if (!specialization) { showValidationState('specialization', false, 'Please select a specialization.'); isValid = false; } else { showValidationState('specialization', true); }
+            if (!email.trim()) {
+                showValidationState('worker-email', false, 'Email is required.');
+                isValid = false;
+            } else if (!validateEmail(email)) {
+                showValidationState('worker-email', false, 'Enter a valid email.');
+                isValid = false;
+            } else {
+                showValidationState('worker-email', true);
+            }
+
+            if (!aadhar.trim()) {
+                showValidationState('aadhar-number', false, 'Aadhar number is required.');
+                isValid = false;
+            } else if (!aadharRegex.test(aadhar)) {
+                showValidationState('aadhar-number', false, 'Must be a valid 12-digit Aadhar number.');
+                isValid = false;
+            } else {
+                showValidationState('aadhar-number', true);
+            }
+
+            if (!phone.trim()) {
+                showValidationState('worker-phone', false, 'Phone number is required.');
+                isValid = false;
+            } else if (!phoneRegex.test(phone)) {
+                showValidationState('worker-phone', false, 'Must be exactly 10 digits.');
+                isValid = false;
+            } else {
+                showValidationState('worker-phone', true);
+            }
+
+            if (!specialization) {
+                showValidationState('specialization', false, 'Please select a specialization.');
+                isValid = false;
+            } else {
+                showValidationState('specialization', true);
+            }
+
             if (documents === 0) { 
                 showValidationState('worker-documents', false, 'Certificates/licenses are required.');
                 isValid = false; 
@@ -1601,29 +1648,71 @@
                             message = e.target.closest('.form-group').querySelector('label').textContent.split('(')[0].trim() + ' is required.';
                         }
 
-                        if (fieldId.includes('-email')) {
-                            if (!e.target.value.trim()) { message = 'Email is required.'; isValid = false; }
-                            else if (!validateEmail(e.target.value)) { message = 'Invalid email format.'; isValid = false; }
+                        if (fieldId === 'customer-name' || fieldId === 'contact-person' || fieldId === 'worker-name') {
+                            if (!e.target.value.trim()) {
+                                message = 'Name is required.';
+                                isValid = false;
+                            } else if (!validateName(e.target.value)) {
+                                message = 'Name must contain only letters and spaces.';
+                                isValid = false;
+                            }
+                        } else if (fieldId.includes('-email')) {
+                            if (!e.target.value.trim()) {
+                                message = 'Email is required.';
+                                isValid = false;
+                            } else if (!validateEmail(e.target.value)) {
+                                message = 'Invalid email format.';
+                                isValid = false;
+                            }
                         } else if (fieldId.includes('-phone')) {
                             const phoneRegex = /^\d{10}$/;
-                            if (!e.target.value.trim()) { message = 'Phone number is required.'; isValid = false; }
-                            else if (!phoneRegex.test(e.target.value)) { message = 'Must be exactly 10 digits.'; isValid = false; }
+                            if (!e.target.value.trim()) {
+                                message = 'Phone number is required.';
+                                isValid = false;
+                            } else if (!phoneRegex.test(e.target.value)) {
+                                message = 'Must be exactly 10 digits.';
+                                isValid = false;
+                            }
                         } else if (fieldId === 'signup-password') {
                             const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+=\-{}[\]|\\:;"'<,>.?/]).{8,}$/;
-                            if (!e.target.value.trim()) { message = 'Password is required.'; isValid = false; }
-                            else if (!passwordRegex.test(e.target.value)) { message = 'Min 8 chars, 1 uppercase, 1 lowercase, 1 number, 1 special char.'; isValid = false; }
+                            if (!e.target.value.trim()) {
+                                message = 'Password is required.';
+                                isValid = false;
+                            } else if (!passwordRegex.test(e.target.value)) {
+                                message = 'Min 8 chars, 1 uppercase, 1 lowercase, 1 number, 1 special char.';
+                                isValid = false;
+                            }
                         } else if (fieldId === 'signup-confirm-password') {
-                            if (!e.target.value.trim()) { message = 'Confirm password is required.'; isValid = false; }
-                            else if (e.target.value !== document.getElementById('signup-password').value) { message = 'Passwords do not match.'; isValid = false; }
+                            if (!e.target.value.trim()) {
+                                message = 'Confirm password is required.';
+                                isValid = false;
+                            } else if (e.target.value !== document.getElementById('signup-password').value) {
+                                message = 'Passwords do not match.';
+                                isValid = false;
+                            }
                         } else if (fieldId === 'customer-dob' || fieldId === 'worker-dob') {
                             const dobDate = new Date(e.target.value);
                             const today = new Date();
-                            const minAgeDate = new Date(today.getFullYear() - 13, today.getMonth(), today.getDate());
-                            if (!e.target.value) { message = 'Date of birth is required.'; isValid = false; }
-                            else if (dobDate > minAgeDate) { message = 'You must be at least 13 years old.'; isValid = false; }
+                            const minAgeDate = new Date(today.getFullYear() - 18, today.getMonth(), today.getDate());
+                            if (!e.target.value) {
+                                message = 'Date of birth is required.';
+                                isValid = false;
+                            } else if (dobDate > minAgeDate) {
+                                message = 'You must be at least 18 years old.';
+                                isValid = false;
+                            }
+                        } else if (fieldId === 'aadhar-number') {
+                            const aadharRegex = /^\d{12}$/;
+                            if (!e.target.value.trim()) {
+                                message = 'Aadhar number is required.';
+                                isValid = false;
+                            } else if (!aadharRegex.test(e.target.value)) {
+                                message = 'Must be a valid 12-digit Aadhar number.';
+                                isValid = false;
+                            }
                         }
 
-                        if(fieldId && (fieldId.includes(userType) || fieldId.includes('signup'))) {
+                        if(fieldId && (fieldId.includes(userType) || fieldId.includes('signup') || fieldId === 'aadhar-number')) {
                             showValidationState(fieldId, isValid, isValid ? '' : message);
                         }
                     }
