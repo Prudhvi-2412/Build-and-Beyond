@@ -1,5 +1,6 @@
 const { Customer, Worker, ArchitectHiring, DesignRequest, ConstructionProjectSchema, Bid, Company, FavoriteDesign } = require('../models/index');
 const { getTargetDate } = require('../utils/helpers');
+const bcrypt = require('bcrypt');
 const mongoose = require('mongoose');
 const { findOrCreateChatRoom } = require('./chatController'); // NEW: Import the chat utility
 
@@ -647,6 +648,37 @@ const acceptCompanyProposal = async (req, res) => {
     res.status(500).send('Server Error');
   }
 };
+const updatePassword = async (req, res) => {
+  try {
+    const customerId = req.user.user_id;
+    const { currentPassword, newPassword } = req.body;
+
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({ message: 'Both current and new passwords are required.' });
+    }
+
+    const customer = await Customer.findById(customerId);
+    if (!customer) {
+      return res.status(404).json({ message: 'Customer not found.' });
+    }
+
+    // Compare the provided current password with the one in the database
+    const isMatch = await bcrypt.compare(currentPassword, customer.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: 'Incorrect current password.' });
+    }
+
+    // Set the new password. The pre-save hook in your schema will automatically hash it.
+    customer.password = newPassword;
+    await customer.save();
+
+    res.status(200).json({ message: 'Password updated successfully.' });
+
+  } catch (error) {
+    console.error('Error updating password:', error);
+    res.status(500).json({ message: 'Server error while updating password.' });
+  }
+};
 // ====================================================================
 
 module.exports = {
@@ -671,5 +703,5 @@ module.exports = {
   removeFavoriteDesign,
   acceptProposal,
   acceptCompanyBid,
-  acceptCompanyProposal
+  acceptCompanyProposal,updatePassword
 };

@@ -839,16 +839,16 @@
 
       <div class="profile-stats">
         <div class="stat-box">
-          <div class="stat-number">12</div>
-          <div class="stat-label">Applications</div>
+          <div class="stat-number"><%= companies.length %></div>
+          <div class="stat-label">Companies available to join</div>
         </div>
         <div class="stat-box">
-          <div class="stat-number">5</div>
-          <div class="stat-label">Offers</div>
+          <div class="stat-number"><%= offers ? offers.length : 0 %></div>
+          <div class="stat-label">Offers received</div>
         </div>
         <div class="stat-box">
-          <div class="stat-number">8</div>
-          <div class="stat-label">Years Experience</div>
+          <div class="stat-number"><%= jobApplications ? jobApplications.length : 0 %></div>
+          <div class="stat-label">Join Requests Sent</div>
         </div>
       </div>
 
@@ -871,10 +871,11 @@
               type="text"
               class="search-input"
               placeholder="Search for construction companies by name, projects, or location..."
+              id="companySearch"
             />
             <button class="search-button">Search</button>
           </div>
-          <div class="card-container">
+          <div class="card-container" id="companyContainer">
             <% companies.forEach(company => { %>
             <div class="card">
               <div class="company-data" style="display: none">
@@ -900,7 +901,6 @@
                 <span class="company-description"
                   ><%= company.aboutCompany %></span
                 >
-
                 <span class="company-benefits"><%= company.whyJoinUs%></span>
                 <% if (company.whyJoinUs) { %>
                 <span class="company-why-join"><%= company.whyJoinUs %></span>
@@ -1327,6 +1327,9 @@
         const modalApplyButton = document.getElementById("modalApplyButton");
         const closeButtons = document.querySelectorAll(".close-modal");
         const cancelButton = document.querySelector(".close-form");
+        const searchInput = document.getElementById("companySearch");
+        const searchButton = document.querySelector(".search-button");
+        const companyContainer = document.getElementById("companyContainer");
 
         // Tab functionality
         const tabs = document.querySelectorAll(".nav-link");
@@ -1342,6 +1345,35 @@
               .classList.add("active");
           });
         });
+
+        // Search functionality
+        function filterCompanies() {
+          const searchTerm = searchInput.value.toLowerCase();
+          const companyCards = companyContainer.querySelectorAll(".card");
+
+          companyCards.forEach((card) => {
+            const companyName = card
+              .querySelector(".company-name")
+              .textContent.toLowerCase();
+            const companyLocation = card
+              .querySelector(".company-location")
+              .textContent.toLowerCase();
+            
+            if (
+              companyName.includes(searchTerm) ||
+              companyLocation.includes(searchTerm)
+            ) {
+              card.style.display = "";
+            } else {
+              card.style.display = "none";
+            }
+          });
+        }
+
+        if (searchInput && searchButton) {
+          searchInput.addEventListener("input", filterCompanies);
+          searchButton.addEventListener("click", filterCompanies);
+        }
 
         // Function to open the application modal
         function openApplicationModal(companyId, companyName) {

@@ -274,7 +274,7 @@
                 <!-- Security -->
                 <div id="security" class="settings-section">
                     <h2>Security Settings</h2>
-                    <form>
+                    <form id="security-form">
                         <div class="form-group">
                             <label for="currentPassword">Current Password</label>
                             <input type="password" id="currentPassword" class="form-control">
@@ -348,10 +348,44 @@
                     document.getElementById(targetId).classList.add('active');
                 });
             });
+            const securityForm = document.getElementById('security-form');
+            if (securityForm) {
+                securityForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const currentPassword = document.getElementById('currentPassword').value;
+                    const newPassword = document.getElementById('newPassword').value;
+                    const confirmPassword = document.getElementById('confirmPassword').value;
+
+                    if (newPassword !== confirmPassword) {
+                        alert('New password and confirmation do not match.');
+                        return;
+                    }
+
+                    try {
+                        const response = await fetch('/customer/password/update', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ currentPassword, newPassword })
+                        });
+
+                        const data = await response.json();
+
+                        if (response.ok) {
+                            alert('Password updated successfully!');
+                            securityForm.reset(); // Clear the form
+                        } else {
+                            throw new Error(data.message || 'Failed to update password.');
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
+                        alert('An error occurred: ' + error.message);
+                    }
+                });
+            }
         });
         const notificationIcon = document.getElementById('notificationIcon');
         const notificationPanel = document.getElementById('notificationPanel');
-
+        
         notificationIcon.addEventListener('click', function(e) {
             e.stopPropagation();
             notificationPanel.classList.toggle('show');
