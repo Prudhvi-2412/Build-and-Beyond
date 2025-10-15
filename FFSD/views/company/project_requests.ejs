@@ -417,7 +417,19 @@
 
     /* --- PROPOSAL MODAL STYLING --- */
     
-    .proposal-modal { display: none; position: fixed; z-index: 1001; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); backdrop-filter: blur(5px); align-items: center; justify-content: center; }
+    .proposal-modal { 
+        position: fixed; 
+        z-index: 1001; 
+        left: 0; 
+        top: 0; 
+        width: 100%; 
+        height: 100%; 
+        background-color: rgba(0,0,0,0.6); 
+        backdrop-filter: blur(5px); 
+        align-items: center; 
+        justify-content: center; 
+        display: none;
+    }
     .proposal-modal.active { display: flex; }
     
     .proposal-modal-content { 
@@ -476,6 +488,14 @@
     /* Validation Styles */
     .error-message {
         color: #e74c3c;
+        font-size: 0.85rem;
+        margin-top: 0.5rem;
+        display: none;
+        font-weight: 500;
+    }
+
+    .warning-message {
+        color: #e67e22;
         font-size: 0.85rem;
         margin-top: 0.5rem;
         display: none;
@@ -559,12 +579,18 @@
                             </button>
                         </div>
                         <div class="card-actions" style="margin-top: 1rem;">
-                            <button class="card-btn btn-accept proposal-create-btn" data-project-id="<%= project._id %>">
-                                <i class="fas fa-file-signature"></i> Create Proposal
-                            </button>
-                            <button class="card-btn btn-reject" onclick="updateProjectStatus('<%= project._id %>', 'rejected')">
-                                <i class="fas fa-times"></i> Reject
-                            </button>
+                            <% if(project.status == 'proposal_sent'){ %>
+                                <div style="color: red;"> Proposal already sent </div>
+                            <%}else{ %>
+                                <button class="card-btn btn-accept proposal-create-btn" 
+                                        data-project-id="<%= project._id %>"
+                                        data-project-budget="<%= project.estimatedBudget || 0 %>">
+                                    <i class="fas fa-file-signature"></i> Create Proposal
+                                </button>
+                                <button class="card-btn btn-reject" onclick="updateProjectStatus('<%= project._id %>', 'rejected')">
+                                    <i class="fas fa-times"></i> Reject
+                                </button>
+                            <% } %>
                         </div>
                     </div>
                 </div>
@@ -587,6 +613,9 @@
                                min="10000" step="10000" id="projectPrice" oninput="validatePrice()">
                         <div id="priceError" class="error-message" style="display: none;">
                             Price must be less than ₹<span id="maxBudget"></span>
+                        </div>
+                        <div id="priceWarning" class="warning-message" style="display: none;">
+                            Note: Customer budget not specified. You can proceed with your proposal.
                         </div>
                     </div>
                     <div class="proposal-form-group">
@@ -654,7 +683,6 @@
 
         async function showProjectDetails(projectId) {
             try {
-                // Fetch data (assuming /api/projects/:id exists and returns JSON)
                 const response = await fetch(`/api/projects/${projectId}`);
                 if (!response.ok) throw new Error('Failed to fetch project details.');
                 
@@ -707,6 +735,20 @@
                     floorsHtml = `<p style="color: var(--text-secondary);">No detailed floor plans were provided.</p>`;
                 }
                 
+                let html;
+                if(project.status == 'proposal_sent'){
+                    html = ` <div style='color: red;'> Proposal already sent </div>`;
+                }
+                else{
+                    html = `<button class="modal-btn btn-accept proposal-create-btn" 
+                                data-project-id="${project._id}"
+                                data-project-budget="${project.estimatedBudget || 0}">
+                            <i class="fas fa-file-signature"></i> Create Proposal
+                        </button>
+                        <button class="modal-btn modal-btn-reject" onclick="updateProjectStatus('${project._id}', 'rejected')">
+                            <i class="fas fa-times"></i> Reject Project
+                        </button>`
+                }
                 // 3. Build Modal Content HTML
                 modalContent.innerHTML = `
                     <div class="detail-section">
@@ -757,12 +799,7 @@
                     </div>
 
                     <div class="modal-actions">
-                        <button class="modal-btn btn-accept proposal-create-btn" data-project-id="${project._id}">
-                            <i class="fas fa-file-signature"></i> Create Proposal
-                        </button>
-                        <button class="modal-btn modal-btn-reject" onclick="updateProjectStatus('${project._id}', 'rejected')">
-                            <i class="fas fa-times"></i> Reject Project
-                        </button>
+                        ${html}
                     </div>
                 `;
 
@@ -801,39 +838,84 @@
             }
         }
 
-        // --- Proposal Modal Validation Functions ---
+        // --- Proposal Modal Functions ---
+
+        function openProposalModal(projectId, projectBudget) {
+            document.getElementById('proposalProjectId').value = projectId;
+            maxBudget = projectBudget || 0;
+            
+            // Update budget display
+            const maxBudgetElement = document.getElementById('maxBudget');
+            if (maxBudgetElement) {
+                maxBudgetElement.textContent = maxBudget.toLocaleString('en-IN');
+            }
+            
+            // Clear previous inputs and errors
+            document.getElementById('projectPrice').value = '';
+            document.getElementById('scopeOfWork').value = '';
+            clearProposalValidation();
+            
+            // Show appropriate messages based on budget
+            const priceError = document.getElementById('priceError');
+            const priceWarning = document.getElementById('priceWarning');
+            
+            if (maxBudget === 0) {
+                priceError.style.display = 'none';
+                priceWarning.style.display = 'block';
+            } else {
+                priceError.style.display = 'none';
+                priceWarning.style.display = 'none';
+            }
+            
+            document.getElementById('proposalModal').classList.add('active');
+            
+            console.log('Opening proposal modal:', {
+                projectId: projectId,
+                maxBudget: maxBudget
+            });
+        }
 
         function validatePrice() {
             const priceInput = document.getElementById('projectPrice');
             const priceError = document.getElementById('priceError');
+            const priceWarning = document.getElementById('priceWarning');
             const price = parseFloat(priceInput.value) || 0;
 
-            if (maxBudget === 0) {
-                priceError.textContent = 'Note: Customer budget not specified. You can proceed with your proposal.';
-                priceError.style.display = 'block';
-                priceError.style.color = '#e67e22'; // Orange warning instead of red error
-                priceInput.classList.remove('input-error');
-                return true; // Allow submission even if budget is 0
-            }
+            // Hide both messages initially
+            priceError.style.display = 'none';
+            priceWarning.style.display = 'none';
 
-            if (price > maxBudget) {
-                priceError.textContent = `Proposal price (₹${price.toLocaleString('en-IN')}) must be less than or equal to customer's budget (₹${maxBudget.toLocaleString('en-IN')})`;
-                priceError.style.display = 'block';
-                priceError.style.color = '#e74c3c'; // Red error
-                priceInput.classList.add('input-error');
-                return false;
-            } else if (price < 10000) {
-                priceError.textContent = 'Price must be at least ₹10,000';
-                priceError.style.display = 'block';
-                priceError.style.color = '#e74c3c'; // Red error
-                priceInput.classList.add('input-error');
-                return false;
+            if (maxBudget === 0) {
+                // No budget specified - show warning but allow submission
+                if (price < 10000) {
+                    priceError.textContent = 'Price must be at least ₹10,000';
+                    priceError.style.display = 'block';
+                    priceInput.classList.add('input-error');
+                    return false;
+                } else {
+                    priceWarning.style.display = 'block';
+                    priceInput.classList.remove('input-error');
+                    return true;
+                }
             } else {
-                priceError.style.display = 'none';
-                priceInput.classList.remove('input-error');
-                return true;
+                // Budget specified - validate against it
+                if (price > maxBudget) {
+                    priceError.textContent = `Proposal price (₹${price.toLocaleString('en-IN')}) must be less than or equal to customer's budget (₹${maxBudget.toLocaleString('en-IN')})`;
+                    priceError.style.display = 'block';
+                    priceInput.classList.add('input-error');
+                    return false;
+                } else if (price < 10000) {
+                    priceError.textContent = 'Price must be at least ₹10,000';
+                    priceError.style.display = 'block';
+                    priceInput.classList.add('input-error');
+                    return false;
+                } else {
+                    priceInput.classList.remove('input-error');
+                    return true;
+                }
             }
         }
+
         function validateScope() {
             const scopeInput = document.getElementById('scopeOfWork');
             const scopeError = document.getElementById('scopeError');
@@ -868,6 +950,7 @@
 
         function clearProposalValidation() {
             document.getElementById('priceError').style.display = 'none';
+            document.getElementById('priceWarning').style.display = 'none';
             document.getElementById('scopeError').style.display = 'none';
             document.getElementById('projectPrice').classList.remove('input-error');
             document.getElementById('scopeOfWork').classList.remove('input-error');
@@ -886,45 +969,29 @@
                 }
             });
             
+            // Close Proposal Modal Listener
+            document.getElementById('proposalModal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeProposalModal();
+                }
+            });
+            
             // Open Proposal Modal Listener (Delegation for dynamic content)
-            // Update the proposal modal opening to include budget validation
-            // Update the proposal modal opening to include budget validation
             document.addEventListener('click', function(e) {
                 const button = e.target.closest('.proposal-create-btn');
                 if (button) {
                     e.preventDefault();
-                    closeModal();
                     const projectId = button.dataset.projectId;
+                    const projectBudget = parseFloat(button.dataset.projectBudget) || 0;
                     
-                    let estimatedBudget = 0;
+                    // Close details modal if open
+                    closeModal();
                     
-                    // Method 1: Use the stored project data from showProjectDetails
-                    if (currentProjectData && currentProjectData.estimatedBudget) {
-                        estimatedBudget = currentProjectData.estimatedBudget;
-                    } 
-                    // Method 2: If still 0, try to fetch the project data directly
-                    else {
-                        console.log('No budget found in currentProjectData, fetching fresh data...');
-                        // You might need to fetch the project data here if currentProjectData is not available
-                    }
-                    
-                    document.getElementById('proposalProjectId').value = projectId;
-                    document.getElementById('maxBudget').textContent = estimatedBudget.toLocaleString('en-IN');
-                    maxBudget = estimatedBudget;
-                    
-                    // Clear previous inputs and errors
-                    document.getElementById('projectPrice').value = '';
-                    document.getElementById('scopeOfWork').value = '';
-                    clearProposalValidation();
-                    
-                    document.getElementById('proposalModal').classList.add('active');
-                    
-                    // Debug log
-                    console.log('Project ID:', projectId);
-                    console.log('Max Budget:', maxBudget);
-                    console.log('Current Project Data:', currentProjectData);
+                    // Open proposal modal with correct data
+                    openProposalModal(projectId, projectBudget);
                 }
             });
+
             // Proposal Form Submission Handler
             document.getElementById('proposalForm').addEventListener('submit', function(e) {
                 e.preventDefault();
