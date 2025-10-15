@@ -192,41 +192,77 @@ const submitBidController = async (req, res) => {
     }
 };
 
-
-
-
 const getCompanyRevenue = async (req, res) => {
-  try {
-    const companyId = req.user.user_id;
-    if (!companyId) return res.status(401).send('Unauthorized');
+    try {
+        const companyId = req.user.user_id;
+        if (!companyId) {
+            return res.status(401).send('Unauthorized');
+        }
 
-    // Use ConstructionProjectSchema instead of Project
-    const completedProjects = await ConstructionProjectSchema.find({ 
-      companyId, 
-      status: 'completed' 
-    }).lean();
-    const acceptedBids = await Bid.find({ 
-      companyId, 
-      status: 'accepted' 
-    }).lean();
+        // Fetch all relevant projects for the company
+        const projects = await ConstructionProjectSchema.find({ 
+            companyId: companyId,
+            status: { $in: ['accepted', 'completed'] } 
+        }).lean();
 
-    let totalRevenue = 0;
-    completedProjects.forEach(project => {
-      totalRevenue += project.estimatedBudget || 0;
-    });
-    acceptedBids.forEach(bid => {
-      totalRevenue += bid.amount || 0;
-    });
+        const now = new Date();
+        const currentMonth = now.getMonth();
+        const currentYear = now.getFullYear();
+        const currentQuarter = Math.floor(currentMonth / 3);
 
-    res.render('company/revenue', { 
-      totalRevenue, 
-      completedProjects, 
-      acceptedBids 
-    });
-  } catch (error) {
-    console.error('Error fetching company revenue:', error);
-    res.status(500).send('Server error');
-  }
+        let totalRevenue = 0;
+        let ongoingProjectValue = 0;
+        let revenueThisMonth = 0;
+        let revenueThisQuarter = 0;
+        let revenueThisYear = 0;
+        let completedProjectsCount = 0;
+
+        projects.forEach(p => {
+            const projectValue = p.paymentDetails?.totalAmount || 0;
+            const completionDate = p.updatedAt; // Assuming updatedAt reflects completion
+
+            if (p.status === 'completed') {
+                totalRevenue += projectValue;
+                completedProjectsCount++;
+
+                const completedDate = new Date(completionDate);
+                const completedMonth = completedDate.getMonth();
+                const completedYear = completedDate.getFullYear();
+                const completedQuarter = Math.floor(completedMonth / 3);
+
+                if (completedYear === currentYear) {
+                    revenueThisYear += projectValue;
+                    if (completedMonth === currentMonth) {
+                        revenueThisMonth += projectValue;
+                    }
+                    if (completedQuarter === currentQuarter) {
+                        revenueThisQuarter += projectValue;
+                    }
+                }
+            } else if (p.status === 'accepted') {
+                ongoingProjectValue += projectValue;
+            }
+        });
+
+        const averageProjectValue = completedProjectsCount > 0 ? totalRevenue / completedProjectsCount : 0;
+
+        res.render('company/revenue', {
+            projects, // Pass all projects to the view
+            metrics: {
+                totalRevenue,
+                ongoingProjectValue,
+                completedProjects: completedProjectsCount,
+                averageProjectValue,
+                revenueThisMonth,
+                revenueThisQuarter,
+                revenueThisYear
+            }
+        });
+
+    } catch (error) {
+        console.error('Error fetching company revenue:', error);
+        res.status(500).send('Server error');
+    }
 };
 
 const getHiring = async (req, res) => {
