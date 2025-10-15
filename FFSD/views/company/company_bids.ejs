@@ -706,22 +706,89 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Form submission handling
+    // Form submission handling
     const bidForm = document.querySelector('.bid-form form');
     if (bidForm) {
-        bidForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const bidAmountInput = document.getElementById('bid-amount');
-            const bidAmount = parseFloat(bidAmountInput.value);
-            
-            if (!bidAmount || isNaN(bidAmount) || bidAmount <= 0) {
-                alert('Please enter a valid bid amount greater than zero.');
-                return;
+    bidForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const bidAmountInput = document.getElementById('bid-amount');
+        const bidAmount = parseFloat(bidAmountInput.value);
+        
+        // Get the estimated budget from the status-price element
+        const budgetElement = document.querySelector('.detail-price');
+        if (!budgetElement) {
+            alert('Unable to find estimated budget information.');
+            return;
+        }
+        
+        const budgetText = budgetElement.textContent;
+        
+        // Extract number from text (handles Indian number format with commas)
+        const budgetMatch = budgetText.match(/[\d,]+\.?\d*/);
+        if (!budgetMatch) {
+            alert('Unable to read estimated budget.');
+            return;
+        }
+        
+        // Remove commas and convert to number
+        const estimatedBudget = parseFloat(budgetMatch[0].replace(/,/g, ''));
+        
+        if (!bidAmount || isNaN(bidAmount) || bidAmount <= 0) {
+            alert('Please enter a valid bid amount greater than zero.');
+            return;
+        }
+        
+        // Check if bid amount exceeds estimated budget
+        if (bidAmount > estimatedBudget) {
+            // Create error message below the input field
+            let errorDiv = document.querySelector('.budget-error');
+            if (!errorDiv) {
+                errorDiv = document.createElement('div');
+                errorDiv.className = 'budget-error';
+                errorDiv.style.color = '#d32f2f';
+                errorDiv.style.fontSize = '14px';
+                errorDiv.style.marginTop = '5px';
+                errorDiv.style.padding = '8px';
+                errorDiv.style.backgroundColor = '#ffebee';
+                errorDiv.style.borderRadius = '4px';
+                errorDiv.style.border = '1px solid #d32f2f';
+                bidAmountInput.parentNode.appendChild(errorDiv);
             }
             
-            this.submit();
+            errorDiv.innerHTML = `Bid amount (₹${bidAmount.toLocaleString('en-IN')}) exceeds the budget (₹${estimatedBudget.toLocaleString('en-IN')}).Enter a lower amount.`;
+            
+            // Highlight the input field
+            bidAmountInput.style.borderColor = '#d32f2f';
+            bidAmountInput.style.backgroundColor = '#ffebee';
+            
+            return;
+        }
+        
+        // Remove error if exists
+        const errorDiv = document.querySelector('.budget-error');
+        if (errorDiv) {
+            errorDiv.remove();
+            bidAmountInput.style.borderColor = '';
+            bidAmountInput.style.backgroundColor = '';
+        }
+        
+        this.submit();
+    });
+    
+    // Clear error when user starts typing again
+    const bidAmountInput = document.getElementById('bid-amount');
+    if (bidAmountInput) {
+        bidAmountInput.addEventListener('input', function() {
+            const errorDiv = document.querySelector('.budget-error');
+            if (errorDiv) {
+                errorDiv.remove();
+                this.style.borderColor = '';
+                this.style.backgroundColor = '';
+            }
         });
-    }
+     }
+   }
 
     // Status badge tooltips - Simplified since the CSS handles the look
     const statusBadges = document.querySelectorAll('.status-badge');
