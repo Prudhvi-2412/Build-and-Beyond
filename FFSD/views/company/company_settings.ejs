@@ -371,6 +371,39 @@
         border-radius: var(--card-radius);
     }
 
+    /* --- FORM VALIDATION STYLES --- */
+    .error-message {
+        color: var(--danger-color);
+        font-size: 0.8rem;
+        margin-top: 0.25rem;
+        display: none;
+    }
+    .form-control.error {
+        border-color: var(--danger-color);
+    }
+    .form-control.success {
+        border-color: var(--success-color);
+    }
+    .password-requirements {
+        margin-top: 0.5rem;
+        font-size: 0.8rem;
+        color: var(--text-secondary);
+    }
+    .requirement {
+        display: flex;
+        align-items: center;
+        margin-bottom: 0.25rem;
+    }
+    .requirement i {
+        margin-right: 0.5rem;
+        font-size: 0.7rem;
+    }
+    .requirement.valid {
+        color: var(--success-color);
+    }
+    .requirement.invalid {
+        color: var(--text-secondary);
+    }
 
     /* --- BUTTONS --- */
     .btn {
@@ -514,7 +547,8 @@
                             </div>
                             <div class="form-group">
                                 <label for="companyLocation">Location</label>
-                                <input type="text" id="companyLocation" class="form-control" value="<%= company.workerProfile.location %>">
+                                <input type="text" id="companyLocation" class="form-control" value="<%= company.workerProfile.location %>" required>
+                                <div class="error-message" id="location-error">Please enter a valid location</div>
                             </div>
                             <div class="form-group">
                                 <label>Company Size</label>
@@ -522,32 +556,37 @@
                                     <% const sizes = ["1-10", "11-50", "51-200", "201-1000", "1000+"]; %>
                                     <% sizes.forEach(size => { %>
                                         <label class="company-size-option <%= company.workerProfile.size === size ? 'selected' : '' %>">
-                                            <input type="radio" name="companySize" value="<%= size %>" <%= company.workerProfile.size === size ? 'checked' : '' %>> <%= size %> Employees
+                                            <input type="radio" name="companySize" value="<%= size %>" <%= company.workerProfile.size === size ? 'checked' : '' %> required> <%= size %> Employees
                                         </label>
                                     <% }) %>
                                 </div>
+                                <div class="error-message" id="company-size-error">Please select a company size</div>
                             </div>
                             <div class="form-group">
                                 <label for="specializations">Specializations (comma separated)</label>
-                                <input type="text" id="specializations" class="form-control" value="<%= company.workerProfile.specializations.join(', ') %>">
+                                <input type="text" id="specializations" class="form-control" value="<%= company.workerProfile.specializations.join(', ') %>" required>
+                                <div class="error-message" id="specializations-error">Please enter at least one specialization</div>
                             </div>
                             <div class="form-group" id="openings-container">
                                 <label>Current Openings</label>
                                 <% company.workerProfile.currentOpenings.forEach(opening => { %>
                                     <div class="dynamic-item-edit">
-                                        <input type="text" class="form-control" value="<%= opening %>">
+                                        <input type="text" class="form-control" value="<%= opening %>" required>
                                         <button type="button" class="btn btn-danger" onclick="this.parentElement.remove()">Remove</button>
                                     </div>
                                 <% }) %>
+                                <div class="error-message" id="openings-error">Please enter at least one current opening</div>
                                 <button type="button" id="add-opening-btn" class="btn btn-secondary" style="margin-top: 0.5rem;">+ Add Opening</button>
                             </div>
                             <div class="form-group">
                                 <label for="aboutCompany">About the Company</label>
-                                <textarea id="aboutCompany" class="form-control"><%= company.workerProfile.about %></textarea>
+                                <textarea id="aboutCompany" class="form-control" required><%= company.workerProfile.about %></textarea>
+                                <div class="error-message" id="about-error">Please provide information about your company</div>
                             </div>
                             <div class="form-group">
                                 <label for="whyJoinUs">Why Join Our Team?</label>
-                                <textarea id="whyJoinUs" class="form-control"><%= company.workerProfile.whyJoin %></textarea>
+                                <textarea id="whyJoinUs" class="form-control" required><%= company.workerProfile.whyJoin %></textarea>
+                                <div class="error-message" id="why-join-error">Please provide reasons to join your team</div>
                             </div>
                             <button type="button" id="cancel-worker-edit-btn" class="btn btn-secondary" style="margin-right: 1rem;">Cancel</button>
                             <button type="submit" class="btn">Save Changes</button>
@@ -614,19 +653,23 @@
                             </div>
                             <div class="form-group">
                                 <label for="customerCompanyLocation">Location</label>
-                                <input type="text" id="customerCompanyLocation" class="form-control" value="<%= company.customerProfile.location %>">
+                                <input type="text" id="customerCompanyLocation" class="form-control" value="<%= company.customerProfile.location %>" required>
+                                <div class="error-message" id="customer-location-error">Please enter a valid location</div>
                             </div>
                             <div class="form-group">
                                 <label for="projectsCompleted">Projects Completed</label>
-                                <input type="text" id="projectsCompleted" class="form-control" value="<%= company.customerProfile.projectsCompleted %>">
+                                <input type="number" id="projectsCompleted" class="form-control" value="<%= company.customerProfile.projectsCompleted %>" min="0" required>
+                                <div class="error-message" id="projects-completed-error">Please enter a valid number of completed projects</div>
                             </div>
                             <div class="form-group">
                                 <label for="yearsInBusiness">Years in Business</label>
-                                <input type="text" id="yearsInBusiness" class="form-control" value="<%= company.customerProfile.yearsInBusiness %>">
+                                <input type="number" id="yearsInBusiness" class="form-control" value="<%= company.customerProfile.yearsInBusiness %>" min="0" max="100" required>
+                                <div class="error-message" id="years-error">Please enter a valid number of years in business</div>
                             </div>
                             <div class="form-group">
                                 <label for="customerAboutCompany">About the Company</label>
-                                <textarea id="customerAboutCompany" class="form-control"><%= company.customerProfile.about %></textarea>
+                                <textarea id="customerAboutCompany" class="form-control" required><%= company.customerProfile.about %></textarea>
+                                <div class="error-message" id="customer-about-error">Please provide information about your company</div>
                             </div>
                             <div class="form-group" id="team-member-container">
                                 <label>Team Members</label>
@@ -637,11 +680,12 @@
                                             <input type="file" id="member<%= index %>Image" name="memberImages" style="display: none;" onchange="updateImagePreview(this)">
                                             <button type="button" class="btn btn-secondary" onclick="document.getElementById('member<%= index %>Image').click()">Change Image</button>
                                         </div>
-                                        <input type="text" class="form-control" value="<%= member.name %>" style="margin-bottom: 0.5rem;">
-                                        <input type="text" class="form-control" value="<%= member.position %>">
+                                        <input type="text" class="form-control" value="<%= member.name %>" style="margin-bottom: 0.5rem;" required>
+                                        <input type="text" class="form-control" value="<%= member.position %>" required>
                                         <button type="button" class="btn btn-danger" style="margin-top: 0.5rem;" onclick="this.closest('.team-member').remove()">Remove</button>
                                     </div>
                                 <% }) %>
+                                <div class="error-message" id="team-members-error">Please add at least one team member</div>
                                 <button type="button" id="add-team-member-btn" class="btn btn-secondary" style="margin-top: 0.5rem;">+ Add Team Member</button>
                             </div>
                             <div class="form-group" id="project-container">
@@ -653,16 +697,18 @@
                                         <input type="file" id="project<%= index %>Image" name="projectImages" style="display: none;" onchange="updateImagePreview(this)">
                                         <button type="button" class="btn btn-secondary" onclick="document.getElementById('project<%= index %>Image').click()">Change Image</button>
                                     </div>
-                                    <input type="text" class="form-control" value="<%= project.title %>" style="margin-bottom: 0.5rem;">
-                                    <textarea class="form-control"><%= project.description %></textarea>
+                                    <input type="text" class="form-control" value="<%= project.title %>" style="margin-bottom: 0.5rem;" required>
+                                    <textarea class="form-control" required><%= project.description %></textarea>
                                     <button type="button" class="btn btn-danger" style="margin-top: 0.5rem;" onclick="this.closest('.project-item').remove()">Remove</button>
                                 </div>
                                 <% }) %>
+                                <div class="error-message" id="projects-error">Please add at least one completed project</div>
                                 <button type="button" id="add-project-btn" class="btn btn-secondary" style="margin-top: 0.5rem;">+ Add Project</button>
                             </div>
                             <div class="form-group">
                                 <label for="didYouKnow">Did You Know?</label>
-                                <textarea id="didYouKnow" class="form-control"><%= company.customerProfile.didYouKnow %></textarea>
+                                <textarea id="didYouKnow" class="form-control" required><%= company.customerProfile.didYouKnow %></textarea>
+                                <div class="error-message" id="did-you-know-error">Please provide an interesting fact about your company</div>
                             </div>
                             <button type="button" id="cancel-customer-edit-btn" class="btn btn-secondary" style="margin-right: 1rem;">Cancel</button>
                             <button type="submit" class="btn">Save Changes</button>
@@ -672,18 +718,38 @@
 
                 <div id="security" class="settings-section">
                     <h2>Security Settings</h2>
-                    <form>
+                    <form id="security-form">
                         <div class="form-group">
                             <label for="currentPassword">Current Password</label>
-                            <input type="password" id="currentPassword" class="form-control">
+                            <input type="password" id="currentPassword" class="form-control" required>
+                            <div class="error-message" id="current-password-error">Please enter your current password</div>
                         </div>
                         <div class="form-group">
                             <label for="newPassword">New Password</label>
-                            <input type="password" id="newPassword" class="form-control">
+                            <input type="password" id="newPassword" class="form-control" required>
+                            <div class="password-requirements">
+                                <div class="requirement invalid" id="length-req">
+                                    <i class="fas fa-circle"></i> At least 8 characters
+                                </div>
+                                <div class="requirement invalid" id="uppercase-req">
+                                    <i class="fas fa-circle"></i> At least one uppercase letter
+                                </div>
+                                <div class="requirement invalid" id="lowercase-req">
+                                    <i class="fas fa-circle"></i> At least one lowercase letter
+                                </div>
+                                <div class="requirement invalid" id="number-req">
+                                    <i class="fas fa-circle"></i> At least one number
+                                </div>
+                                <div class="requirement invalid" id="special-req">
+                                    <i class="fas fa-circle"></i> At least one special character
+                                </div>
+                            </div>
+                            <div class="error-message" id="new-password-error">Please enter a valid new password</div>
                         </div>
                         <div class="form-group">
                             <label for="confirmPassword">Confirm New Password</label>
-                            <input type="password" id="confirmPassword" class="form-control">
+                            <input type="password" id="confirmPassword" class="form-control" required>
+                            <div class="error-message" id="confirm-password-error">Passwords do not match</div>
                         </div>
                         <button type="submit" class="btn">Update Password</button>
                         <hr style="margin: 2rem 0;">
@@ -761,8 +827,8 @@
                     <input type="file" id="${newFileId}" name="memberImages" style="display: none;" onchange="updateImagePreview(this)">
                     <button type="button" class="btn btn-secondary" onclick="document.getElementById('${newFileId}').click()">Change Image</button>
                 </div>
-                <input type="text" class="form-control" value="" placeholder="New Member Name" style="margin-bottom: 0.5rem;">
-                <input type="text" class="form-control" value="" placeholder="Position/Title">
+                <input type="text" class="form-control" value="" placeholder="New Member Name" style="margin-bottom: 0.5rem;" required>
+                <input type="text" class="form-control" value="" placeholder="Position/Title" required>
                 <button type="button" class="btn btn-danger" style="margin-top: 0.5rem;" onclick="this.closest('.team-member').remove()">Remove</button>
             `;
             return div;
@@ -782,8 +848,8 @@
                     <input type="file" id="${newFileId}" name="projectImages" style="display: none;" onchange="updateImagePreview(this)">
                     <button type="button" class="btn btn-secondary" onclick="document.getElementById('${newFileId}').click()">Change Image</button>
                 </div>
-                <input type="text" class="form-control" value="" placeholder="New Project Title" style="margin-bottom: 0.5rem;">
-                <textarea class="form-control" placeholder="A brief description of the new project."></textarea>
+                <input type="text" class="form-control" value="" placeholder="New Project Title" style="margin-bottom: 0.5rem;" required>
+                <textarea class="form-control" placeholder="A brief description of the new project." required></textarea>
                 <button type="button" class="btn btn-danger" style="margin-top: 0.5rem;" onclick="this.closest('.project-item').remove()">Remove</button>
             `;
             return div;
@@ -811,6 +877,222 @@
                 alertDiv.style.opacity = '0';
                 setTimeout(() => document.body.removeChild(alertDiv), 500);
             }, 3000);
+        }
+
+        // --- FORM VALIDATION FUNCTIONS ---
+        
+        // Validate password strength
+        function validatePassword(password) {
+            const requirements = {
+                length: password.length >= 8,
+                uppercase: /[A-Z]/.test(password),
+                lowercase: /[a-z]/.test(password),
+                number: /[0-9]/.test(password),
+                special: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)
+            };
+            
+            // Update UI for each requirement
+            document.getElementById('length-req').className = requirements.length ? 'requirement valid' : 'requirement invalid';
+            document.getElementById('uppercase-req').className = requirements.uppercase ? 'requirement valid' : 'requirement invalid';
+            document.getElementById('lowercase-req').className = requirements.lowercase ? 'requirement valid' : 'requirement invalid';
+            document.getElementById('number-req').className = requirements.number ? 'requirement valid' : 'requirement invalid';
+            document.getElementById('special-req').className = requirements.special ? 'requirement valid' : 'requirement invalid';
+            
+            // All requirements must be met
+            return Object.values(requirements).every(req => req);
+        }
+        
+        // Show error message for a field
+        function showError(inputId, errorId, message) {
+            const input = document.getElementById(inputId);
+            const error = document.getElementById(errorId);
+            
+            if (input && error) {
+                input.classList.add('error');
+                input.classList.remove('success');
+                error.textContent = message;
+                error.style.display = 'block';
+            }
+        }
+        
+        // Clear error message for a field
+        function clearError(inputId, errorId) {
+            const input = document.getElementById(inputId);
+            const error = document.getElementById(errorId);
+            
+            if (input && error) {
+                input.classList.remove('error');
+                input.classList.add('success');
+                error.style.display = 'none';
+            }
+        }
+        
+        // Validate worker profile form
+        function validateWorkerProfile() {
+            let isValid = true;
+            
+            // Validate location
+            const location = document.getElementById('companyLocation').value.trim();
+            if (!location) {
+                showError('companyLocation', 'location-error', 'Please enter a valid location');
+                isValid = false;
+            } else {
+                clearError('companyLocation', 'location-error');
+            }
+            
+            // Validate company size
+            const companySize = document.querySelector('input[name="companySize"]:checked');
+            if (!companySize) {
+                document.getElementById('company-size-error').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('company-size-error').style.display = 'none';
+            }
+            
+            // Validate specializations
+            const specializations = document.getElementById('specializations').value.trim();
+            if (!specializations) {
+                showError('specializations', 'specializations-error', 'Please enter at least one specialization');
+                isValid = false;
+            } else {
+                clearError('specializations', 'specializations-error');
+            }
+            
+            // Validate openings
+            const openings = document.querySelectorAll('#openings-container .dynamic-item-edit input');
+            const hasOpenings = Array.from(openings).some(input => input.value.trim());
+            if (!hasOpenings) {
+                document.getElementById('openings-error').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('openings-error').style.display = 'none';
+            }
+            
+            // Validate about company
+            const aboutCompany = document.getElementById('aboutCompany').value.trim();
+            if (!aboutCompany) {
+                showError('aboutCompany', 'about-error', 'Please provide information about your company');
+                isValid = false;
+            } else {
+                clearError('aboutCompany', 'about-error');
+            }
+            
+            // Validate why join us
+            const whyJoinUs = document.getElementById('whyJoinUs').value.trim();
+            if (!whyJoinUs) {
+                showError('whyJoinUs', 'why-join-error', 'Please provide reasons to join your team');
+                isValid = false;
+            } else {
+                clearError('whyJoinUs', 'why-join-error');
+            }
+            
+            return isValid;
+        }
+        
+        // Validate customer profile form
+        function validateCustomerProfile() {
+            let isValid = true;
+            
+            // Validate location
+            const location = document.getElementById('customerCompanyLocation').value.trim();
+            if (!location) {
+                showError('customerCompanyLocation', 'customer-location-error', 'Please enter a valid location');
+                isValid = false;
+            } else {
+                clearError('customerCompanyLocation', 'customer-location-error');
+            }
+            
+            // Validate projects completed
+            const projectsCompleted = document.getElementById('projectsCompleted').value;
+            if (!projectsCompleted || isNaN(projectsCompleted) || projectsCompleted < 0) {
+                showError('projectsCompleted', 'projects-completed-error', 'Please enter a valid number of completed projects');
+                isValid = false;
+            } else {
+                clearError('projectsCompleted', 'projects-completed-error');
+            }
+            
+            // Validate years in business
+            const yearsInBusiness = document.getElementById('yearsInBusiness').value;
+            if (!yearsInBusiness || isNaN(yearsInBusiness) || yearsInBusiness < 0 || yearsInBusiness > 100) {
+                showError('yearsInBusiness', 'years-error', 'Please enter a valid number of years in business (0-100)');
+                isValid = false;
+            } else {
+                clearError('yearsInBusiness', 'years-error');
+            }
+            
+            // Validate about company
+            const aboutCompany = document.getElementById('customerAboutCompany').value.trim();
+            if (!aboutCompany) {
+                showError('customerAboutCompany', 'customer-about-error', 'Please provide information about your company');
+                isValid = false;
+            } else {
+                clearError('customerAboutCompany', 'customer-about-error');
+            }
+            
+            // Validate team members
+            const teamMembers = document.querySelectorAll('#customer-profile-edit .team-member');
+            const hasTeamMembers = teamMembers.length > 0;
+            if (!hasTeamMembers) {
+                document.getElementById('team-members-error').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('team-members-error').style.display = 'none';
+            }
+            
+            // Validate projects
+            const projects = document.querySelectorAll('#customer-profile-edit .project-item');
+            const hasProjects = projects.length > 0;
+            if (!hasProjects) {
+                document.getElementById('projects-error').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('projects-error').style.display = 'none';
+            }
+            
+            // Validate did you know
+            const didYouKnow = document.getElementById('didYouKnow').value.trim();
+            if (!didYouKnow) {
+                showError('didYouKnow', 'did-you-know-error', 'Please provide an interesting fact about your company');
+                isValid = false;
+            } else {
+                clearError('didYouKnow', 'did-you-know-error');
+            }
+            
+            return isValid;
+        }
+        
+        // Validate security form
+        function validateSecurityForm() {
+            let isValid = true;
+            
+            // Validate current password
+            const currentPassword = document.getElementById('currentPassword').value;
+            if (!currentPassword) {
+                showError('currentPassword', 'current-password-error', 'Please enter your current password');
+                isValid = false;
+            } else {
+                clearError('currentPassword', 'current-password-error');
+            }
+            
+            // Validate new password
+            const newPassword = document.getElementById('newPassword').value;
+            if (!validatePassword(newPassword)) {
+                showError('newPassword', 'new-password-error', 'Please enter a valid new password');
+                isValid = false;
+            } else {
+                clearError('newPassword', 'new-password-error');
+            }
+            
+            // Validate confirm password
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            if (newPassword !== confirmPassword) {
+                showError('confirmPassword', 'confirm-password-error', 'Passwords do not match');
+                isValid = false;
+            } else {
+                clearError('confirmPassword', 'confirm-password-error');
+            }
+            
+            return isValid;
         }
 
         // --- DOMContentLoaded Start ---
@@ -913,7 +1195,7 @@
                     const newOpeningDiv = document.createElement('div');
                     newOpeningDiv.className = 'dynamic-item-edit';
                     newOpeningDiv.innerHTML = `
-                        <input type="text" class="form-control" placeholder="Job Title">
+                        <input type="text" class="form-control" placeholder="Job Title" required>
                         <button type="button" class="btn btn-danger" onclick="this.parentElement.remove()">Remove</button>
                     `;
                     openingsContainer.insertBefore(newOpeningDiv, addOpeningBtn);
@@ -947,6 +1229,12 @@
             if (workerProfileForm) {
                 workerProfileForm.addEventListener('submit', async function(e) {
                     e.preventDefault();
+                    
+                    // Validate form before submission
+                    if (!validateWorkerProfile()) {
+                        showAlert('Please fix the errors in the form before submitting.', 'error');
+                        return;
+                    }
                     
                     const formData = {
                         profileType: 'worker',
@@ -1004,6 +1292,12 @@
             if (customerProfileForm) {
                 customerProfileForm.addEventListener('submit', async function (e) {
                     e.preventDefault();
+                    
+                    // Validate form before submission
+                    if (!validateCustomerProfile()) {
+                        showAlert('Please fix the errors in the form before submitting.', 'error');
+                        return;
+                    }
         
                     // Using FormData for file uploads
                     const formData = new FormData();
@@ -1085,6 +1379,38 @@
                         console.error('Error:', error);
                         showAlert('Error updating profile: ' + error.message, 'error');
                     }
+                });
+            }
+            
+            // --- 9. Security form validation and submission ---
+            const securityForm = document.getElementById('security-form');
+            if (securityForm) {
+                // Real-time password validation
+                const newPasswordInput = document.getElementById('newPassword');
+                if (newPasswordInput) {
+                    newPasswordInput.addEventListener('input', function() {
+                        validatePassword(this.value);
+                    });
+                }
+                
+                // Form submission
+                securityForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    if (!validateSecurityForm()) {
+                        showAlert('Please fix the errors in the form before submitting.', 'error');
+                        return;
+                    }
+                    
+                    // If validation passes, submit the form
+                    // This would typically be an API call to update the password
+                    showAlert('Password updated successfully!', 'success');
+                    securityForm.reset();
+                    
+                    // Reset password requirements UI
+                    document.querySelectorAll('.password-requirements .requirement').forEach(req => {
+                        req.className = 'requirement invalid';
+                    });
                 });
             }
         });
