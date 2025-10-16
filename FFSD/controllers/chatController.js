@@ -9,7 +9,7 @@ const capitalize = (s) => {
 };
 
 // ====================================================================
-// authorizeChatAccess remains UNCHANGED as it's not the source of the error
+// authorizeChatAccess remains UNCHANGED
 // ====================================================================
 const authorizeChatAccess = async (roomId, userId, userRole) => {
     const chatRoom = await ChatRoom.findOne({ roomId }).lean();
@@ -48,7 +48,7 @@ const authorizeChatAccess = async (roomId, userId, userRole) => {
 };
 
 // ====================================================================
-// getChatPage is CORRECTED to handle null user data (Line 71 in your file)
+// getChatPage handles user data safely
 // ====================================================================
 const getChatPage = async (req, res) => {
     try {
@@ -66,35 +66,25 @@ const getChatPage = async (req, res) => {
             return res.status(403).send(message);
         }
 
-        // --- POTENTIAL ERROR SOURCE 1: otherUser is null ---
         const OtherUser = mongoose.model(otherUserModel);
         const otherUser = await OtherUser.findById(otherUserId).select('name companyName').lean();
         
-        // --- Correction: Added null check for otherUser ---
         if (!otherUser) {
             console.error(`Other user (${otherUserModel}) not found for ID: ${otherUserId}`);
-            // You can decide to throw an error or continue with a default name
-            // For now, we'll continue, as a default name is set in chatData.
         }
 
-        // --- POTENTIAL ERROR SOURCE 2: currentUser is null ---
         const CurrentUser = mongoose.model(capitalize(userRole));
         const currentUser = await CurrentUser.findById(userId).select('name companyName').lean();
 
-        // --- Correction: Added null check for currentUser ---
         if (!currentUser) {
             console.error(`Current user (${userRole}) not found for ID: ${userId}`);
-            return res.status(404).send('Current user profile not found.'); // Critical error, should stop
+            return res.status(404).send('Current user profile not found.');
         }
 
 
-        // The original error occurred because you were doing otherUser.name 
-        // when otherUser was null. Now, the checks above ensure we catch it,
-        // and the safe access below ensures no crash.
         const chatData = {
             roomId: chatRoom.roomId,
             userId: userId.toString(),
-            // CORRECTED: Use optional chaining to safely access properties
             userName: currentUser.name || currentUser.companyName || 'You', 
             userRole: userRole,
             otherUserName: otherUser?.name || otherUser?.companyName || 'Other User',
@@ -105,14 +95,13 @@ const getChatPage = async (req, res) => {
         res.render('chat', chatData);
 
     } catch (error) {
-        // The error log now includes the line number from the stack trace
         console.error('Error fetching chat page:', error); 
         res.status(500).send('Server Error');
     }
 };
 
 // ====================================================================
-// findOrCreateChatRoom remains UNCHANGED as it's not the source of the error
+// findOrCreateChatRoom remains UNCHANGED
 // ====================================================================
 const findOrCreateChatRoom = async (projectId, projectType) => {
     try {

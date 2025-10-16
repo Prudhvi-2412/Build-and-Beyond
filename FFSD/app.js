@@ -43,13 +43,17 @@ io.on('connection', (socket) => {
         const authResult = await authorizeChatAccess(roomId, userId, userRole);
         
         if(authResult.authorized) {
-            const otherUserId = authResult.otherUserId.toString();
+            // Ensure otherUserId is a string for lookup
+            const otherUserId = authResult.otherUserId.toString(); 
             const otherUserConnection = onlineUsers[otherUserId];
 
+            // Notify the other user that this user is now online
             if (otherUserConnection && otherUserConnection.socketId) {
                 io.to(otherUserConnection.socketId).emit('userStatus', { isOnline: true });
+                // Also update status for the user who just joined
                 socket.emit('userStatus', { isOnline: true });
             } else {
+                // If the other user is not connected, display 'Offline'
                 socket.emit('userStatus', { isOnline: false });
             }
         }
@@ -58,22 +62,23 @@ io.on('connection', (socket) => {
     // Handle sending a message
     socket.on('chatMessage', async (messageData) => {
         try {
-            // DESTRUCTURING HERE: We MUST use senderModel from the client payload
+            // Ensure we capture all necessary fields from the client
             const { roomId, sender, senderModel, message } = messageData; 
             
-            // 1. Save message to MongoDB (FIXED: Uses senderModel from client)
+            // 1. Save message to MongoDB
             const chatRoom = await ChatRoom.findOne({ roomId });
             if (chatRoom) {
                 const newMessage = {
                     sender: sender, 
-                    senderModel: senderModel, // <-- THIS IS THE CRITICAL FIX: Ensure we use the model passed by the client ('Customer' or 'Worker')
+                    senderModel: senderModel, 
                     message: message,
                     createdAt: new Date()
                 };
                 chatRoom.messages.push(newMessage);
                 await chatRoom.save();
 
-                // 2. Broadcast the message to all OTHER clients in the room
+                // 2. CRITICAL FIX: Broadcast the message to all OTHER clients in the room
+                //    socket.to(roomId) targets every socket in the room EXCEPT the sender.
                 socket.to(roomId).emit('message', {
                     sender: sender, 
                     message: message,
@@ -97,6 +102,7 @@ io.on('connection', (socket) => {
             delete onlineUsers[userId];
             console.log(`User disconnected: ${socket.id} (ID: ${userId})`);
 
+            // Notify the other user that this user is now offline
             if (otherUserId && onlineUsers[otherUserId]) {
                 io.to(onlineUsers[otherUserId].socketId).emit('userStatus', { isOnline: false });
             }

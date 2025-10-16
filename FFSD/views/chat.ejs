@@ -11,7 +11,7 @@
     <style>
         :root {
             --primary-blue: #0084ff;
-            --primary-hover: #006dd9;
+--primary-hover: #006dd9;
             --received-bg: #e4e6eb;
             --sent-bg: #0084ff;
             --background: #f0f2f5;
@@ -19,28 +19,28 @@
             --text-dark: #050505;
             --text-light: #65676b;
             --border-color: #e4e6eb;
-            --shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+--shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
         }
 
         * {
             margin: 0;
-            padding: 0;
+padding: 0;
             box-sizing: border-box;
         }
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background-color: var(--background);
+background-color: var(--background);
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             padding: 20px;
-        }
+}
 
         .chat-container {
             width: 100%;
-            max-width: 800px;
+max-width: 800px;
             height: 90vh;
             max-height: 900px;
             background: var(--chat-bg);
@@ -49,26 +49,26 @@
             display: flex;
             flex-direction: column;
             overflow: hidden;
-        }
+}
 
         .chat-header {
             padding: 16px 24px;
-            background: var(--chat-bg);
+background: var(--chat-bg);
             border-bottom: 1px solid var(--border-color);
             display: flex;
             align-items: center;
             justify-content: space-between;
-        }
+}
 
         .header-left {
             display: flex;
-            align-items: center;
+align-items: center;
             gap: 12px;
         }
 
         .user-avatar {
             width: 40px;
-            height: 40px;
+height: 40px;
             border-radius: 50%;
             background: linear-gradient(135deg, var(--primary-blue), #00c6ff);
             display: flex;
@@ -77,18 +77,18 @@
             color: white;
             font-weight: 600;
             font-size: 16px;
-        }
+}
 
         .user-info h3 {
             font-size: 16px;
-            font-weight: 600;
+font-weight: 600;
             color: var(--text-dark);
             margin-bottom: 2px;
         }
 
         .online-status {
             font-size: 13px;
-            color: var(--text-light);
+color: var(--text-light);
             display: flex;
             align-items: center;
             gap: 6px;
@@ -96,125 +96,125 @@
 
         .status-dot {
             width: 8px;
-            height: 8px;
+height: 8px;
             border-radius: 50%;
             background: #31a24c;
         }
 
         .status-dot.offline {
             background: var(--text-light);
-        }
+}
 
         .chat-messages {
             flex: 1;
-            padding: 20px 24px;
+padding: 20px 24px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
             gap: 8px;
-        }
+}
 
         .chat-messages::-webkit-scrollbar {
             width: 8px;
-        }
+}
 
         .chat-messages::-webkit-scrollbar-track {
             background: transparent;
-        }
+}
 
         .chat-messages::-webkit-scrollbar-thumb {
             background: #ccc;
-            border-radius: 4px;
+border-radius: 4px;
         }
 
         .chat-messages::-webkit-scrollbar-thumb:hover {
             background: #999;
-        }
+}
 
         .message-wrapper {
             display: flex;
-            margin-bottom: 4px;
+margin-bottom: 4px;
         }
 
         .message-wrapper.sent {
             justify-content: flex-end;
-        }
+}
 
         .message-wrapper.received {
             justify-content: flex-start;
-            align-items: flex-end; /* Align avatar and bubble bottom */
+align-items: flex-end; /* Align avatar and bubble bottom */
         }
 
         .message-bubble {
             max-width: 70%;
-            padding: 10px 16px;
+padding: 10px 16px;
             border-radius: 18px;
             position: relative;
             word-wrap: break-word;
             line-height: 1.4;
             font-size: 15px;
-        }
+}
 
         .message-wrapper.sent .message-bubble {
             background: var(--sent-bg);
-            color: white;
+color: white;
             border-bottom-right-radius: 4px;
         }
 
         .message-wrapper.received .message-bubble {
             background: var(--received-bg);
-            color: var(--text-dark);
+color: var(--text-dark);
             border-bottom-left-radius: 4px;
         }
 
         .message-time {
             display: block;
-            font-size: 11px;
+font-size: 11px;
             margin-top: 4px;
             opacity: 0.7;
         }
 
         .message-wrapper.sent .message-time {
             text-align: right;
-        }
+}
 
         .message-wrapper.received .message-time {
             text-align: left;
-            color: var(--text-light);
+color: var(--text-light);
         }
 
         .chat-input-container {
             border-top: 1px solid var(--border-color);
-            padding: 16px 24px;
+padding: 16px 24px;
             background: var(--chat-bg);
         }
 
         .chat-input-wrapper {
             display: flex;
-            align-items: center;
+align-items: center;
             gap: 12px;
             background: var(--background);
             border-radius: 24px;
             padding: 8px 16px;
-        }
+}
 
         .chat-input-wrapper input {
             flex: 1;
-            border: none;
+border: none;
             background: transparent;
             padding: 8px 0;
             font-size: 15px;
             color: var(--text-dark);
             outline: none;
-        }
+}
 
         .chat-input-wrapper input::placeholder {
             color: var(--text-light);
-        }
+}
 
         .send-button {
             background: var(--primary-blue);
-            color: white;
+color: white;
             border: none;
             width: 36px;
             height: 36px;
@@ -223,53 +223,53 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: all 0.2s ease;
+transition: all 0.2s ease;
             flex-shrink: 0;
         }
 
         .send-button:hover {
             background: var(--primary-hover);
-            transform: scale(1.05);
+transform: scale(1.05);
         }
 
         .send-button:active {
             transform: scale(0.95);
-        }
+}
 
         .send-button i {
             font-size: 14px;
-        }
+}
 
         .date-divider {
             text-align: center;
-            margin: 20px 0 12px;
+margin: 20px 0 12px;
             position: relative;
         }
 
         .date-divider span {
             background: var(--chat-bg);
-            padding: 4px 12px;
+padding: 4px 12px;
             border-radius: 12px;
             font-size: 12px;
             color: var(--text-light);
             font-weight: 500;
             box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-        }
+}
 
         @media (max-width: 768px) {
             body {
                 padding: 0;
-            }
+}
 
             .chat-container {
                 height: 100vh;
-                max-height: none;
+max-height: none;
                 border-radius: 0;
             }
 
             .message-bubble {
                 max-width: 80%;
-            }
+}
         }
     </style>
 </head>
@@ -280,11 +280,13 @@
                 <div class="user-avatar">
                     <%= otherUserName.charAt(0).toUpperCase() %>
                 </div>
-                <div class="user-info">
+      
+          <div class="user-info">
                     <h3><%= otherUserName %></h3>
                     <div class="online-status">
                         <span class="status-dot" id="statusDot"></span>
-                        <span id="statusText">...</span>
+                    
+    <span id="statusText">...</span>
                     </div>
                 </div>
             </div>
@@ -292,18 +294,22 @@
 
         <div class="chat-messages" id="chatMessages">
             <% messages.forEach(msg => { %>
-                <% const isMyMessage = msg.sender.toString() === userId.toString(); %>
+             
+   <% const isMyMessage = msg.sender.toString() === userId.toString(); %>
                 <div class="message-wrapper <%= isMyMessage ? 'sent' : 'received' %>">
                     <% if (!isMyMessage) { %>
-                        <div class="user-avatar" style="width: 30px; height: 30px; margin-right: 8px; flex-shrink: 0;">
+                        <div class="user-avatar" style="width: 30px;
+height: 30px; margin-right: 8px; flex-shrink: 0;">
                             <%= otherUserName.charAt(0).toUpperCase() %>
                         </div>
                     <% } %>
-                    <div class="message-bubble">
+                   
+ <div class="message-bubble">
                         <%= msg.message %>
                         <span class="message-time">
                             <%= new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) %>
-                        </span>
+          
+              </span>
                     </div>
                 </div>
             <% }); %>
@@ -311,12 +317,14 @@
 
         <div class="chat-input-container">
             <div class="chat-input-wrapper">
-                <input 
+      
+          <input 
                     type="text" 
                     id="messageInput" 
                     placeholder="Type a message..." 
                     autocomplete="off"
-                >
+    
+            >
                 <button class="send-button" id="sendMessageBtn">
                     <i class="fas fa-paper-plane"></i>
                 </button>
@@ -324,104 +332,107 @@
         </div>
     </div>
     
-    <script src="/socket.io/socket.io.js"></script>
+    
+<script src="/socket.io/socket.io.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const socket = io();
-            const messageInput = document.getElementById('messageInput');
+const messageInput = document.getElementById('messageInput');
             const sendMessageBtn = document.getElementById('sendMessageBtn');
             const chatMessages = document.getElementById('chatMessages');
             const statusDot = document.getElementById('statusDot');
             const statusText = document.getElementById('statusText');
-
-            const roomId = '<%= roomId %>';
+const roomId = '<%= roomId %>';
             const userId = '<%= userId %>';
             const userRole = '<%= userRole %>';
-            // Get other user's initial for avatar
+// Get other user's initial for avatar
             const otherUserNameInitial = '<%= otherUserName.charAt(0).toUpperCase() %>';
-
-            const scrollToBottom = () => {
+const scrollToBottom = () => {
                 chatMessages.scrollTop = chatMessages.scrollHeight;
-            };
+};
 
             socket.emit('joinRoom', { roomId, userId, userRole });
             scrollToBottom();
 
             // CRITICAL FIX: Add isMyMessage parameter to correctly align messages
+            // Function updated to handle messageData from EJS (Date object) or Socket (ISO string)
             const addMessageToUI = (messageData, isMyMessage = false) => {
-                const wrapperClass = isMyMessage ? 'sent' : 'received';
+                const wrapperClass = isMyMessage ?
+'sent' : 'received';
                 
                 const messageWrapper = document.createElement('div');
                 messageWrapper.classList.add('message-wrapper');
                 messageWrapper.classList.add(wrapperClass);
                 
-                const time = new Date(messageData.createdAt).toLocaleTimeString([], { 
+                // CRITICAL FIX REVIEW: Ensure we use the createdAt timestamp from the messageData
+                const messageTime = new Date(messageData.createdAt); 
+                const time = messageTime.toLocaleTimeString([], { 
                     hour: '2-digit', 
                     minute: '2-digit' 
                 });
-
-                let avatarHtml = '';
+let avatarHtml = '';
                 if (!isMyMessage) {
                     // Add the other user's avatar for received messages
                     avatarHtml = `
                         <div class="user-avatar" style="width: 30px; height: 30px; margin-right: 8px; flex-shrink: 0;">
-                            ${otherUserNameInitial}
+           
+                 ${otherUserNameInitial}
                         </div>
                     `;
-                }
+}
 
                 messageWrapper.innerHTML = `
                     ${avatarHtml}
                     <div class="message-bubble">
                         ${messageData.message}
-                        <span class="message-time">${time}</span>
+                 
+       <span class="message-time">${time}</span>
                     </div>
                 `;
-                
-                chatMessages.appendChild(messageWrapper);
+chatMessages.appendChild(messageWrapper);
                 scrollToBottom();
             };
 
             // When a message is received from the server (i.e., from the OTHER user)
+            // THIS HANDLER IS NOW ACTIVATED BY THE SERVER BROADCAST FIX IN app.js
             socket.on('message', (messageData) => {
                 addMessageToUI(messageData, false); // Always render received messages as 'received'
             });
-
-            socket.on('userStatus', (status) => {
+socket.on('userStatus', (status) => {
                 if (status.isOnline) {
                     statusText.textContent = 'Active now';
                     statusDot.classList.remove('offline');
                 } else {
-                    statusText.textContent = 'Offline';
+                  
+  statusText.textContent = 'Offline';
                     statusDot.classList.add('offline');
                 }
             });
-
-            const sendMessage = () => {
+const sendMessage = () => {
                 const message = messageInput.value.trim();
-                if (message) {
+if (message) {
                     const messageData = {
                         roomId,
                         sender: userId,
                         // CRITICAL: Ensure correct model is passed for saving to DB
-                        senderModel: userRole === 'customer' ? 'Customer' : 'Worker',
+                        senderModel: userRole === 'customer' ?
+'Customer' : 'Worker',
                         message,
+                        // Send the timestamp so the server can use it for saving/broadcasting
                         createdAt: new Date().toISOString()
                     };
-                    
-                    socket.emit('chatMessage', messageData);
+socket.emit('chatMessage', messageData);
                     addMessageToUI(messageData, true); 
                     messageInput.value = '';
                 }
             };
-
-            sendMessageBtn.addEventListener('click', sendMessage);
+sendMessageBtn.addEventListener('click', sendMessage);
             messageInput.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') {
                     sendMessage();
                 }
             });
-        });
+});
     </script>
 </body>
 </html>
