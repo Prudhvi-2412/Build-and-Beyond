@@ -1472,27 +1472,69 @@
           if (event.target === companyModal)
             companyModal.style.display = "none";
         });
+        const jobApplicationForm = document.getElementById("jobApplicationForm");
+            if (jobApplicationForm) {
+              jobApplicationForm.addEventListener("submit", function (event) {
+                event.preventDefault(); // Prevent submission to check validation
+                let isValid = true;
+                const noNumbersRegex = /^[a-zA-Z\s.,'-]*$/; // Allows letters, spaces, and some punctuation
 
-        // Form validation
-        const jobApplicationForm =
-          document.getElementById("jobApplicationForm");
-        if (jobApplicationForm) {
-          jobApplicationForm.addEventListener("submit", function (event) {
-            let isValid = true;
-            this.querySelectorAll("[required]").forEach((field) => {
-              if (!field.value.trim()) {
-                isValid = false;
-                field.style.borderColor = "red";
-              } else {
-                field.style.borderColor = "";
-              }
-            });
-            if (!isValid) {
-              event.preventDefault();
-              alert("Please fill in all required fields.");
+                // Helper to show/hide errors
+                const toggleError = (fieldId, showError, message = "") => {
+                    const field = document.getElementById(fieldId);
+                    const errorField = document.getElementById(`${fieldId}Error`);
+                    const fieldGroup = field.closest('.form-group, .checkbox-group, .form-file-upload');
+
+                    if (showError) {
+                        if (fieldGroup) fieldGroup.style.borderColor = 'red'; else field.style.borderColor = 'red';
+                        if (errorField) {
+                            errorField.textContent = message;
+                            errorField.style.display = 'block';
+                        }
+                        isValid = false;
+                    } else {
+                        if (fieldGroup) fieldGroup.style.borderColor = ''; else field.style.borderColor = '';
+                        if (errorField) errorField.style.display = 'none';
+                    }
+                };
+
+                // --- FIELD-SPECIFIC VALIDATIONS ---
+
+                // Text fields that should not contain numbers
+                ['fullName', 'location', 'positionApplying', 'primarySkills', 'workExperience'].forEach(id => {
+                    const field = document.getElementById(id);
+                    if (!field.value.trim()) {
+                        toggleError(id, true, 'This field is required.');
+                    } else if (!noNumbersRegex.test(field.value)) {
+                        toggleError(id, true, 'This field cannot contain numbers.');
+                    } else {
+                        toggleError(id, false);
+                    }
+                });
+
+                // Email
+                toggleError('email', !/^\S+@\S+\.\S+$/.test(document.getElementById('email').value), 'Please enter a valid email.');
+                
+                // Number fields
+                ['experience', 'expectedSalary'].forEach(id => {
+                    const val = document.getElementById(id).value;
+                    toggleError(id, !val || isNaN(val) || val < 0, 'Please enter a valid positive number.');
+                });
+
+                // Resume
+                toggleError('resume', document.getElementById('resume').files.length === 0, 'A resume (PDF) is required.');
+
+                // Terms agreement
+                toggleError('termsAgree', !document.getElementById('termsAgree').checked, 'You must agree to the terms.');
+
+                // --- SUBMIT IF VALID ---
+                if (isValid) {
+                  jobApplicationForm.submit(); // Submit if all fields are valid
+                } else {
+                  alert("Please fill in all required fields correctly.");
+                }
+              });
             }
-          });
-        }
       });
     </script>
   </body>

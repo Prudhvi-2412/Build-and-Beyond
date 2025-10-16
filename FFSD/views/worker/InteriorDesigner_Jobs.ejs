@@ -554,14 +554,20 @@
                                 </div>
                             <% } %>
                             <% if (job.status !== 'accepted' && job.status !== 'rejected') { %>
-                                <div class="job-action-buttons">
+                            <div class="job-action-buttons">
+                                <% if (job.status === 'pending') { %>
                                     <button class="job-action-button accept-button create-proposal-btn" data-id="<%= job._id %>">
                                         <i class="fas fa-file-signature"></i> Create Proposal
                                     </button>
                                     <button class="job-action-button deny-button" data-id="<%= job._id %>">
                                         <i class="fas fa-times"></i> Deny Job
                                     </button>
-                                </div>
+                                <% } else if (job.status === 'proposal_sent') { %>
+                                    <button class="job-action-button" disabled style="background-color: #7f8c8d; cursor: not-allowed;">
+                                        <i class="fas fa-check"></i> Proposal Submitted
+                                    </button>
+                                <% } %>
+                            </div>
                             <% } %>
                         </div>
                     <% }); %>

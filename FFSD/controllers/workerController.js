@@ -20,11 +20,11 @@ const getJobs = async (req, res) => {
     }
 
     if (worker.isArchitect) {
-      const Jobs = await ArchitectHiring.find({ worker: req.user.user_id, status: 'Pending' }).sort({ updatedAt: -1 });
+      const Jobs = await ArchitectHiring.find({ worker: req.user.user_id, status: { $in: ['Pending', 'Proposal Sent'] } }).sort({ updatedAt: -1 });
       // Pass the full worker object as 'user'
       return res.render('worker/worker_jobs', { user: worker, jobOffers: Jobs ,activePage: 'jobs'});
     } else {
-      const Jobs = await DesignRequest.find({ workerId: req.user.user_id, status: 'pending' }).sort({ updatedAt: -1 });
+      const Jobs = await DesignRequest.find({ workerId: req.user.user_id, status: { $in: ['pending', 'proposal_sent'] } }).sort({ updatedAt: -1 });
       // Pass the full worker object as 'user'
       return res.render('worker/InteriorDesigner_Jobs', { user: worker, jobs: Jobs ,activePage: 'jobs' });
     }
@@ -278,7 +278,7 @@ const createWorkerRequest = async (req, res) => {
       positionApplying,
       primarySkills: skillsArray,
       workExperience,
-      resume: req.file.filename,
+      resume: req.file.path,
       termsAgree: termsAgree === "true" || termsAgree === true,
       workerId,
       companyId,
