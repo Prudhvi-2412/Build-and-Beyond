@@ -352,6 +352,8 @@
                                     <p class="proposal-description"><%= app.proposal.description %></p>
                                     <a href="/customer/accept-proposal/architect/<%= app._id %>" class="btn-accept-pay">Accept & Pay</a>
                                 </div>
+                                <% } else if(app.status === 'Accepted'){ %>
+                                    <p style="color: green;">Accepted job for ₹:<%= app.proposal.price %></p>
                                 <% } else { %>
                                     <p>Waiting for the architect to submit a proposal.</p>
                                 <% } %>
@@ -411,6 +413,8 @@
                                 <p class="proposal-description"><%= app.proposal.description %></p>
                                 <a href="/customer/accept-proposal/interior/<%= app._id %>" class="btn-accept-pay">Accept & Pay</a>
                             </div>
+                        <% } else if(app.status === 'accepted'){ %>
+                                <p style="color: green;">Accepted job for ₹:<%= app.proposal.price %></p>
                         <% } else { %>
                              <p>Waiting for the designer to submit a proposal.</p>
                         <% } %>
@@ -474,6 +478,8 @@
                                     <p class="proposal-description"><%= app.proposal.description %></p>
                                     <a href="/customer/accept-company-proposal/<%= app._id %>" class="btn-accept-pay">Accept & Pay</a>
                                 </div>
+                            <% } else if(app.status === 'accepted'){ %>
+                                <p style="color: green;">Accepted job for ₹:<%= app.proposal.price %></p>
                             <% } else { %>
                                 <p>Waiting for the company to submit a proposal.</p>
                             <% } %>

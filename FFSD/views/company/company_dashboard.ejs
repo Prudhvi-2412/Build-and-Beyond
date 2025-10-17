@@ -423,7 +423,7 @@
                         <p><span>Timeline:</span><span><%= project.projectTimeline ? project.projectTimeline + ' months' : 'TBD' %></span></p>
                         <p><span>Due Date:</span><span><%= new Date(project.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) %></span></p>
                     </div>
-                    <div class="bid-actions">
+                    <div class="bid-actions" style="display: none;">
                         <button class="btn btn-primary">View Details</button>
                         <button class="btn btn-secondary">Decline</button>
                     </div>
