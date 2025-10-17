@@ -1368,7 +1368,6 @@
                 data.email = document.getElementById('customer-email').value;
                 data.dob = document.getElementById('customer-dob').value;
                 data.phone = document.getElementById('customer-phone').value;
-                data.gender = document.querySelector('input[name="customer-gender"]:checked') ? document.querySelector('input[name="customer-gender"]:checked').value : '';
             } else if (userType === 'company') {
                 data.companyName = document.getElementById('company-name').value;
                 data.contactPerson = document.getElementById('contact-person').value;
@@ -1392,7 +1391,6 @@
             const email = document.getElementById('customer-email').value;
             const dob = document.getElementById('customer-dob').value;
             const phone = document.getElementById('customer-phone').value;
-            const gender = document.querySelector('input[name="customer-gender"]:checked');
             
             if (!name.trim()) {
                 showValidationState('customer-name', false, 'Full name is required.');
@@ -1440,13 +1438,6 @@
                 showValidationState('customer-phone', true);
             }
 
-            if (!gender) {
-                showValidationState('customer-gender', false, 'Please select your gender.');
-                isValid = false;
-            } else {
-                showValidationState('customer-gender', true);
-            }
-            
             return isValid;
         }
 
@@ -1720,12 +1711,7 @@
 
                 document.getElementById('signup-terms').addEventListener('change', validateTerms);
                 
-                document.querySelectorAll('input[name="customer-gender"]').forEach(radio => {
-                    radio.addEventListener('change', () => {
-                        const gender = document.querySelector('input[name="customer-gender"]:checked');
-                        showValidationState('customer-gender', !!gender, !!gender ? '' : 'Please select your gender.');
-                    });
-                });
+     
             }
         });
 
